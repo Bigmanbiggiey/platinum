@@ -66,21 +66,25 @@
   color-scheme: dark;
 }
 
-html,
-body {
-  margin: 0;
-  background: var(--color-ground);
-  color: var(--color-ink);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-}
+/* Base element styles go in @layer base so Tailwind utilities (e.g. text-paper on a
+   link/button) still win — a bare `a {}` outside a layer would override them. */
+@layer base {
+  html,
+  body {
+    margin: 0;
+    background: var(--color-ground);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
 
-a {
-  color: var(--color-accent);
-  text-decoration: none;
-}
-a:hover {
-  color: var(--color-ink);
+  a {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--color-ink);
+  }
 }
 
 /* Rendered Markdown (trusted seed content in Phase 2; sanitised when admin-editable in Phase 3) */
