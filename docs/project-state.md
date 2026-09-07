@@ -19,7 +19,7 @@
 | **Phase 2 plan** | `docs/phase-2-plan.md` — approved; §8 Progress table rev. 2. **Schema + RLS + seed applied** to project `aonpdrqtosmqhmomghca`; **`submit` Edge Function deployed**; RLS verified live (6 tests); build prerenders 21 pages from real data. |
 | **Deferred by owner** | Cloudflare Turnstile (forms = honeypot-only for now); Resend email key (no public soft-launch until set — enquiries visible in Phase 3 admin); site content stays DRAFT (owner edits later). |
 | **Remaining for Phase 2** | **WP14 Parts A + B done** (`docs/wp14-staging-plan.md` — staging live on Vercel). Left: formal **Lighthouse/axe** run + **WP14 Part C — Go-Live** (separate approval). Full checklist tracked in memory `phase-2-remaining.md`. Three E2E test rows to clean from the DB. |
-| **Phase 3** | Plan written: **`docs/phase-3-plan.md`** (Admin MVP — auth, CRM, CMS, publish→rebuild; 14 WPs). Awaiting approval + §11 decisions (ADR-0007 auth method, §14.2 Q17 admin users, tech choices). Can start in parallel with Phase 2 Go-Live. |
+| **Phase 3** | **APPROVED & IN PROGRESS 2026-09-07.** `docs/phase-3-plan.md`. Decisions: email+password (ADR-0007 Accepted); roles `owner` (Paul) + `staff`; owner email + in-app Notifications view; dedicated `admin.html` entry; Markdown+preview; TanStack Query; `rebuild` Edge Function. Building WP1–WP3 (auth, schema+RLS, admin shell) first. |
 | **Trading name** | **Platinum Point Automotive Engineering** (kickoff codename "Platinum Motor Services" retired). Repo folder stays `PLATINUM`. |
 
 Phase-gate workflow in use:

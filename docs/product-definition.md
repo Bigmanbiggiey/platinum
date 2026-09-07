@@ -905,8 +905,9 @@ on 2026-09-07** (rev. 2), and what is **still open**.
 15. Who **owns the Supabase org and the hosting account**, who pays, and is there a
     **monthly budget ceiling**? (Free tiers likely cover launch.)
 16. Any **existing Google Analytics / Search Console** property to reuse?
-17. Who **administers day-to-day** — Paul only, or someone else too (do we seed a
-    second admin login)?
+17. ✅ Admin users (2026-09-07): **Paul (`owner`) + one `staff` account.** Both have
+    full CRUD in the MVP; the owner adds the staff member via an admin "Team" screen
+    (owner still to supply that person's email).
 
 **Legal / compliance**
 18. Does the business need **ODPC registration** under the Kenya Data Protection Act

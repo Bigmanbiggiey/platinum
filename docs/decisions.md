@@ -21,7 +21,7 @@
 | [0004](#adr-0004--one-dataset-two-faces) | One dataset, two faces | Accepted (brief-mandated) | Confirm only |
 | [0005](#adr-0005--consolidated-intake-model) | Consolidated intake model | **Accepted 2026-09-07** | — |
 | [0006](#adr-0006--public-form-spam-protection) | Public form spam protection | **Accepted 2026-09-07** (honeypot now; Turnstile when keys supplied) | — |
-| [0007](#adr-0007--admin-authentication-method) | Admin authentication method | Proposed | **Yes** (Phase 3, + owner pref) |
+| [0007](#adr-0007--admin-authentication-method) | Admin authentication method | **Accepted 2026-09-07** (email+password; roles owner + staff) | — |
 | [0008](#adr-0008--new-enquiry-notifications) | New-enquiry notifications | **Accepted 2026-09-07** (Edge Function ready; email pending Resend key) | — |
 | [0009](#adr-0009--image-storage-and-delivery) | Image storage and delivery | **Accepted 2026-09-07** | — |
 | [0010](#adr-0010--single-application-vs-separate-apps) | Single application vs separate apps | **Accepted 2026-09-07** | — |
@@ -251,7 +251,12 @@ Simpler fallback if an Edge Function is judged too much for MVP: keep direct ano
 
 ## ADR-0007 — Admin authentication method
 
-**Status:** Proposed. **Requires approval and an owner preference.**
+**Status:** **Accepted 2026-09-07.** **Email + password** with email password-reset.
+No public sign-up. Two roles: **`owner`** (Paul) and **`staff`** — both get full admin
+CRUD in the MVP; `owner` additionally manages staff accounts via an admin "Team"
+screen. Seed one owner (Paul, `gatama98p@gmail.com`); the staff account is added
+through the UI when the owner supplies that person's email. 2FA + magic-link are
+Post-MVP.
 
 ### Context
 One admin user at launch (the owner), possibly a second later (§14.2 Q17). Owner is

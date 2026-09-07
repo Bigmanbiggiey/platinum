@@ -1,10 +1,25 @@
 # Phase 3 — Admin MVP (CMS + CRM) · Plan
 
-> **Status: PLAN — for owner review and approval. No Phase 3 code is written yet.**
-> Phase 2 (public website) is built and on private staging; its Go-Live (WP14 Part C)
-> is a separate, still-pending step and does **not** block starting Phase 3.
+> **Status: APPROVED & IN PROGRESS (2026-09-07).** May run in parallel with Phase 2
+> Go-Live (WP14 Part C).
 > **Created:** 2026-09-07 · Companion to `roadmap.md` (Phase 3), `product-definition.md`
 > §6, `decisions.md` (ADR-0007).
+
+## Decisions locked at kickoff (2026-09-07)
+
+- **Auth (ADR-0007):** email + password, email password-reset. No public sign-up.
+- **Roles:** `owner` (Paul, `gatama98p@gmail.com`) + `staff`. Both get **full admin
+  CRUD** in the MVP; `owner` additionally manages staff via an admin **Team** screen.
+  Seed the owner; the staff account is created through the UI once the owner supplies
+  that person's email.
+- **Notifications:** owner **email** on new enquiry / booking / testimonial (the
+  `submit` function already does this) **plus an in-app Notifications view** in the
+  admin (unread badge, click-through, mark-read). Backed by a `notification` table
+  populated by a DB trigger so any insert path generates one.
+- **Admin panel includes a "View site ↗" link** to the public site (new tab).
+- **Tech choices accepted:** dedicated `admin.html` entry, Markdown-textarea +
+  preview editor (reuses `<Prose>`, now sanitised), TanStack Query, a `rebuild` Edge
+  Function for publish→rebuild.
 
 ---
 
@@ -86,7 +101,8 @@ New tables; the Phase 2 tables gain `authenticated` policies and a few columns.
 
 | Table | Columns (indicative) | Notes |
 | --- | --- | --- |
-| `profile` | `user_id` (pk, → `auth.users`), `display_name`, `role` (`owner`/`admin`; room for `staff`), `created_at`, `updated_at` | 1:1 with an auth user. RLS: a user reads/updates their own row; `owner` reads all. |
+| `profile` | `user_id` (pk, → `auth.users`), `display_name`, `role` (`owner`/`staff`), `created_at`, `updated_at` | 1:1 with an auth user; created by a `handle_new_user` trigger (default `staff`). Seed promotes `gatama98p@gmail.com` to `owner`. RLS: a user reads/updates their own row; `owner` reads/writes all. |
+| `notification` | `type` (`request`/`booking`/`testimonial`), `title`, `body?`, `entity_type`, `entity_id`, `read_at?`, `created_at` | Written by an `AFTER INSERT` trigger on `service_request` / `testimonial`. Admin Notifications view lists these; RLS = any authenticated admin reads + updates `read_at`. |
 | `client` | `name`, `type` (`individual`/`fleet`), `phone`, `whatsapp?`, `email?`, `area?`, `source?`, `notes?`, timestamps, `created_by` | Search by name/phone. |
 | `vehicle` | `client_id` (→ `client`), `make`, `model`, `year?`, `registration?`, `vin?`, `colour?`, `mileage?`, `fuel?`, `transmission?`, `notes?`, timestamps | Many per client. |
 | `service_request` (alter) | activate the existing nullable `client_id` / `vehicle_id` as FKs → `client` / `vehicle` | Populated by "convert". |
@@ -121,10 +137,11 @@ Effort: **S** ≈ half-day · **M** ≈ 1–2 days · **L** ≈ 3–5 days (roug
 
 | WP | Title | Depends on | Effort | Key outputs |
 | --- | --- | --- | --- | --- |
-| **WP1** | Auth foundation | ADR-0007 | M | `profile` table + `role`; Supabase Auth (email+password); login / logout / forgot / reset pages; **real route guard** replacing the Phase 2 stub; seed the owner account (documented; service-role key never shipped); session handling. |
-| **WP2** | Admin RLS + CRM schema | WP1 | M | Migrations for `client`, `vehicle`, `created_by` columns; `is_admin()` helper; `authenticated` CRUD policies on all tables + Storage; **extend `rls.test.ts`** (admin CRUD + anon no-regression). |
-| **WP3** | Admin shell + platform | WP1 | M | Dedicated `admin.html` entry (own bundle, `noindex`); admin layout (mobile-first nav); TanStack Query setup with the authed client; shared admin UI (data table, form field set, toast, confirm dialog, save-state indicator); loading / empty / error states. |
-| **WP4** | Dashboard | WP3 | S | Counts (new requests, upcoming bookings, clients, vehicles, pending testimonials); recent/unhandled requests with quick status change; this week's confirmed bookings; quick-add links. |
+| **WP1** | Auth foundation | ADR-0007 | M | `profile` table + `role` (`owner`/`staff`) + `handle_new_user` trigger; Supabase Auth (email+password); login / logout / forgot / reset pages; **real route guard** + auth/session hook; owner-account bootstrap (owner signs up in the dashboard → seed promotes them to `owner`; documented). |
+| **WP2** | Admin RLS + CRM schema | WP1 | M | Migrations for `client`, `vehicle`, `notification` (+ trigger), `created_by` columns; `is_admin()` helper; `authenticated` CRUD policies on all tables + Storage; **extend `rls.test.ts`** (admin CRUD + anon no-regression). |
+| **WP3** | Admin shell + platform | WP1 | M | Dedicated `admin.html` entry (own bundle, `noindex`); admin layout — mobile-first nav, **unread-notifications badge, "View site ↗" link**; TanStack Query with the authed client; shared admin UI (data table, form field set, toast, confirm dialog, save-state indicator); loading / empty / error states. |
+| **WP3b** | Team (users) | WP1, WP2 | S | Owner-only screen to add a `staff` member (creates the auth user + `profile role='staff'`, sends a set-password email) and deactivate one. |
+| **WP4** | Dashboard + Notifications | WP3 | M | Dashboard: counts (unread notifications, new requests, upcoming bookings, clients, vehicles, pending testimonials); recent/unhandled requests with quick status change; this week's confirmed bookings; quick-add links. **Notifications view**: list from the `notification` table, unread first, click-through to the entity, mark-read / mark-all-read. |
 | **WP5** | Service requests + Schedule | WP2, WP3 | L | Requests: list + filters (status/type/date), detail (all submitted fields + internal notes), status pipeline (`new→contacted→scheduled→completed→closed`, `spam`/`archived`), **convert to client + vehicle**, link existing, outcome notes. Schedule: agenda of `booking` + `scheduled` by date; **confirm** (set agreed date/time + `confirmed_at`) / **propose new time** / **decline** → sends the customer a confirmation email (WP11). |
 | **WP6** | Clients + Vehicles | WP2, WP3 | M | CRUD + search; client type; client → vehicles → requests; internal notes. |
 | **WP7** | CMS — Services / Portfolio / Testimonials | WP3 | L | Services: CRUD, Markdown+preview, publish toggle, ordering, SEO fields. Portfolio: CRUD, Markdown+preview, cover + gallery via media library, publish toggle, related service. Testimonials: moderation queue (`pending→approved/rejected`, `featured`). **Add sanitisation to `<Prose>`.** |
@@ -204,16 +221,18 @@ a burst of edits triggers one build.
 
 ---
 
-## 11. Open decisions (need owner sign-off before WP1)
+## 11. Decisions — all resolved 2026-09-07
 
-1. **ADR-0007:** email + password (recommended) vs magic-link vs both.
-2. **§14.2 Q17:** admin users — owner only, or seed a second.
-3. Confirm the **email-only** notification channel for MVP (WhatsApp Post-MVP).
-4. Accept the recommended technical choices (§2.1): dedicated `admin.html` entry,
-   Markdown + preview editor, TanStack Query, `rebuild` Edge Function.
-5. Whether Phase 3 build **starts now** (in parallel with Phase 2 Go-Live) or **after**
-   Phase 2 is fully closed. Recommendation: start now — Phase 3 is admin-only and only
-   touches the public deploy via the rebuild hook.
+1. **ADR-0007:** ✅ email + password.
+2. **§14.2 Q17:** ✅ Paul (`owner`) + one `staff` account (added via the Team screen;
+   owner to supply the staff email).
+3. **Notifications:** ✅ owner email + in-app Notifications view.
+4. **Tech choices:** ✅ dedicated `admin.html` entry, Markdown+preview editor,
+   TanStack Query, `rebuild` Edge Function.
+5. **Start now** — ✅ in parallel with Phase 2 Go-Live.
+
+Still needed from the owner during the build: the **staff person's email** (for WP3b);
+a **Vercel Deploy Hook** URL (WP10); the **Resend** key (WP11, shared with WP14 C).
 
 ---
 

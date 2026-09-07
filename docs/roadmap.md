@@ -172,10 +172,11 @@ content path decided (§14.2 Q10). Booking lead-time / windows agreed (§14.2 Q1
 
 ---
 
-## Phase 3 — Admin MVP: CMS + CRM
+## Phase 3 — Admin MVP: CMS + CRM · APPROVED & IN PROGRESS 2026-09-07
 
-> **Detailed plan: `docs/phase-3-plan.md`** (14 work packages) — awaiting approval +
-> the §11 decisions.
+> **Detailed plan: `docs/phase-3-plan.md`.** Decisions locked: email+password auth;
+> roles `owner` (Paul) + `staff`; owner email + in-app Notifications view; dedicated
+> `admin.html` entry; Markdown+preview editor; TanStack Query; `rebuild` Edge Function.
 
 **Goal:** The owner can log in on a phone and manage content and enquiries without a
 developer.
