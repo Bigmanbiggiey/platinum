@@ -1,10 +1,30 @@
 # WP14 — Staging & Go-Live · Plan
 
-> **Status: PLAN — for owner review and approval.** This is the last work package of
-> Phase 2 (`docs/phase-2-plan.md`). It has **two checkpoints**, each approved
-> separately: **A/B — Staging** (deploy privately, test) and **C — Go-Live** (attach the
-> domain, turn on email + anti-spam, make it public).
+> **Status: Parts A + B DONE (2026-09-07). Part C (Go-Live) awaits owner go.**
+> **Staging is live (privately) at `https://platinum-point.vercel.app`** — `noindex`
+> site-wide, `robots: Disallow: /`. Host = Vercel for now (owner: revisit host/domain
+> later). This is the last work package of Phase 2 (`docs/phase-2-plan.md`).
 > **Created:** 2026-09-07 · Companion to `phase-2-plan.md`, `decisions.md` (ADR-0002).
+
+## Status — 2026-09-07
+
+| Part | State |
+| --- | --- |
+| **A — Prep** | ✅ `vercel.json` (cleanUrls, `/admin`→SPA rewrite, security headers + CSP, immutable asset cache); `VITE_SITE_NOINDEX` switch in `SeoHead`; `scripts/finalize-seo.mjs` writes `sitemap.xml` + per-environment `robots.txt`; env docs. |
+| **B — Staging deploy** | ✅ Vercel project `biggieys-projects/platinum-point` created, GitHub repo connected (pushes to `main` auto-deploy), env vars set (Prod + Preview: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` (public config), `VITE_SITE_ORIGIN`, `VITE_SITE_NOINDEX=1`). Deployed → `https://platinum-point.vercel.app`. |
+| **B — smoke test** | ✅ All 13 content routes 200; dynamic `/services/:slug` prerendered (21 pages); `/nonexistent` → 404; `/admin` + `/admin/login` → 200 (SPA boot); `robots.txt` = `Disallow: /`; sitemap on the staging origin; **security headers + CSP present** (X-Frame-Options DENY, nosniff, Referrer-Policy, Permissions-Policy, HSTS via Vercel); per-page `<title>` + `noindex,nofollow`; JSON-LD present; **form submit works end-to-end from the deployed origin** (CORS preflight 200 → `{ok:true}`). |
+| **WP11 — perf/a11y** | 🟡 Fundamentals verified (prerendered HTML, small JS, lazy images, semantic markup, `lang`, skip-link, labelled fields, contrast fix, headers). **Formal Lighthouse/axe run still to do** — run [PageSpeed Insights](https://pagespeed.web.dev/) on the staging URL (local Lighthouse hit a Windows chrome-launcher teardown bug). |
+| **C — Go-Live** | ⛔ Not started — separate approval. |
+
+**Known issue (non-blocking):** `/admin` hard-load rewrites to `/` (index.html), so the
+home page briefly renders before the SPA swaps to the admin — hydration mismatch
+warning. Fine for the current stub; Phase 3 gives the admin a clean entry.
+
+**Three E2E test rows** now in the live DB (a `general_contact` request, a `pending`
+testimonial, a `booking` request — all labelled "…E2E…delete"). Not public. Clean via
+the Supabase dashboard.
+
+---
 
 ---
 
