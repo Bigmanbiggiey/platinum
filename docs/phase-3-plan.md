@@ -139,8 +139,8 @@ Effort: **S** ≈ half-day · **M** ≈ 1–2 days · **L** ≈ 3–5 days (roug
 
 | WP | State |
 | --- | --- |
-| WP1 auth | ✅ `profile` (+ role, `handle_new_user` trigger), `is_admin()`/`is_owner()`; `shared/supabase/auth.ts`; `AuthProvider`; **real route guard**; login / forgot / reset pages. **Owner account not created yet** — needs Supabase dashboard → Auth → add `gatama98p@gmail.com`, then `db push --include-seed` promotes to `owner`. |
-| WP2 admin RLS + schema | ✅ Migrations applied: `client`, `vehicle`, `notification` (+ triggers), FKs, `created_by`; `authenticated` + `is_admin()` full-CRUD policies on every table + Storage; anon sealed (401) on the private tables. **`rls.test.ts` authed-admin cases: pending an account.** |
+| WP1 auth | ✅ `profile` (+ role, `handle_new_user` trigger), `is_admin()`/`is_owner()`; `shared/supabase/auth.ts`; `AuthProvider`; **real route guard**; login / forgot / reset pages. **Owner account created** (`gatama98p@gmail.com`) and promoted to `owner` (migration `..._100300_bootstrap_owner`). |
+| WP2 admin RLS + schema | ✅ Migrations applied: `client`, `vehicle`, `notification` (+ triggers), FKs, `created_by`; `authenticated` + `is_admin()` full-CRUD policies on every table + Storage; anon sealed (401). **RLS verified live** (simulated authed-owner: full CRUD OK; anon still 401). `rls.test.ts` has anon checks + an env-gated authed-admin block (`TEST_ADMIN_EMAIL/PASSWORD`). |
 | WP3 admin shell | ✅ `AdminShell` (nav, unread badge, **View site ↗**, sign out), TanStack Query, `AdminApp` router. Admin stays the `/admin/*` lazy chunk (dedicated entry deferred — the hydration warning is benign). |
 | WP3b Team | ⬜ placeholder route only. |
 | WP4 Dashboard + Notifications | 🟡 Dashboard shows live counts; Notifications view not built. |
