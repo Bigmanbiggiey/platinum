@@ -174,12 +174,17 @@ content path decided (§14.2 Q10). Booking lead-time / windows agreed (§14.2 Q1
 
 ## Phase 3 — Admin MVP: CMS + CRM
 
+> **Detailed plan: `docs/phase-3-plan.md`** (14 work packages) — awaiting approval +
+> the §11 decisions.
+
 **Goal:** The owner can log in on a phone and manage content and enquiries without a
 developer.
 
-**Prerequisites:** Phase 2 approved & done. ADR-0007 approved + owner auth preference.
-§14.2 Q17 (who administers — seed a 2nd admin?) answered. Build-hook-on-publish
-approach (ADR-0003) confirmed.
+**Prerequisites:** ADR-0007 approved + owner auth preference. §14.2 Q17 (who
+administers — seed a 2nd admin?) answered. Build-hook-on-publish approach (ADR-0003)
+confirmed. Phase 2 does **not** need to be fully closed — Phase 3 is admin-only and
+only touches the public deploy via the rebuild hook, so it can run in parallel with
+Phase 2 Go-Live (WP14 Part C).
 
 **Scope**
 - **Auth:** Supabase Auth per ADR-0007; login, logout, forgot/reset password; route
