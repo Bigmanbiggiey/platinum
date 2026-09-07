@@ -1,0 +1,11 @@
+# Supabase CLI config for Platinum Point Automotive Engineering.
+# Link with:  npx supabase link --project-ref aonpdrqtosmqhmomghca
+# Apply schema:  npx supabase db push
+# Deploy function:  npx supabase functions deploy submit
+project_id = "platinum-point"
+
+[db]
+major_version = 15
+
+[functions.submit]
+verify_jwt = false

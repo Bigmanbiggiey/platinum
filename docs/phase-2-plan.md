@@ -217,6 +217,32 @@ RLS **enabled on every table**. Anon = the site's build-time + browser client.
 
 Effort: **S** ≈ half-day, **M** ≈ 1–2 days, **L** ≈ 3–5 days (rough, solo).
 
+### Progress (2026-09-07)
+
+| WP | State |
+| --- | --- |
+| WP1 schema | ✅ Migrations written (`supabase/migrations/*`). **Not yet applied** — needs CLI auth. |
+| WP2 RLS | ✅ Policies + `testimonial_public` / `site_settings_public` views written. RLS test harness: ⏳ deferred until the schema is applied (needs a live DB). |
+| WP3 data layer | ✅ `types.ts` (hand-written; swap for `gen types` after CLI auth) + `src/shared/content/queries.ts` with graceful degradation. |
+| WP4 Edge Function | ✅ `supabase/functions/submit/` written (honeypot + timing + optional Turnstile + validation + insert + optional Resend). **Not yet deployed.** |
+| WP5 primitives | ✅ Container, Section, Button, Field set, Prose, SeoHead, Img, CallWhatsApp + tests. |
+| WP6 chrome | ✅ Nav (sticky, mobile menu), Footer (NAP + hours), MobileContactBar, skip-link, CfAnalytics. |
+| WP7 pages | ✅ All 14 routes with loaders + `getStaticPaths`; forms wired; empty states. |
+| WP8 SEO | ✅ `scripts/gen-sitemap.mjs`, `robots.txt`, JSON-LD (AutoRepair/Service/Breadcrumb), canonical + OG per page, admin excluded. |
+| WP9 analytics | ✅ CF Web Analytics snippet (env-gated) + `trackCta` on all CTAs. Search Console → WP14. |
+| WP10 seed | ✅ `supabase/seed.sql` — confirmed facts + DRAFT copy + TECHBIGGIEY partner + pending placeholder testimonial. **Not yet applied.** |
+| WP11 perf/a11y | ⏳ Local build passes; full Lighthouse/axe pass needs the site running with real content + a deploy. |
+| WP12 tests | ✅ 12 passing (seo, Prose, EnquiryForm validation, Wordmark, business/env). RLS matrix test ⏳ (needs live schema). |
+| WP13 local acceptance | 🔄 In progress — `build` green, all routes serve locally. |
+| WP14 staging | ⛔ Not started (separate approval). |
+
+**Local gate green:** `typecheck` · `lint` · `format:check` · `test` (12) · `build`
+(prerenders 12 HTML pages + sitemap; `/admin` excluded & code-split).
+
+**Blockers to finish WP1/2/4/10:** an authenticated Supabase CLI
+(`npx supabase login`, or a `SUPABASE_ACCESS_TOKEN`) to apply migrations + deploy the
+function. **To finish WP11 + soft-launch:** Turnstile + Resend keys, then WP14.
+
 | WP | Title | Depends on | Effort | Key outputs |
 | --- | --- | --- | --- | --- |
 | **WP1** | Supabase CLI + migrations: schema | 2.1, 2.2, CLI auth | M | `supabase/` dir, `config.toml`, migration files for §5.1–5.2, `updated_at` trigger, enums, seed-safe |

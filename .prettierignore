@@ -8,3 +8,7 @@ package-lock.json
 # wrapping and table alignment here.
 docs
 
+# Supabase SQL migrations + seed (Prettier has no SQL parser); Deno function is
+# formatted to its own runtime's conventions.
+supabase
+

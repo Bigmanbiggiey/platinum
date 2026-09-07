@@ -14,8 +14,15 @@ export function getSupabaseClient(): SupabaseClient | null {
   if (cached) return cached;
   const env = getSupabaseEnv();
   if (!env) return null;
+  // Session persistence only makes sense in the browser; during the SSG prerender
+  // (Node, no localStorage) it must be off.
+  const inBrowser = typeof window !== 'undefined';
   cached = createClient(env.url, env.anonKey, {
-    auth: { persistSession: true, autoRefreshToken: true },
+    auth: {
+      persistSession: inBrowser,
+      autoRefreshToken: inBrowser,
+      detectSessionInUrl: inBrowser,
+    },
   });
   return cached;
 }

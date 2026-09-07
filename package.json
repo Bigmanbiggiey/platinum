@@ -6,7 +6,7 @@
   "description": "Platinum Point Automotive Engineering — public website + admin platform (Phase 1 skeleton)",
   "scripts": {
     "dev": "vite",
-    "build": "vite-react-ssg build && node scripts/strip-admin-preload.mjs",
+    "build": "vite-react-ssg build && node scripts/strip-admin-preload.mjs && node scripts/gen-sitemap.mjs",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.47.10",
+    "marked": "^15.0.12",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^6.28.0",
