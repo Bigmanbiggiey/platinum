@@ -23,5 +23,5 @@ npm-debug.log*
 .vscode/*
 !.vscode/extensions.json
 
-# Vercel (deployment deferred — no config committed yet)
+# Vercel CLI local link + pulled env (vercel.json IS committed)
 .vercel

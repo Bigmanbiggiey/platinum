@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "name": "platinum-point",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "cleanUrls": true,
