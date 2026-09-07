@@ -217,31 +217,36 @@ RLS **enabled on every table**. Anon = the site's build-time + browser client.
 
 Effort: **S** ≈ half-day, **M** ≈ 1–2 days, **L** ≈ 3–5 days (rough, solo).
 
-### Progress (2026-09-07)
+### Progress (2026-09-07, rev. 2 — schema applied)
 
 | WP | State |
 | --- | --- |
-| WP1 schema | ✅ Migrations written (`supabase/migrations/*`). **Not yet applied** — needs CLI auth. |
-| WP2 RLS | ✅ Policies + `testimonial_public` / `site_settings_public` views written. RLS test harness: ⏳ deferred until the schema is applied (needs a live DB). |
-| WP3 data layer | ✅ `types.ts` (hand-written; swap for `gen types` after CLI auth) + `src/shared/content/queries.ts` with graceful degradation. |
-| WP4 Edge Function | ✅ `supabase/functions/submit/` written (honeypot + timing + optional Turnstile + validation + insert + optional Resend). **Not yet deployed.** |
+| WP1 schema | ✅ **Applied** to project `aonpdrqtosmqhmomghca` (`supabase db push`). 3 migrations. |
+| WP2 RLS | ✅ Policies + views live. **Verified against the live project** by `src/shared/supabase/rls.test.ts` (6 checks: anon reads published only; base testimonial/site_settings/service_request = permission denied; anon insert denied). |
+| WP3 data layer | ✅ `types.ts` (hand-written; swap for `gen types` later) + `queries.ts` with graceful degradation. |
+| WP4 Edge Function | ✅ **Deployed** (`supabase functions deploy submit`). E2E tested: valid → `{ok:true}` + row inserted; honeypot / too-fast → silently dropped; no-consent / bad-type → 422; GET → 405. |
 | WP5 primitives | ✅ Container, Section, Button, Field set, Prose, SeoHead, Img, CallWhatsApp + tests. |
 | WP6 chrome | ✅ Nav (sticky, mobile menu), Footer (NAP + hours), MobileContactBar, skip-link, CfAnalytics. |
-| WP7 pages | ✅ All 14 routes with loaders + `getStaticPaths`; forms wired; empty states. |
-| WP8 SEO | ✅ `scripts/gen-sitemap.mjs`, `robots.txt`, JSON-LD (AutoRepair/Service/Breadcrumb), canonical + OG per page, admin excluded. |
-| WP9 analytics | ✅ CF Web Analytics snippet (env-gated) + `trackCta` on all CTAs. Search Console → WP14. |
-| WP10 seed | ✅ `supabase/seed.sql` — confirmed facts + DRAFT copy + TECHBIGGIEY partner + pending placeholder testimonial. **Not yet applied.** |
-| WP11 perf/a11y | ⏳ Local build passes; full Lighthouse/axe pass needs the site running with real content + a deploy. |
-| WP12 tests | ✅ 12 passing (seo, Prose, EnquiryForm validation, Wordmark, business/env). RLS matrix test ⏳ (needs live schema). |
-| WP13 local acceptance | 🔄 In progress — `build` green, all routes serve locally. |
+| WP7 pages | ✅ All 14 routes with loaders + `getStaticPaths`; forms wired. Build now prerenders **21 pages** (12 static + 9 service details from live data). |
+| WP8 SEO | ✅ `gen-sitemap.mjs` (20 URLs), `robots.txt`, JSON-LD (AutoRepair/Service/Breadcrumb), canonical + OG per page, admin excluded. |
+| WP9 analytics | ✅ CF Web Analytics snippet (env-gated — Cloudflare deferred by owner) + `trackCta` on all CTAs. Search Console → WP14. |
+| WP10 seed | ✅ **Applied** (`db push --include-seed`). site_settings, 9 services, 5 areas, TECHBIGGIEY partner, 11 content blocks, DRAFT privacy, 1 pending placeholder testimonial. Confirmed facts live; draft copy for owner to edit later. |
+| WP11 perf/a11y | ⏳ Site now runs with real content locally; full Lighthouse/axe pass belongs to WP14 (needs a deploy). |
+| WP12 tests | ✅ **18 passing** (RLS matrix ×6 live, seo ×4, EnquiryForm ×3, Prose ×2, Wordmark, business/env). |
+| WP13 local acceptance | ✅ `build` green (21 pages), all routes serve, real content flows, dark-theme contrast fixed. |
 | WP14 staging | ⛔ Not started (separate approval). |
 
-**Local gate green:** `typecheck` · `lint` · `format:check` · `test` (12) · `build`
-(prerenders 12 HTML pages + sitemap; `/admin` excluded & code-split).
+**Local gate green:** `typecheck` · `lint` · `format:check` · `test` (18, incl. 6 live
+RLS checks) · `build` (21 prerendered pages + sitemap; `/admin` excluded & code-split).
 
-**Blockers to finish WP1/2/4/10:** an authenticated Supabase CLI
-(`npx supabase login`, or a `SUPABASE_ACCESS_TOKEN`) to apply migrations + deploy the
-function. **To finish WP11 + soft-launch:** Turnstile + Resend keys, then WP14.
+**Deferred by owner:** Cloudflare Turnstile (forms run honeypot-only) and the Resend
+email key (owner sees enquiries in the Phase 3 dashboard; no public soft-launch until
+email works). Content is DRAFT — owner edits later (Phase 3 admin or Supabase directly).
+**Remaining:** WP11 perf/a11y pass + WP14 Vercel staging (separate gate).
+
+> **Two E2E test rows exist in the live DB** (`service_request` "general_contact" and a
+> `pending` `testimonial`, both labelled "Automated E2E test — delete me"). Neither is
+> public. Remove them from the Supabase dashboard or in the Phase 3 admin.
 
 | WP | Title | Depends on | Effort | Key outputs |
 | --- | --- | --- | --- | --- |

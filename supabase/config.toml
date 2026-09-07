@@ -5,7 +5,7 @@
 project_id = "platinum-point"
 
 [db]
-major_version = 15
+major_version = 17
 
 [functions.submit]
 verify_jwt = false
