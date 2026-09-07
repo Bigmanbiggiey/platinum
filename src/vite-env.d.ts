@@ -7,6 +7,9 @@ interface ImportMetaEnv {
   readonly VITE_SUPABASE_ANON_KEY?: string;
   /** Public origin for canonical URLs / sitemap. Defaults to a placeholder domain. */
   readonly VITE_SITE_ORIGIN?: string;
+  /** Set for staging / not-yet-public builds: forces noindex,nofollow site-wide and
+   *  makes robots.txt Disallow everything. */
+  readonly VITE_SITE_NOINDEX?: string;
   /** Submission Edge Function URL. Defaults to `${VITE_SUPABASE_URL}/functions/v1/submit`. */
   readonly VITE_SUBMIT_URL?: string;
   /** Cloudflare Turnstile site key (public). Omitted → no widget (honeypot only). */

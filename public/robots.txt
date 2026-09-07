@@ -1,7 +1,5 @@
-# Platinum Point Automotive Engineering
-
+# Dev fallback only. The real robots.txt is generated per-environment at build time
+# by scripts/finalize-seo.mjs (adds the Sitemap line, or Disallow: / for staging).
 User-agent: *
 Allow: /
 Disallow: /admin
-
-Sitemap: https://platinumpoint.co.ke/sitemap.xml

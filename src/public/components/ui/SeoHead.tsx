@@ -2,6 +2,12 @@ import { Head } from 'vite-react-ssg';
 import { canonical, SITE_ORIGIN } from '../../../shared/seo';
 
 /**
+ * When VITE_SITE_NOINDEX is set (staging / not-yet-public builds) every page is
+ * `noindex,nofollow` regardless of the per-page `noindex` prop.
+ */
+const FORCE_NOINDEX = Boolean(import.meta.env.VITE_SITE_NOINDEX);
+
+/**
  * Per-page <head>: title, description, canonical, Open Graph, and optional JSON-LD.
  * `path` is the route path (for the canonical URL). `noindex` for utility pages.
  */
@@ -28,7 +34,10 @@ export function SeoHead({
       <title>{title}</title>
       {description && <meta name="description" content={description} />}
       <link rel="canonical" href={url} />
-      <meta name="robots" content={noindex ? 'noindex,follow' : 'index,follow'} />
+      <meta
+        name="robots"
+        content={FORCE_NOINDEX ? 'noindex,nofollow' : noindex ? 'noindex,follow' : 'index,follow'}
+      />
       <meta property="og:type" content="website" />
       <meta property="og:title" content={title} />
       {description && <meta property="og:description" content={description} />}

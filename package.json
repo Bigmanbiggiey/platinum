@@ -6,7 +6,7 @@
   "description": "Platinum Point Automotive Engineering — public website + admin platform (Phase 1 skeleton)",
   "scripts": {
     "dev": "vite",
-    "build": "vite-react-ssg build && node scripts/strip-admin-preload.mjs && node scripts/gen-sitemap.mjs",
+    "build": "vite-react-ssg build && node scripts/strip-admin-preload.mjs && node scripts/finalize-seo.mjs",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
