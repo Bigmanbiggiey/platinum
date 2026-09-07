@@ -7,16 +7,18 @@ import { LoginPage } from './pages/LoginPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { ResetPasswordPage } from './pages/ResetPasswordPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { NotificationsPage } from './pages/NotificationsPage';
+import { RequestsPage } from './pages/RequestsPage';
+import { RequestDetailPage } from './pages/RequestDetailPage';
+import { SchedulePage } from './pages/SchedulePage';
+import { TeamPage } from './pages/TeamPage';
 import { PlaceholderPage } from './pages/PlaceholderPage';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 30_000, retry: 1, refetchOnWindowFocus: false } },
 });
 
-/**
- * Admin SPA. Mounted at `/admin/*` (client-only, excluded from prerender, noindex).
- * Routes here are relative to `/admin`.
- */
+/** Admin SPA at `/admin/*` (client-only, excluded from prerender, noindex). */
 export function AdminApp() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -28,8 +30,11 @@ export function AdminApp() {
           <Route element={<RequireAuth />}>
             <Route element={<AdminShell />}>
               <Route index element={<DashboardPage />} />
-              <Route path="requests" element={<PlaceholderPage title="Requests" wp="WP5" />} />
-              <Route path="schedule" element={<PlaceholderPage title="Schedule" wp="WP5" />} />
+              <Route path="notifications" element={<NotificationsPage />} />
+              <Route path="requests" element={<RequestsPage />} />
+              <Route path="requests/:id" element={<RequestDetailPage />} />
+              <Route path="schedule" element={<SchedulePage />} />
+              <Route path="team" element={<TeamPage />} />
               <Route
                 path="clients"
                 element={<PlaceholderPage title="Clients & vehicles" wp="WP6" />}
@@ -39,7 +44,6 @@ export function AdminApp() {
                 element={<PlaceholderPage title="Website content" wp="WP7–WP9" />}
               />
               <Route path="settings" element={<PlaceholderPage title="Settings" wp="WP9" />} />
-              <Route path="team" element={<PlaceholderPage title="Team" wp="WP3b" />} />
             </Route>
           </Route>
           <Route path="*" element={<PlaceholderPage title="Not found" wp="—" />} />

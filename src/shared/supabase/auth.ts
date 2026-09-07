@@ -8,6 +8,7 @@ import { getSupabaseClient } from './client';
 
 export interface AdminProfile {
   user_id: string;
+  email: string | null;
   display_name: string | null;
   role: 'owner' | 'staff';
   is_active: boolean;
@@ -59,7 +60,7 @@ export async function getProfile(): Promise<AdminProfile | null> {
   if (!db) return null;
   const { data, error } = await db
     .from('profile')
-    .select('user_id, display_name, role, is_active')
+    .select('user_id, email, display_name, role, is_active')
     .maybeSingle();
   if (error || !data) return null;
   return data as AdminProfile;

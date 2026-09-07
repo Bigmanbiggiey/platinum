@@ -1,12 +1,12 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
 import { useAuth } from './auth/authContext';
 import { signOut } from '../shared/supabase/auth';
-import { getSupabaseClient } from '../shared/supabase/client';
-import { BUSINESS } from '../shared/business';
+import { AdminBrand } from './brand/AdminBrand';
+import { useUnreadCount } from './lib/notifications';
 
-const nav = [
+const baseNav = [
   { to: '/admin', label: 'Dashboard', end: true },
+  { to: '/admin/notifications', label: 'Notifications', badge: true },
   { to: '/admin/requests', label: 'Requests' },
   { to: '/admin/schedule', label: 'Schedule' },
   { to: '/admin/clients', label: 'Clients' },
@@ -14,52 +14,37 @@ const nav = [
   { to: '/admin/settings', label: 'Settings' },
 ];
 
-function useUnreadCount() {
-  return useQuery({
-    queryKey: ['notifications', 'unreadCount'],
-    queryFn: async () => {
-      const db = getSupabaseClient();
-      if (!db) return 0;
-      const { count } = await db
-        .from('notification')
-        .select('id', { count: 'exact', head: true })
-        .is('read_at', null);
-      return count ?? 0;
-    },
-    refetchInterval: 60_000,
-  });
-}
-
-/** Authenticated admin chrome: nav, unread badge, "View site" link, sign out. */
+/** Authenticated admin chrome — Rev 01 branding, nav, unread badge, View site link. */
 export function AdminShell() {
   const { profile } = useAuth();
   const navigate = useNavigate();
   const unread = useUnreadCount();
+  const nav =
+    profile?.role === 'owner' ? [...baseNav, { to: '/admin/team', label: 'Team' }] : baseNav;
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
-    `rounded px-3 py-2 text-sm font-semibold ${
-      isActive ? 'bg-slate text-paper' : 'text-platinum hover:text-paper'
+    `rounded px-2.5 py-1.5 text-sm font-semibold ${
+      isActive
+        ? 'bg-slate text-[color:var(--color-ink)]'
+        : 'text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]'
     }`;
 
   return (
-    <div className="min-h-dvh bg-graphite text-paper" data-theme="dark">
-      <header className="border-b border-slate/60">
-        <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
-          <span className="font-mono text-xs uppercase tracking-[0.28em] text-platinum">
-            Platinum Point · Admin
-          </span>
+    <div
+      className="min-h-dvh bg-[color:var(--color-ground)] text-[color:var(--color-ink)]"
+      data-theme="dark"
+    >
+      <header className="border-b border-[color:var(--color-line)]">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-5 gap-y-3 px-4 py-3">
+          <AdminBrand />
           <nav className="flex flex-wrap items-center gap-1">
             {nav.map((n) => (
               <NavLink key={n.to} to={n.to} end={n.end} className={linkClass}>
-                {n.label === 'Dashboard' && (unread.data ?? 0) > 0 ? (
-                  <>
-                    Dashboard{' '}
-                    <span className="ml-1 rounded-full bg-signal px-1.5 text-xs text-paper">
-                      {unread.data}
-                    </span>
-                  </>
-                ) : (
-                  n.label
+                {n.label}
+                {n.badge && (unread.data ?? 0) > 0 && (
+                  <span className="ml-1.5 rounded-full bg-signal px-1.5 font-mono text-[10px] text-paper">
+                    {unread.data}
+                  </span>
                 )}
               </NavLink>
             ))}
@@ -69,25 +54,27 @@ export function AdminShell() {
               href="/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-platinum hover:text-paper"
+              className="text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]"
             >
               View site ↗
             </a>
-            <span className="text-steel">{profile?.display_name ?? BUSINESS.owner}</span>
+            <span className="font-mono text-xs text-steel">
+              {profile?.display_name ?? profile?.email} · {profile?.role}
+            </span>
             <button
               type="button"
               onClick={async () => {
                 await signOut();
                 navigate('/admin/login');
               }}
-              className="rounded border border-slate px-2 py-1 text-platinum hover:text-paper"
+              className="rounded border border-[color:var(--color-line)] px-2 py-1 text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]"
             >
               Sign out
             </button>
           </div>
         </div>
       </header>
-      <main className="mx-auto max-w-5xl px-4 py-8">
+      <main className="mx-auto max-w-6xl px-4 py-8">
         <Outlet />
       </main>
     </div>

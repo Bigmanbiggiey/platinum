@@ -9,3 +9,6 @@ major_version = 17
 
 [functions.submit]
 verify_jwt = false
+
+[functions.admin-invite]
+verify_jwt = true

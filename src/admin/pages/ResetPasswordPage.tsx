@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { updatePassword } from '../../shared/supabase/auth';
+import { DatumMark } from '../brand/AdminBrand';
+import { PasswordInput } from '../components/PasswordInput';
 
 /**
  * Landed on from the password-reset email. Supabase puts the recovery session in
@@ -31,17 +33,23 @@ export function ResetPasswordPage() {
       data-theme="dark"
     >
       <form onSubmit={onSubmit} className="w-full max-w-sm space-y-4">
+        <div className="flex items-center gap-3">
+          <DatumMark className="h-9 w-9" />
+          <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-platinum">
+            Platinum Point · Admin
+          </span>
+        </div>
         <h1 className="text-2xl font-bold tracking-tight">Set a new password</h1>
         <label className="block text-sm font-semibold">
           New password
-          <input
-            type="password"
-            autoComplete="new-password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="mt-1 w-full rounded-md border border-slate bg-slate/40 px-3 py-2 outline-none focus:border-signal"
-          />
+          <div className="mt-1">
+            <PasswordInput
+              autoComplete="new-password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
         </label>
         {error && <p className="text-sm text-signal">{error}</p>}
         <button
