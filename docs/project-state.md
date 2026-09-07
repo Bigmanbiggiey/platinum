@@ -17,7 +17,7 @@
 | **ADRs accepted 2026-09-07** | 0005, 0006, 0008, 0009, 0011, 0012, 0013 (plus 0002/0003/0010 earlier). Only 0007 (admin auth) remains proposed → Phase 3. |
 | **Phase 2 plan** | `docs/phase-2-plan.md` — approved; §8 Progress table rev. 2. **Schema + RLS + seed applied** to project `aonpdrqtosmqhmomghca`; **`submit` Edge Function deployed**; RLS verified live (6 tests); build prerenders 21 pages from real data. |
 | **Deferred by owner** | Cloudflare Turnstile (forms = honeypot-only for now); Resend email key (no public soft-launch until set — enquiries visible in Phase 3 admin); site content stays DRAFT (owner edits later). |
-| **Remaining for Phase 2** | WP11 Lighthouse/axe pass + **WP14 Vercel staging** (separate gate). Two E2E test rows to clean from the DB. |
+| **Remaining for Phase 2** | WP11 Lighthouse/axe pass + **WP14 staging & go-live** — plan written: `docs/wp14-staging-plan.md` (Part A prep → Part B staging deploy → Part C go-live; each checkpoint separately approved). Awaiting owner decisions D1 (host: Cloudflare Pages vs Vercel Pro) + D2 (domain). Two E2E test rows to clean from the DB. |
 | **Trading name** | **Platinum Point Automotive Engineering** (kickoff codename "Platinum Motor Services" retired). Repo folder stays `PLATINUM`. |
 
 Phase-gate workflow in use:
