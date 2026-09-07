@@ -45,7 +45,7 @@ project, no schema, no migrations, no infrastructure, no pages.
 
 ---
 
-## Phase 1 — Foundation & Scaffolding · APPROVED 2026-09-07 (local-first)
+## Phase 1 — Foundation & Scaffolding · BUILT 2026-09-07 (local-first) · awaiting review
 
 **Goal:** A running, empty, well-tooled application skeleton — validated **locally** —
 plus the wiring to talk to a Supabase project on the owner's dev account.
@@ -80,14 +80,16 @@ no deploy yet.
 content, the submission Edge Function, any deployment.
 
 **Exit criteria**
-- [ ] `npm run build` and `npm run test` and lint/typecheck all pass **locally**.
-- [ ] Public shell prerenders to static HTML; admin route renders as a separate lazy
-      chunk and carries `noindex`.
-- [ ] Brand tokens present and used (no hard-coded hex/font in components).
+- [x] `npm run build` / `test` / `lint` / `typecheck` / `format:check` all pass **locally** (2026-09-07).
+- [x] Public shell prerenders to static HTML (`dist/index.html`, `dist/404.html`);
+      admin is a separate lazy chunk, `noindex`, excluded from prerender, and not
+      modulepreloaded on public pages.
+- [x] Brand tokens present and used (Rev 01 palette + type stack in `src/index.css`;
+      no hard-coded hex/font in components).
 - [ ] Supabase client connects using `.env.local` creds and a throwaway read succeeds
-      (once the owner provides creds).
-- [ ] `README.md` lets a fresh dev run the project from scratch.
-- [ ] Owner reviews locally and approves moving to Phase 2.
+      — **pending owner-supplied creds** (app runs fine without them).
+- [x] `README.md` lets a fresh dev run the project from scratch.
+- [ ] **Owner reviews locally and approves moving to Phase 2.**
 
 > Deployment to Vercel + GitHub remote + CI execution are a later explicit step
 > (before or during Phase 2 soft-launch), not part of Phase 1.
