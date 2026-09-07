@@ -142,9 +142,15 @@ Effort: **S** ≈ half-day · **M** ≈ 1–2 days · **L** ≈ 3–5 days (roug
 | WP1 auth | ✅ `profile` (+ role, `handle_new_user` trigger), `is_admin()`/`is_owner()`; `shared/supabase/auth.ts`; `AuthProvider`; **real route guard**; login / forgot / reset pages. **Owner account created** (`gatama98p@gmail.com`) and promoted to `owner` (migration `..._100300_bootstrap_owner`). |
 | WP2 admin RLS + schema | ✅ Migrations applied: `client`, `vehicle`, `notification` (+ triggers), FKs, `created_by`; `authenticated` + `is_admin()` full-CRUD policies on every table + Storage; anon sealed (401). **RLS verified live** (simulated authed-owner: full CRUD OK; anon still 401). `rls.test.ts` has anon checks + an env-gated authed-admin block (`TEST_ADMIN_EMAIL/PASSWORD`). |
 | WP3 admin shell | ✅ `AdminShell` (nav, unread badge, **View site ↗**, sign out), TanStack Query, `AdminApp` router. Admin stays the `/admin/*` lazy chunk (dedicated entry deferred — the hydration warning is benign). |
-| WP3b Team | ⬜ placeholder route only. |
-| WP4 Dashboard + Notifications | 🟡 Dashboard shows live counts; Notifications view not built. |
-| WP5–WP14 | ⬜ placeholder routes; not started. |
+| WP3b Team | ✅ `admin-invite` Edge Function (owner-checked; service-role creates the user + returns a one-time invite link — no email dependency); `profile.email` migration + trigger + backfill; Team page (list, invite, activate/deactivate staff). Owner-only nav item. |
+| WP4 Dashboard + Notifications | ✅ Dashboard: clickable live counts + recent-requests list. Notifications page: `notification` list (unread first), mark-read / mark-all, click-through. Unread badge on the Notifications nav item. |
+| WP5 Requests + Schedule | ✅ Requests: filterable table (status/type/search). Detail: all fields, status pipeline, internal + outcome notes, **convert to client (+ optional vehicle)**. Schedule: agenda of booking/scheduled requests with Confirm (sets `confirmed_at` + status) / re-time / Decline. **Customer email = WP11** (Resend key). |
+| Branding | ✅ Rev 01 datum mark + wordmark across AdminShell / Login / Reset; admin UI kit on `--color` tokens + IBM Plex Mono for labels/IDs/dates/phones; Signal Amber actions, Instrument Teal pass-states. Login + reset have a show/hide **password toggle**. |
+| WP6 Clients + Vehicles | ⬜ placeholder route. |
+| WP7–WP9 CMS + Settings | ⬜ placeholder routes. |
+| WP10 publish→rebuild | ⬜ needs a Vercel Deploy Hook URL. |
+| WP11 notifications (customer email) | ⬜ needs a Resend key. |
+| WP12–WP14 | ⬜ not started. |
 
 **Local gate green:** typecheck · lint · format · test (18) · build (21 prerendered
 pages; admin excluded & code-split). `/admin` → `/admin/login`, form renders.
