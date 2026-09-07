@@ -5,10 +5,7 @@
   "outputDirectory": "dist",
   "cleanUrls": true,
   "trailingSlash": false,
-  "rewrites": [
-    { "source": "/admin", "destination": "/index.html" },
-    { "source": "/admin/(.*)", "destination": "/index.html" }
-  ],
+  "rewrites": [{ "source": "/admin/:path*", "destination": "/" }],
   "headers": [
     {
       "source": "/(.*)",
