@@ -1,0 +1,6 @@
+# Platinum Point Automotive Engineering
+# Phase 1 skeleton — not yet deployed. Sitemap added in Phase 2.
+
+User-agent: *
+Allow: /
+Disallow: /admin

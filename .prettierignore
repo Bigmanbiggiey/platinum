@@ -1,0 +1,10 @@
+dist
+dist-ssr
+coverage
+node_modules
+package-lock.json
+
+# Hand-maintained phase docs — Prettier's markdown reflow fights the deliberate
+# wrapping and table alignment here.
+docs
+

@@ -1,0 +1,84 @@
+/* Fonts — Rev 01 type stack (all SIL OFL 1.1). See docs/product-definition.md §10.2 */
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap');
+
+@import 'tailwindcss';
+
+/*
+  Brand tokens — the single source of truth for colour and type (ADR-0010, risk R-13).
+  Palette + roles from the Rev 01 asset pack. No component should hard-code a hex/font;
+  use the generated utilities (bg-graphite, text-steel, font-mono, ...) or the
+  semantic vars below (--color-ground, --color-ink, ...).
+*/
+@theme {
+  /* Rev 01 palette */
+  --color-graphite: #14171a;
+  --color-slate: #2a2f34;
+  --color-signal: #c8752a;
+  --color-teal: #1e6e6a;
+  --color-steel: #6b7580;
+  --color-platinum: #c6cbd0;
+  --color-mist: #eef0f1;
+  --color-paper: #f7f7f5;
+
+  /* Type stack */
+  --font-sans:
+    'Archivo', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
+    sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', 'Roboto Mono', Menlo, monospace;
+  /* Newsreader is for the monogram ONLY — never body, headings or the wordmark. */
+  --font-serif: 'Newsreader', ui-serif, Georgia, serif;
+}
+
+/*
+  Semantic, theme-aware roles. Light is the default; dark commits to the Graphite
+  ground. Explicit [data-theme] wins in both directions; bare :root is the light
+  palette so no colour is defined only inside a media/attribute block.
+*/
+:root {
+  --color-ground: var(--color-paper);
+  --color-surface: #ffffff;
+  --color-ink: var(--color-graphite);
+  --color-muted: var(--color-steel);
+  --color-line: var(--color-platinum);
+  --color-accent: var(--color-signal);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-ground: var(--color-graphite);
+    --color-surface: var(--color-slate);
+    --color-ink: var(--color-paper);
+    --color-muted: var(--color-platinum);
+    --color-line: #3a4046;
+    --color-accent: var(--color-signal);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --color-ground: var(--color-graphite);
+  --color-surface: var(--color-slate);
+  --color-ink: var(--color-paper);
+  --color-muted: var(--color-platinum);
+  --color-line: #3a4046;
+  --color-accent: var(--color-signal);
+  color-scheme: dark;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--color-ground);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--color-ink);
+}

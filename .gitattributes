@@ -1,0 +1,11 @@
+# Normalise line endings to LF in the repo (checked out as-is on all platforms).
+* text=auto eol=lf
+
+# Binary / generated
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+package-lock.json -diff

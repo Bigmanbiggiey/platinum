@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+.vite/
+
+# Env / secrets — never commit real credentials
+.env
+.env.local
+.env.*.local
+
+# Test / coverage
+coverage/
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Vercel (deployment deferred — no config committed yet)
+.vercel
