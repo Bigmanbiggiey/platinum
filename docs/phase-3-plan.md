@@ -135,6 +135,23 @@ New tables; the Phase 2 tables gain `authenticated` policies and a few columns.
 
 Effort: **S** ≈ half-day · **M** ≈ 1–2 days · **L** ≈ 3–5 days (rough, solo).
 
+### Progress (2026-09-07)
+
+| WP | State |
+| --- | --- |
+| WP1 auth | ✅ `profile` (+ role, `handle_new_user` trigger), `is_admin()`/`is_owner()`; `shared/supabase/auth.ts`; `AuthProvider`; **real route guard**; login / forgot / reset pages. **Owner account not created yet** — needs Supabase dashboard → Auth → add `gatama98p@gmail.com`, then `db push --include-seed` promotes to `owner`. |
+| WP2 admin RLS + schema | ✅ Migrations applied: `client`, `vehicle`, `notification` (+ triggers), FKs, `created_by`; `authenticated` + `is_admin()` full-CRUD policies on every table + Storage; anon sealed (401) on the private tables. **`rls.test.ts` authed-admin cases: pending an account.** |
+| WP3 admin shell | ✅ `AdminShell` (nav, unread badge, **View site ↗**, sign out), TanStack Query, `AdminApp` router. Admin stays the `/admin/*` lazy chunk (dedicated entry deferred — the hydration warning is benign). |
+| WP3b Team | ⬜ placeholder route only. |
+| WP4 Dashboard + Notifications | 🟡 Dashboard shows live counts; Notifications view not built. |
+| WP5–WP14 | ⬜ placeholder routes; not started. |
+
+**Local gate green:** typecheck · lint · format · test (18) · build (21 prerendered
+pages; admin excluded & code-split). `/admin` → `/admin/login`, form renders.
+
+**Blocked on the owner:** create the admin account (above); a **Vercel Deploy Hook**
+URL (WP10); the **Resend** key (WP11); the **staff person's email** (WP3b).
+
 | WP | Title | Depends on | Effort | Key outputs |
 | --- | --- | --- | --- | --- |
 | **WP1** | Auth foundation | ADR-0007 | M | `profile` table + `role` (`owner`/`staff`) + `handle_new_user` trigger; Supabase Auth (email+password); login / logout / forgot / reset pages; **real route guard** + auth/session hook; owner-account bootstrap (owner signs up in the dashboard → seed promotes them to `owner`; documented). |
