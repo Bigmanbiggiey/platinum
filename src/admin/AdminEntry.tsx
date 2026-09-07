@@ -1,27 +1,23 @@
-import { Routes, Route } from 'react-router-dom';
-import { AdminLayout } from './AdminLayout';
-import { RequireAuth } from './RequireAuth';
-import { AdminLoginPage } from './pages/AdminLoginPage';
-import { AdminDashboardPage } from './pages/AdminDashboardPage';
+import { Head } from 'vite-react-ssg';
+import { AdminApp } from './AdminApp';
 
 /**
- * Admin entry — loaded as a separate lazy chunk (see routes.tsx / vite.config.ts) and
- * excluded from the static prerender (main.tsx `includedRoutes`).
+ * Entry for the `/admin/*` route (routes.tsx) — a separate lazy chunk, excluded from
+ * the static prerender (main.tsx `includedRoutes`) and always `noindex`.
  *
- * Phase 1: shell only. Real Supabase Auth + the route guard land in Phase 3 (ADR-0007).
- * `RequireAuth` is a labelled stub for now.
+ * NOTE: served from `index.html` (see vercel.json rewrite), so a hard load of `/admin`
+ * hydrates the home markup then swaps to the admin — a benign hydration warning in
+ * dev. A dedicated admin entry is a later cleanup (docs/phase-2-remaining.md).
  */
 export function Component() {
   return (
-    <AdminLayout>
-      <Routes>
-        <Route path="login" element={<AdminLoginPage />} />
-        <Route element={<RequireAuth />}>
-          <Route index element={<AdminDashboardPage />} />
-        </Route>
-        <Route path="*" element={<AdminDashboardPage />} />
-      </Routes>
-    </AdminLayout>
+    <>
+      <Head>
+        <meta name="robots" content="noindex,nofollow" />
+        <title>Admin — Platinum Point Automotive Engineering</title>
+      </Head>
+      <AdminApp />
+    </>
   );
 }
 

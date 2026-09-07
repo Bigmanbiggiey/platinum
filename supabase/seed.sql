@@ -150,3 +150,13 @@ select 'Example', 'Toyota Harrier', 5,
   'Placeholder testimonial — not shown publicly (status = pending). Replace with real, consented testimonials via the Phase 3 admin, or let customers submit them from the site.',
   true, 'seed', 'pending', false
 where not exists (select 1 from public.testimonial where source = 'seed');
+
+-- ===========================================================================
+-- Phase 3: owner bootstrap. Safe to run any time — promotes Paul's profile to
+-- `owner` once he has signed up (Supabase dashboard → Auth → Add user, or the
+-- admin login's password-reset flow after being created). Updates 0 rows until then.
+-- ===========================================================================
+update public.profile p
+set role = 'owner', display_name = coalesce(p.display_name, 'Paul Ndirangu Gatama')
+from auth.users u
+where p.user_id = u.id and u.email = 'gatama98p@gmail.com';
