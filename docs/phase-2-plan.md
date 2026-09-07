@@ -1,10 +1,29 @@
 # Phase 2 — Public Website MVP · Plan
 
-> **Status: PLAN — for owner review and approval. No Phase 2 code is written yet.**
-> Phase 1 (skeleton) is complete and approved. This document is the detailed plan for
-> Phase 2; on approval it becomes the working spec.
+> **Status: APPROVED & IN PROGRESS (2026-09-07).** ADR-0005/0006/0009/0011/0012/0013
+> accepted. Building the schema, RLS, Edge Function and all public pages locally.
 > **Created:** 2026-09-07 · Companion to `roadmap.md` (Phase 2 section) and
 > `product-definition.md`.
+
+## Decisions taken at kickoff (2026-09-07)
+
+- **Spam:** ship **honeypot + timing** now; add Turnstile to the Edge Function when the
+  owner supplies Cloudflare keys (config, not a rebuild).
+- **Email notification:** Edge Function is built with Resend support, **inactive** until
+  the API key + sender are supplied. Submissions are stored regardless. No public
+  soft-launch until email works (or the owner accepts a delay to the Phase 3 dashboard).
+- **Analytics:** Cloudflare Web Analytics snippet wired but env-gated (no-op without a
+  token).
+- **Database:** migrations target the owner's dev project `aonpdrqtosmqhmomghca` (no
+  separate staging project supplied). Migrations are additive/reversible and version-
+  controlled. Applying them needs a `SUPABASE_ACCESS_TOKEN` or `supabase login` from
+  the owner.
+- **Content fields:** Markdown stored as text, rendered + sanitised.
+- **Partners:** launch with **TECHBIGGIEY** as the only partner row; owner adds real
+  bodywork/garage partners later.
+- **Hours:** Mon–Sat 09:00–19:30, Sun 14:45–19:30.
+- **GitHub:** remote is now live (`github.com/Bigmanbiggiey/platinum`); CI runs on push.
+  Vercel deploy is still deferred to the WP14 staging sub-gate.
 
 ---
 

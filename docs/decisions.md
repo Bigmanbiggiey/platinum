@@ -19,15 +19,15 @@
 | [0002](#adr-0002--frontend-hosting) | Frontend hosting | **Accepted 2026-09-07** (Vercel target; **deploy deferred** — local-first) | — |
 | [0003](#adr-0003--public-site-rendering-approach) | Public-site rendering approach | **Accepted 2026-09-07** | — |
 | [0004](#adr-0004--one-dataset-two-faces) | One dataset, two faces | Accepted (brief-mandated) | Confirm only |
-| [0005](#adr-0005--consolidated-intake-model) | Consolidated intake model | Proposed | **Yes** (Phase 2) |
-| [0006](#adr-0006--public-form-spam-protection) | Public form spam protection | Proposed | **Yes** (Phase 2) |
+| [0005](#adr-0005--consolidated-intake-model) | Consolidated intake model | **Accepted 2026-09-07** | — |
+| [0006](#adr-0006--public-form-spam-protection) | Public form spam protection | **Accepted 2026-09-07** (honeypot now; Turnstile when keys supplied) | — |
 | [0007](#adr-0007--admin-authentication-method) | Admin authentication method | Proposed | **Yes** (Phase 3, + owner pref) |
-| [0008](#adr-0008--new-enquiry-notifications) | New-enquiry notifications | Proposed | **Yes** (Phase 3, + owner pref) |
-| [0009](#adr-0009--image-storage-and-delivery) | Image storage and delivery | Proposed | **Yes** (Phase 2) |
+| [0008](#adr-0008--new-enquiry-notifications) | New-enquiry notifications | **Accepted 2026-09-07** (Edge Function ready; email pending Resend key) | — |
+| [0009](#adr-0009--image-storage-and-delivery) | Image storage and delivery | **Accepted 2026-09-07** | — |
 | [0010](#adr-0010--single-application-vs-separate-apps) | Single application vs separate apps | **Accepted 2026-09-07** | — |
-| [0011](#adr-0011--analytics) | Analytics | Proposed | **Yes** (Phase 2) |
-| [0012](#adr-0012--language--i18n-for-mvp) | Language / i18n for MVP | Proposed | **Yes** |
-| [0013](#adr-0013--booking--scheduling-approach) | Booking & scheduling approach | Proposed | **Yes** (owner-requested feature) |
+| [0011](#adr-0011--analytics) | Analytics | **Accepted 2026-09-07** | — |
+| [0012](#adr-0012--language--i18n-for-mvp) | Language / i18n for MVP | **Accepted 2026-09-07** | — |
+| [0013](#adr-0013--booking--scheduling-approach) | Booking & scheduling approach | **Accepted 2026-09-07** | — |
 
 ---
 
@@ -171,7 +171,7 @@ appear publicly after approval.
 
 ## ADR-0005 — Consolidated intake model
 
-**Status:** Proposed. **Requires approval.**
+**Status:** **Accepted 2026-09-07.**
 
 ### Context
 Three public forms (Request a Service, Request an Inspection, Contact) plus phone /
@@ -207,7 +207,9 @@ separated in the UI while still sharing the table.)
 
 ## ADR-0006 — Public form spam protection
 
-**Status:** Proposed. **Requires approval.**
+**Status:** **Accepted 2026-09-07.** Phase 2 ships the **honeypot + timing** layer and
+the Edge Function submission path immediately; **Cloudflare Turnstile** is added to the
+function as soon as the owner supplies the site/secret keys (no rebuild — config only).
 
 ### Context
 Public insert access for anon (even constrained) invites spam and abuse, which wastes
@@ -279,7 +281,11 @@ link by email each time?
 
 ## ADR-0008 — New-enquiry notifications
 
-**Status:** Proposed. **Requires approval and an owner preference (§14.2 Q20).**
+**Status:** **Accepted 2026-09-07.** The submission Edge Function is built to send the
+owner an email per enquiry/booking via a transactional provider (Resend); it activates
+when the API key + sender are supplied. Until then submissions are stored and surfaced
+in the Phase 3 dashboard. Channel preference (email / WhatsApp / SMS) still open
+(§14.2 Q20) — email is the default.
 
 ### Context
 BO-5 depends on the owner actually seeing new enquiries and **booking requests**
@@ -318,7 +324,7 @@ dashboard-only? A branded sending domain also depends on §14.2 Q13 (domain).
 
 ## ADR-0009 — Image storage and delivery
 
-**Status:** Proposed. **Requires approval.**
+**Status:** **Accepted 2026-09-07.**
 
 ### Context
 Content strategy (§9) depends on the owner uploading images over time from a phone, on
@@ -384,7 +390,9 @@ prerendering, and a guarded admin shell (auth required).
 
 ## ADR-0011 — Analytics
 
-**Status:** Proposed. **Requires approval.**
+**Status:** **Accepted 2026-09-07.** Cloudflare Web Analytics snippet is wired but
+env-gated (no-op until the token is supplied); Search Console is done at the staging
+sub-gate.
 
 ### Context
 BO-1/BO-2 need measurement: traffic, sources, which pages convert, which CTA is used.
@@ -416,7 +424,7 @@ trackers. §14.2 Q16 asks whether an existing analytics / Search Console propert
 
 ## ADR-0012 — Language / i18n for MVP
 
-**Status:** Proposed. **Requires approval.**
+**Status:** **Accepted 2026-09-07.**
 
 ### Context
 The business operates in Kenya; customers are comfortable in English and/or Swahili.
@@ -446,8 +454,9 @@ bounded Post-MVP addition.
 
 ## ADR-0013 — Booking & scheduling approach
 
-**Status:** Proposed. **Requires approval.** (The owner has explicitly asked for
-"booking and scheduling"; this ADR proposes *how* and *when* to stage it.)
+**Status:** **Accepted 2026-09-07.** Phase 2 ships the Book form → `service_request`
+(`request_type = booking`) with date + time window. The Schedule view (confirm /
+re-time / decline) is Phase 3; the self-service availability calendar is Phase 5.
 
 ### Context
 The owner wants customers to book online. But he works as a **mobile mechanic**, often

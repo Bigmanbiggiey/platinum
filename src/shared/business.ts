@@ -16,4 +16,9 @@ export const BUSINESS = {
   baseAreaDetail: 'Near Shell Kitengela Service Station, Yukos',
   serviceAreaSummary: 'Kitengela and its environs, and anywhere in Kenya by arrangement',
   whatsappUrl: 'https://wa.me/254722322870',
+  /** Confirmed 2026-09-07. Displayed on Contact + emitted as schema.org openingHours. */
+  hours: [
+    { days: 'Mon – Sat', open: '09:00', close: '19:30', label: '9:00 AM – 7:30 PM' },
+    { days: 'Sunday', open: '14:45', close: '19:30', label: '2:45 PM – 7:30 PM' },
+  ],
 } as const;

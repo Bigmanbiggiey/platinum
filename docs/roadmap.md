@@ -96,7 +96,9 @@ content, the submission Edge Function, any deployment.
 
 ---
 
-## Phase 2 — Public Website MVP (content-driven, pre-CMS)
+## Phase 2 — Public Website MVP (content-driven, pre-CMS) · APPROVED & IN PROGRESS 2026-09-07
+
+> Detailed work breakdown: **`docs/phase-2-plan.md`**.
 
 **Goal:** A complete, fast, SEO-ready public website that a visitor can use to
 understand the business and make contact — reading content from Supabase, with content

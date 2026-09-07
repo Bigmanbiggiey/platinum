@@ -11,11 +11,12 @@
 
 | | |
 | --- | --- |
-| **Phase** | **Phase 1 — Foundation & Scaffolding: COMPLETE & APPROVED 2026-09-07.** |
-| **Phase 0** | Approved 2026-09-07 by the owner. |
-| **Phase 1 result** | Skeleton built, locally green (`typecheck` / `lint` / `format:check` / `test` (3) / `build`). Public routes prerender; `/admin` is a code-split `noindex` lazy chunk. Supabase creds added by the owner to `.env.local`; connectivity check verified (`/auth/v1/health` → 200 against project `aonpdrqtosmqhmomghca`). Local git, 3 commits on `main`. **No GitHub remote, no deploy.** |
-| **Now** | **Phase 2 planning.** `docs/phase-2-plan.md` is the detailed plan — presented for approval. **No Phase 2 implementation until the owner approves it** and the dependent ADRs. |
-| **Next phase** | Phase 2 — Public Website MVP. Needs: owner approval of `phase-2-plan.md`; ADR-0005/0006/0009/0011/0012/0013 sign-off; §14.2 content answers (hours, service list, partners, About, seed testimonials, Privacy Policy source, booking lead-time/windows). |
+| **Phase** | **Phase 2 — Public Website MVP: APPROVED & IN PROGRESS (2026-09-07).** |
+| **Phase 0 / Phase 1** | Both approved 2026-09-07. Phase 1 skeleton complete; Supabase connectivity verified. |
+| **Repo** | Pushed to **`github.com/Bigmanbiggiey/platinum`** (2026-09-07). CI runs on push. Vercel deploy still deferred (WP14 staging sub-gate). |
+| **ADRs accepted 2026-09-07** | 0005, 0006, 0008, 0009, 0011, 0012, 0013 (plus 0002/0003/0010 earlier). Only 0007 (admin auth) remains proposed → Phase 3. |
+| **Phase 2 plan** | `docs/phase-2-plan.md` — approved; "Decisions taken at kickoff" section records the honeypot-now / Turnstile-later, email-pending-key, migrate-to-dev-project choices. |
+| **Blocked-on for full Phase 2 completion** | (a) `SUPABASE_ACCESS_TOKEN` or `supabase login` to apply migrations + deploy the Edge Function. (b) Cloudflare Turnstile keys (spam) + Resend key (email) — for a real soft-launch. (c) Remaining §14.2 content (service list, About copy, seed testimonials, Privacy Policy source, booking lead-time/windows). |
 | **Trading name** | **Platinum Point Automotive Engineering** (kickoff codename "Platinum Motor Services" retired). Repo folder stays `PLATINUM`. |
 
 Phase-gate workflow in use:
@@ -29,7 +30,7 @@ Phase-gate workflow in use:
 | Aspect | State |
 | --- | --- |
 | Working directory | `C:\Users\PCMF\PROJECTS\PLATINUM` |
-| Git repository | **Local only.** Initialised; branch `main`; first commit `f9a9575`. **No remote.** |
+| Git repository | Branch `main`; remote **`origin` = github.com/Bigmanbiggiey/platinum`** (pushed 2026-09-07). CI (`.github/workflows/ci.yml`) now runs on push. |
 | Application code | **Phase 1 skeleton only** — Vite + React 19 + TS app shell; public marketing shell (1 placeholder page + 404); admin stub (login + dashboard placeholders, auth deferred). No product features. |
 | Dependencies | Installed (npm; `package-lock.json` committed). |
 | Build tooling | Vite 6 + `vite-react-ssg`, Tailwind v4, ESLint (flat) + Prettier, Vitest + RTL — all configured and passing locally. |
@@ -38,7 +39,7 @@ Phase-gate workflow in use:
 | Supabase Auth / Storage / RLS config | **None.** |
 | Hosting / deployment | **None.** Vercel deferred; nothing pushed anywhere. |
 | Domain | **None registered / confirmed.** |
-| CI/CD | Workflow file committed (`.github/workflows/ci.yml`); **not running** — no remote yet. |
+| CI/CD | `.github/workflows/ci.yml` runs on push/PR to `main` (remote live since 2026-09-07). No deployment step. |
 | Environment / secrets | `.env.example` committed; `.env.local` not present (git-ignored). |
 | Google Business Profile / Search Console / Analytics | Unresolved — see §14.2. |
 
@@ -171,6 +172,7 @@ brand sign-off + production files + tagline.
 | 2026-09-07 | **Phase 1 APPROVED** with changes: Vercel is the host but **no deploy in Phase 1** (local-first; production staged later); ADR-0003/0010 per recommendation; Supabase on the owner's dev account. ADR-0002/0003/0010 marked Accepted. Verified Node v24.18.0 / npm 11.18.0 / git 2.54. | Owner + Lead architect (TECHBIGGIEY) |
 | 2026-09-07 | **Phase 1 BUILT.** Scaffolded the Vite + React 19 + TS skeleton: `vite-react-ssg` prerender (public), lazy `noindex` admin chunk, Tailwind v4 with Rev 01 brand tokens, ESLint/Prettier/strict TS, Vitest + RTL (3 tests), CI workflow (dormant), Supabase client wired to `.env.local` (no schema). Chose React Router **6.28** (vite-react-ssg 0.8.9 peer-requires RR6, not RR7). Added `scripts/strip-admin-preload.mjs` so public HTML doesn't prefetch the admin chunk. Local checks all green (typecheck/lint/format/test/build). `git init` + first commit `f9a9575` on `main` — **local only, no remote, no deploy**. Awaiting owner local review before Phase 2. | Lead architect (TECHBIGGIEY) |
 | 2026-09-07 | **Phase 1 COMPLETE & APPROVED.** Owner added Supabase creds to `.env.local`. Fixed the connectivity check (`/rest/v1/` is service-role-only on current Supabase → use `/auth/v1/health`); verified 200 against project `aonpdrqtosmqhmomghca` (anon JWT, role `anon`, correct ref). Commit `c2df05d`. | Owner + Lead architect (TECHBIGGIEY) |
-| 2026-09-07 | **Phase 2 plan drafted** → `docs/phase-2-plan.md` (14 work packages, data model, RLS matrix, prerequisites incl. ADR-0005/0006/0009/0011/0012/0013 + §14.2 content answers + external keys, local-first with a staging sub-gate). Presented for approval. **No Phase 2 code / migrations / Supabase resources created.** | Lead architect (TECHBIGGIEY) |
+| 2026-09-07 | **Phase 2 plan drafted** → `docs/phase-2-plan.md` (14 work packages, data model, RLS matrix, prerequisites incl. ADR-0005/0006/0009/0011/0012/0013 + §14.2 content answers + external keys, local-first with a staging sub-gate). | Lead architect (TECHBIGGIEY) |
+| 2026-09-07 | **Phase 2 APPROVED & started.** Owner: ADRs approved; hours confirmed (Mon–Sat 09:00–19:30, Sun 14:45–19:30); partner = TECHBIGGIEY for now. ADR-0005/0006/0008/0009/0011/0012/0013 marked Accepted. **Pushed repo to `github.com/Bigmanbiggiey/platinum`** (`git push -u origin main`); CI now active. `business.ts` gains `hours`. Beginning Phase 2 build: schema/RLS migrations, Edge Function, design primitives, pages. | Owner + Lead architect (TECHBIGGIEY) |
 | 2026-09-07 | **Brand pack received.** Owner supplied `Platinum Point Brand Assets.dc.html` ("Rev 01"): datum-mark logo + variants, 8-colour palette with HEX/CMYK/Pantone + 60/30/10 ratio, type stack (Archivo / IBM Plex Mono / Newsreader, all SIL OFL 1.1), substitutes. Recorded in `product-definition.md` §10.2; `decisions.md` deferred-list "Brand system" row; §14.2 Q22–24 (sign-off, production SVG masters + favicon + social, tagline) added. No files copied into the repo; still Phase 0, no code. | Lead architect (TECHBIGGIEY) |
 | 2026-09-07 | **Docs rev. 2** after the owner answered most of §14. Adopted the confirmed trading name **Platinum Point Automotive Engineering** across all docs (retired "Platinum Motor Services"). Added: confirmed-facts block, Book-a-Service journey/page/form, engineering (press & lathe) as first-class services, `partner` entity + Partners CMS, public testimonial submission (first name + vehicle display), quote-based pricing explainer, branding asset request (§10.4), risks R-18/R-19. Added **ADR-0013 — Booking & scheduling approach** (phased: requests now, availability engine in Phase 5); updated ADR-0006/0008/0012. Roadmap: Phase 2/3 updated, new **Phase 5 — self-service scheduling**. §14 split into 14.1 answered / 14.2 still-open (22 items). **Still no code/deps/schema/infra. Still awaiting explicit Phase 0 approval.** | Lead architect (TECHBIGGIEY) |

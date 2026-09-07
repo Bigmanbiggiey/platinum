@@ -36,7 +36,7 @@ We do not invent answers.
 | Public email | **gatama98p@gmail.com** — *personal Gmail; a branded address (e.g. `info@`domain) recommended later* |
 | Base location | Operates near **Shell Kitengela Service Station**, Yukos area, Kitengela ("JAJEMELO YUKOS"). Service-area business — approximate area shown, not necessarily a precise pin. |
 | Google Business Profile | **Exists** (owner shared a GBP link). Still need: opening hours as text, management access, and confirmation that category/phone/address on the listing match what we publish. |
-| Opening hours | **On the GBP; not yet provided as text** — see §14. |
+| Opening hours | **Mon–Sat 9:00 AM – 7:30 PM · Sun 2:45 PM – 7:30 PM** (confirmed 2026-09-07). After-hours/emergency policy still TBC. |
 | Referencing "DT Dobie" | **Permitted** in public copy. |
 | Service areas | **Kitengela and its environs** as the core area; **available anywhere in Kenya by arrangement where transport costs are facilitated.** |
 | Engineering (press & lathe) | **In scope for this site.** Treated as first-class services and as lead generators (lathe work → brake jobs; press work → suspension / bushing jobs). |
@@ -867,8 +867,8 @@ on 2026-09-07** (rev. 2), and what is **still open**.
 **🔴 = likely to block launch content or a decision.**
 
 **Business identity & contact**
-1. 🔴 **Opening hours as text** for each day (we could not read them from the shared
-   GBP link). Also: is after-hours / emergency call-out offered?
+1. ✅ **Opening hours** (2026-09-07): Mon–Sat 9:00 AM – 7:30 PM; Sun 2:45 PM – 7:30 PM.
+   *Still open:* is after-hours / emergency call-out offered?
 2. Is **+254 722 322870** also the **WhatsApp** number? Any second phone line?
 3. Is the business a **registered company** ("Platinum Point Automotive Engineering
    Limited" or similar)? Exact legal name for the website footer / invoices.
@@ -877,8 +877,8 @@ on 2026-09-07** (rev. 2), and what is **still open**.
 **Services & content**
 5. 🔴 Final **service list** and short plain-language descriptions (review our draft
    set, incl. the engineering services).
-6. The **few** bodywork/garage **partners** to name publicly (name + area + one line
-   each), and confirmation they're OK being listed.
+6. ⏳ Partners: launch with **TECHBIGGIEY** listed as the sole partner (owner will add
+   real bodywork/garage partners with names + areas later, via the Phase 3 admin).
 7. 3–5 **past jobs** for the portfolio (vehicle, problem, fix, outcome) — text is fine
    to start.
 8. **About** copy: Paul's DT Dobie years, the vehicle types/marques he's strongest on,
