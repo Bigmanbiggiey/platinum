@@ -9,10 +9,13 @@ import { BUSINESS } from '../../../shared/business';
 export function CallWhatsApp({
   context = 'site',
   size = 'md',
+  compact = false,
   className = '',
 }: {
   context?: string;
   size?: 'sm' | 'md';
+  /** Short "Call" label instead of the full number — for tight spots like the header. */
+  compact?: boolean;
   className?: string;
 }) {
   const waText = encodeURIComponent(
@@ -25,9 +28,10 @@ export function CallWhatsApp({
         href={`tel:${BUSINESS.phoneE164}`}
         variant="primary"
         className={pad}
+        aria-label={`Call ${BUSINESS.phoneDisplay}`}
         onClick={() => trackCta('call_click', { context })}
       >
-        Call {BUSINESS.phoneDisplay}
+        {compact ? 'Call' : `Call ${BUSINESS.phoneDisplay}`}
       </ButtonAnchor>
       <ButtonAnchor
         href={`${BUSINESS.whatsappUrl}?text=${waText}`}

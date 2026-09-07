@@ -30,7 +30,7 @@ export function Nav() {
         </nav>
 
         <div className="hidden md:block">
-          <CallWhatsApp context="header" size="sm" />
+          <CallWhatsApp context="header" size="sm" compact />
         </div>
 
         <button
