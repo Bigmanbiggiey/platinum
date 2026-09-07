@@ -45,7 +45,7 @@ project, no schema, no migrations, no infrastructure, no pages.
 
 ---
 
-## Phase 1 — Foundation & Scaffolding · BUILT 2026-09-07 (local-first) · awaiting review
+## Phase 1 — Foundation & Scaffolding · ✅ COMPLETE & APPROVED 2026-09-07 (local-first)
 
 **Goal:** A running, empty, well-tooled application skeleton — validated **locally** —
 plus the wiring to talk to a Supabase project on the owner's dev account.
@@ -86,10 +86,10 @@ content, the submission Edge Function, any deployment.
       modulepreloaded on public pages.
 - [x] Brand tokens present and used (Rev 01 palette + type stack in `src/index.css`;
       no hard-coded hex/font in components).
-- [ ] Supabase client connects using `.env.local` creds and a throwaway read succeeds
-      — **pending owner-supplied creds** (app runs fine without them).
+- [x] Supabase client connects using `.env.local` creds — verified via
+      `/auth/v1/health` → 200 (owner added creds 2026-09-07).
 - [x] `README.md` lets a fresh dev run the project from scratch.
-- [ ] **Owner reviews locally and approves moving to Phase 2.**
+- [x] **Owner reviewed and approved Phase 1 (2026-09-07).**
 
 > Deployment to Vercel + GitHub remote + CI execution are a later explicit step
 > (before or during Phase 2 soft-launch), not part of Phase 1.

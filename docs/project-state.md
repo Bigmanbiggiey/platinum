@@ -11,12 +11,11 @@
 
 | | |
 | --- | --- |
-| **Phase** | **Phase 1 — Foundation & Scaffolding: BUILT 2026-09-07. Awaiting owner review + Phase 2 approval.** |
+| **Phase** | **Phase 1 — Foundation & Scaffolding: COMPLETE & APPROVED 2026-09-07.** |
 | **Phase 0** | Approved 2026-09-07 by the owner. |
-| **Phase 1 scope changes agreed** | (1) Host = **Vercel** (owner's personal account for now), but **no build/deploy to Vercel in Phase 1** — validated **locally** only; production staged later. (2) ADR-0003 & ADR-0010 per recommendation. (3) Supabase project on the **owner's dev account** — owner provides URL + anon key into `.env.local`. |
-| **Phase 1 result** | Skeleton built and locally green: `typecheck`, `lint`, `format:check`, `test` (3 pass), `build` (prerenders `index.html` + `404.html`; `/admin` excluded from prerender, code-split, `noindex`). Local git repo, first commit on `main`. **No GitHub remote, no deploy.** |
-| **Outstanding for Phase 1 sign-off** | (a) Owner runs it locally (`npm install && npm run dev`) and reviews. (b) Optional: owner adds Supabase URL + anon key to `.env.local` so the admin connectivity check goes green (works without it — just reports "not configured"). |
-| **Next phase** | Phase 2 — Public Website MVP. Needs its own approval + ADR-0005/0006/0009/0011/0012/0013 + §14.2 content answers. |
+| **Phase 1 result** | Skeleton built, locally green (`typecheck` / `lint` / `format:check` / `test` (3) / `build`). Public routes prerender; `/admin` is a code-split `noindex` lazy chunk. Supabase creds added by the owner to `.env.local`; connectivity check verified (`/auth/v1/health` → 200 against project `aonpdrqtosmqhmomghca`). Local git, 3 commits on `main`. **No GitHub remote, no deploy.** |
+| **Now** | **Phase 2 planning.** `docs/phase-2-plan.md` is the detailed plan — presented for approval. **No Phase 2 implementation until the owner approves it** and the dependent ADRs. |
+| **Next phase** | Phase 2 — Public Website MVP. Needs: owner approval of `phase-2-plan.md`; ADR-0005/0006/0009/0011/0012/0013 sign-off; §14.2 content answers (hours, service list, partners, About, seed testimonials, Privacy Policy source, booking lead-time/windows). |
 | **Trading name** | **Platinum Point Automotive Engineering** (kickoff codename "Platinum Motor Services" retired). Repo folder stays `PLATINUM`. |
 
 Phase-gate workflow in use:
@@ -52,6 +51,11 @@ Phase-gate workflow in use:
 ### Phase 0 (docs) — updated through rev. 2/3
 `docs/product-definition.md`, `docs/project-state.md`, `docs/decisions.md`,
 `docs/roadmap.md`. See change log for what each revision added.
+
+### Phase 2 planning
+`docs/phase-2-plan.md` — detailed Phase 2 work breakdown (14 work packages),
+data model, RLS matrix, prerequisites, local-first + staging sub-gate, exit criteria.
+**Plan only — awaiting owner approval; no Phase 2 code.**
 
 ### Phase 1 (skeleton) — new 2026-09-07
 - **Config:** `package.json`, `package-lock.json`, `tsconfig.json`, `vite.config.ts`,
@@ -166,5 +170,7 @@ brand sign-off + production files + tagline.
 | 2026-09-07 | **Phase 0 APPROVED** by the owner ("I approve Phase 0"). Discovery baseline is now the agreed reference. | Owner + Lead architect (TECHBIGGIEY) |
 | 2026-09-07 | **Phase 1 APPROVED** with changes: Vercel is the host but **no deploy in Phase 1** (local-first; production staged later); ADR-0003/0010 per recommendation; Supabase on the owner's dev account. ADR-0002/0003/0010 marked Accepted. Verified Node v24.18.0 / npm 11.18.0 / git 2.54. | Owner + Lead architect (TECHBIGGIEY) |
 | 2026-09-07 | **Phase 1 BUILT.** Scaffolded the Vite + React 19 + TS skeleton: `vite-react-ssg` prerender (public), lazy `noindex` admin chunk, Tailwind v4 with Rev 01 brand tokens, ESLint/Prettier/strict TS, Vitest + RTL (3 tests), CI workflow (dormant), Supabase client wired to `.env.local` (no schema). Chose React Router **6.28** (vite-react-ssg 0.8.9 peer-requires RR6, not RR7). Added `scripts/strip-admin-preload.mjs` so public HTML doesn't prefetch the admin chunk. Local checks all green (typecheck/lint/format/test/build). `git init` + first commit `f9a9575` on `main` — **local only, no remote, no deploy**. Awaiting owner local review before Phase 2. | Lead architect (TECHBIGGIEY) |
+| 2026-09-07 | **Phase 1 COMPLETE & APPROVED.** Owner added Supabase creds to `.env.local`. Fixed the connectivity check (`/rest/v1/` is service-role-only on current Supabase → use `/auth/v1/health`); verified 200 against project `aonpdrqtosmqhmomghca` (anon JWT, role `anon`, correct ref). Commit `c2df05d`. | Owner + Lead architect (TECHBIGGIEY) |
+| 2026-09-07 | **Phase 2 plan drafted** → `docs/phase-2-plan.md` (14 work packages, data model, RLS matrix, prerequisites incl. ADR-0005/0006/0009/0011/0012/0013 + §14.2 content answers + external keys, local-first with a staging sub-gate). Presented for approval. **No Phase 2 code / migrations / Supabase resources created.** | Lead architect (TECHBIGGIEY) |
 | 2026-09-07 | **Brand pack received.** Owner supplied `Platinum Point Brand Assets.dc.html` ("Rev 01"): datum-mark logo + variants, 8-colour palette with HEX/CMYK/Pantone + 60/30/10 ratio, type stack (Archivo / IBM Plex Mono / Newsreader, all SIL OFL 1.1), substitutes. Recorded in `product-definition.md` §10.2; `decisions.md` deferred-list "Brand system" row; §14.2 Q22–24 (sign-off, production SVG masters + favicon + social, tagline) added. No files copied into the repo; still Phase 0, no code. | Lead architect (TECHBIGGIEY) |
 | 2026-09-07 | **Docs rev. 2** after the owner answered most of §14. Adopted the confirmed trading name **Platinum Point Automotive Engineering** across all docs (retired "Platinum Motor Services"). Added: confirmed-facts block, Book-a-Service journey/page/form, engineering (press & lathe) as first-class services, `partner` entity + Partners CMS, public testimonial submission (first name + vehicle display), quote-based pricing explainer, branding asset request (§10.4), risks R-18/R-19. Added **ADR-0013 — Booking & scheduling approach** (phased: requests now, availability engine in Phase 5); updated ADR-0006/0008/0012. Roadmap: Phase 2/3 updated, new **Phase 5 — self-service scheduling**. §14 split into 14.1 answered / 14.2 still-open (22 items). **Still no code/deps/schema/infra. Still awaiting explicit Phase 0 approval.** | Lead architect (TECHBIGGIEY) |
