@@ -3,7 +3,8 @@
 > **Purpose:** the single source of truth for *where this project actually is* right
 > now — what exists, what has been decided, what phase we are in, and what happens
 > next. Update this file whenever the state changes.
-> **Last updated:** 2026-09-07 (rev. 4 — Phase 0 approved; Phase 1 approved & in progress, local-first)
+> **Last updated:** 2026-09-07 EOD — Phase 2 on staging, Phase 3 WP1–5+3b done.
+> **➡ To resume: read `docs/pick-up-here.md`** (one-page status + remaining work).
 
 ---
 
