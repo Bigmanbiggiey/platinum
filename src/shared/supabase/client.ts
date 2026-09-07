@@ -21,8 +21,11 @@ export function getSupabaseClient(): SupabaseClient | null {
 }
 
 /**
- * Throwaway connectivity check for Phase 1. Hits the PostgREST root, which responds
- * without any tables existing. Returns a small status object for the UI.
+ * Throwaway connectivity check for Phase 1. Probes the GoTrue health endpoint, which
+ * confirms the project URL is correct and the project is reachable without needing
+ * any tables (the PostgREST root `/rest/v1/` is service-role-only on current Supabase,
+ * so it is not usable here). Once the schema + a public table exist (Phase 2), a real
+ * `select` is the stronger check.
  */
 export async function checkSupabaseConnection(): Promise<
   { ok: true } | { ok: false; reason: string }
@@ -30,8 +33,8 @@ export async function checkSupabaseConnection(): Promise<
   const env = getSupabaseEnv();
   if (!env) return { ok: false, reason: 'not-configured' };
   try {
-    const res = await fetch(`${env.url}/rest/v1/`, {
-      headers: { apikey: env.anonKey, Authorization: `Bearer ${env.anonKey}` },
+    const res = await fetch(`${env.url}/auth/v1/health`, {
+      headers: { apikey: env.anonKey },
     });
     return res.ok ? { ok: true } : { ok: false, reason: `http-${res.status}` };
   } catch (err) {
