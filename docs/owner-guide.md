@@ -10,7 +10,13 @@ A short guide for running the website and enquiries from the admin panel.
 
 The admin works on a phone. It's dark on purpose and never appears in Google.
 
-## The top bar
+## Getting around
+
+The top bar has a **☰ menu button** (left), the Platinum Point mark, and on the right
+**View site ↗**, your name, and **Sign out**. Tap **☰** to show or hide the side menu;
+it remembers your choice. On a phone the menu slides in over the page.
+
+The side menu:
 
 - **Dashboard** — the numbers at a glance, and your most recent requests.
 - **Notifications** — every new enquiry, booking and testimonial. A number next to it
@@ -21,7 +27,6 @@ The admin works on a phone. It's dark on purpose and never appears in Google.
 - **Website content** — everything the public site shows.
 - **Settings** — your business details, hours, and how you're notified.
 - **Team** — (owner only) add or remove staff logins.
-- **View site ↗** — opens the public website in a new tab.
 
 ## Handling an enquiry
 
