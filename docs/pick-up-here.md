@@ -13,7 +13,7 @@
 | **0 — Discovery** | ✅ Approved. |
 | **1 — Foundation** | ✅ Complete & approved. |
 | **2 — Public website MVP** | 🟢 Built; **live on private staging**; DB schema + RLS + `submit` function applied. Left: formal Lighthouse/axe pass + **Go-Live (WP14 Part C)**. |
-| **3 — Admin MVP** | 🟡 In progress. **WP1–WP5 + WP3b done** (auth, schema/RLS, admin shell + branding, Dashboard, Notifications, Requests+convert, Schedule, Team). Left: WP6–WP14. |
+| **3 — Admin MVP** | 🟢 **Functionally complete (WP1–WP13).** Auth+roles+Team, Dashboard+Notifications, Requests+convert, Schedule, full CMS, Media, Business Settings, publish→rebuild + emails (functions deployed; switch on with secrets). Left: WP14 owner acceptance run; `gen types` cleanup. |
 
 ## What's live / where
 
@@ -41,23 +41,23 @@ Supabase CLI is linked & authenticated (`npx supabase ...`). Apply DB changes wi
 
 ## Remaining work
 
-### A. Phase 3 — Admin MVP (resume here)
+### A. Phase 3 — Admin MVP · ✅ WP1–WP13 built & deployed
 
-| WP | What | Notes |
-| --- | --- | --- |
-| **WP6** | **Clients & Vehicles pages** | List + search + CRUD for `client`; vehicles nested under a client; link from the request-detail "converted" state. Tables + RLS already exist. |
-| **WP7** | **CMS — Services / Portfolio / Testimonials** | CRUD with a Markdown textarea + live preview (reuse `<Prose>` — **add sanitisation** now that it's user-authored). Publish toggles, ordering, SEO fields. Testimonials = moderation queue (pending → approved/rejected, featured). |
-| **WP8** | **Media library** | Upload to the `public-media` bucket (Storage write policies exist); required alt text; caption; attach to portfolio/services. |
-| **WP9** | **Content blocks / Service areas / Partners / Business settings** | Keyed content-block editor; CRUD for areas + partners; single-record Business Settings editor (hours, phone, whatsapp, email, socials, GBP link, default SEO, **notification channel + destination**, booking lead-time + windows). |
-| **WP10** | **Publish → rebuild** | Small `rebuild` Edge Function holding a **Vercel Deploy Hook** URL as a secret; admin calls it (authenticated) after publish/approve/settings changes; UI shows "live in ~1–2 min" + a "last published" time; debounce bursts. **Needs the owner to create a Deploy Hook** in Vercel → Project Settings → Git → Deploy Hooks. |
-| **WP11** | **Customer + owner emails** | Booking confirm/decline → customer email via Resend. Owner enquiry email (the `submit` function already supports it) driven by Business Settings. **Needs a Resend API key + verified sender.** |
-| **WP12** | **Owner how-to guide** | Short "update your website & manage enquiries" doc. |
-| **WP13** | **Tests** | Auth guard; extend `rls.test.ts` authed-admin block; convert-to-client flow; moderation gating; publish toggle → public read; media upload; settings edit. |
-| **WP14** | **Local acceptance + deploy** | Admin usable one-handed on a phone; owner does a real content update + a real enquiry follow-through unaided; sign-off. |
+Everything is live at `platinum-point.vercel.app/admin` (sign in as `gatama98p@gmail.com`).
+Left:
 
-**Also carried into Phase 3:**
-- Replace hand-written `src/shared/supabase/types.ts` with `npx supabase gen types typescript --linked`.
-- `/admin` hard-load hydration warning (rewrites to `/`) — optional cleanup via a dedicated admin entry.
+- **WP14 — owner acceptance run:** log in on a phone → edit a content block or a
+  service → Save (watch for the "live in ~1–2 min" message) → open an enquiry →
+  Convert to client → set a status → confirm a booking. Report anything rough.
+- **Switch on the two integrations** by setting Supabase secrets:
+  - `npx supabase secrets set VERCEL_DEPLOY_HOOK_URL=<hook>` — auto-publish. Create the
+    hook in **Vercel → Project Settings → Git → Deploy Hooks** (branch `main`).
+  - `npx supabase secrets set RESEND_API_KEY=<key> RESEND_FROM=<verified sender> NOTIFY_EMAIL=gatama98p@gmail.com`
+    — customer booking emails + owner enquiry emails.
+- **Add the staff member:** Team → Invite (needs their email).
+- **Carried cleanup:** swap `src/shared/supabase/types.ts` for
+  `npx supabase gen types typescript --linked`; the `/admin` hydration warning is
+  still benign (dedicated entry optional).
 
 ### B. Phase 2 — to close it out
 
@@ -89,7 +89,9 @@ Supabase CLI is linked & authenticated (`npx supabase ...`). Apply DB changes wi
 
 ## Suggested order to resume
 
-1. **WP9 Business Settings** first (unblocks a lot: notification config, booking rules, GBP link, hours editing) → then **WP7 Services/Testimonials CMS** → **WP8 Media** → **WP6 Clients/Vehicles**.
-2. **WP10 publish→rebuild** once a Deploy Hook exists.
-3. **WP11 emails** once a Resend key exists.
-4. Then WP12–WP14, and Phase 2 Part C when the owner is ready to go public.
+1. Owner: WP14 acceptance run on the admin; set the `VERCEL_DEPLOY_HOOK_URL` and
+   `RESEND_*` secrets to switch on auto-publish + emails.
+2. Owner: replace the DRAFT site content via the CMS (Services, About/Page copy,
+   Testimonials), then let it auto-publish.
+3. Phase 2 **Part C — Go-Live** when ready to go public (domain, remove noindex,
+   Turnstile, Search Console, GBP, Privacy Policy) — see `wp14-staging-plan.md` §6.

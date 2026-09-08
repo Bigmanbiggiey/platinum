@@ -146,17 +146,25 @@ Effort: **S** ≈ half-day · **M** ≈ 1–2 days · **L** ≈ 3–5 days (roug
 | WP4 Dashboard + Notifications | ✅ Dashboard: clickable live counts + recent-requests list. Notifications page: `notification` list (unread first), mark-read / mark-all, click-through. Unread badge on the Notifications nav item. |
 | WP5 Requests + Schedule | ✅ Requests: filterable table (status/type/search). Detail: all fields, status pipeline, internal + outcome notes, **convert to client (+ optional vehicle)**. Schedule: agenda of booking/scheduled requests with Confirm (sets `confirmed_at` + status) / re-time / Decline. **Customer email = WP11** (Resend key). |
 | Branding | ✅ Rev 01 datum mark + wordmark across AdminShell / Login / Reset; admin UI kit on `--color` tokens + IBM Plex Mono for labels/IDs/dates/phones; Signal Amber actions, Instrument Teal pass-states. Login + reset have a show/hide **password toggle**. |
-| WP6 Clients + Vehicles | ⬜ placeholder route. |
-| WP7–WP9 CMS + Settings | ⬜ placeholder routes. |
-| WP10 publish→rebuild | ⬜ needs a Vercel Deploy Hook URL. |
-| WP11 notifications (customer email) | ⬜ needs a Resend key. |
-| WP12–WP14 | ⬜ not started. |
+| WP6 Clients + Vehicles | ✅ List + search; client detail (editable fields + notes); nested vehicles (InlineCrud); linked requests. |
+| WP7 CMS: Services / Portfolio / Testimonials | ✅ Services + Portfolio list + edit (Markdown editor with preview, publish toggle, SEO fields, cover + gallery). Testimonials moderation (approve / reject / feature / delete). |
+| WP8 Media library | ✅ Upload to `public-media` (required alt text, natural size), list, edit alt, delete; picker used by Portfolio. |
+| WP9 Content blocks / Areas / Partners / Settings | ✅ Business Settings single-record editor (NAP, hours rows, SEO description, notification channel + address, socials); Page copy (Markdown+preview); Areas + Partners via a generic `InlineCrud`. |
+| WP10 publish→rebuild | ✅ `rebuild` Edge Function (deployed; admin-checked; POSTs a Vercel Deploy Hook held as a secret). `usePublish()` debounces 20s, shows "live in ~1–2 min". **No-ops until `VERCEL_DEPLOY_HOOK_URL` secret is set** — owner creates a Deploy Hook in Vercel. |
+| WP11 customer email | ✅ `notify-customer` Edge Function (deployed; Resend). Schedule Confirm/Decline calls it and reports whether it sent. **No-ops until `RESEND_API_KEY` secret is set.** |
+| WP12 owner guide | ✅ `docs/owner-guide.md`. |
+| WP13 tests | ✅ Admin unit tests (db helpers, PasswordInput toggle, Prose script/handler stripping). **24 pass**, 4 skipped (env-gated authed-admin RLS). |
+| WP14 acceptance | 🟡 Deployed (auto). Local gate green. **Owner to do the real end-to-end run** (log in → edit content → publish → handle an enquiry). |
+| Carried | ✅ `<Prose>` now sanitises (DOMPurify browser / regex strip SSG). ⬜ `gen types` swap for `types.ts` still deferred. `/admin` hydration warning still benign. |
 
-**Local gate green:** typecheck · lint · format · test (18) · build (21 prerendered
-pages; admin excluded & code-split). `/admin` → `/admin/login`, form renders.
+**Gate green:** typecheck · lint · format · test (24) · build (21 prerendered pages;
+admin chunk 143 kB gzip, code-split & `noindex`). Functions deployed: `submit`,
+`admin-invite`, `rebuild`, `notify-customer`.
 
-**Blocked on the owner:** create the admin account (above); a **Vercel Deploy Hook**
-URL (WP10); the **Resend** key (WP11); the **staff person's email** (WP3b).
+**Owner-supplied to fully switch on:** a **Vercel Deploy Hook** URL →
+`npx supabase secrets set VERCEL_DEPLOY_HOOK_URL=…` (auto-publish); a **Resend** API
+key + sender → `npx supabase secrets set RESEND_API_KEY=… RESEND_FROM=… NOTIFY_EMAIL=…`
+(customer + owner emails); the **staff person's email** (Team invite).
 
 | WP | Title | Depends on | Effort | Key outputs |
 | --- | --- | --- | --- | --- |
