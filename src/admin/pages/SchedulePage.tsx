@@ -13,6 +13,7 @@ import {
 } from '../components/ui';
 import { getDb, prettyType, type ServiceRequest } from '../lib/db';
 import { useUpdateRequest } from '../lib/requests';
+import { useNotifyCustomer } from '../lib/customerEmail';
 
 function useScheduleItems() {
   return useQuery({
@@ -33,14 +34,32 @@ function useScheduleItems() {
 
 function ScheduleRow({ r }: { r: ServiceRequest }) {
   const update = useUpdateRequest(r.id);
+  const notify = useNotifyCustomer();
   const [date, setDate] = useState(r.requested_date ?? '');
+  const [emailNote, setEmailNote] = useState<string | null>(null);
 
-  const confirm = () =>
-    update.mutate({
+  const emailResult = (res: { sent: boolean; reason?: string }) =>
+    setEmailNote(
+      res.sent
+        ? 'Customer emailed.'
+        : res.reason === 'no-email'
+          ? 'No email on file — tell the customer by call/WhatsApp.'
+          : 'Email not sent (Resend not set up) — tell the customer by call/WhatsApp.',
+    );
+
+  const confirm = async () => {
+    await update.mutateAsync({
       status: 'scheduled',
       requested_date: date || r.requested_date,
       confirmed_at: new Date().toISOString(),
     });
+    emailResult(await notify.mutateAsync({ requestId: r.id, kind: 'confirmed' }));
+  };
+
+  const decline = async () => {
+    await update.mutateAsync({ status: 'closed' });
+    emailResult(await notify.mutateAsync({ requestId: r.id, kind: 'declined' }));
+  };
 
   return (
     <Card>
@@ -74,20 +93,14 @@ function ScheduleRow({ r }: { r: ServiceRequest }) {
             {r.requested_time_window}
           </span>
         )}
-        <Button variant="accent" onClick={confirm} disabled={update.isPending}>
+        <Button variant="accent" onClick={confirm} disabled={update.isPending || notify.isPending}>
           {r.confirmed_at ? 'Re-confirm' : 'Confirm'}
         </Button>
-        <Button
-          variant="danger"
-          onClick={() => update.mutate({ status: 'closed' })}
-          disabled={update.isPending}
-        >
+        <Button variant="danger" onClick={decline} disabled={update.isPending || notify.isPending}>
           Decline
         </Button>
       </div>
-      <p className="mt-2 text-xs text-steel">
-        Customer confirmation email is wired in WP11 (needs a Resend key).
-      </p>
+      {emailNote && <p className="mt-2 text-xs text-steel">{emailNote}</p>}
     </Card>
   );
 }

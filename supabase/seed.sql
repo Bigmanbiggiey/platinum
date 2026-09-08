@@ -119,9 +119,9 @@ on conflict (slug) do update set
 -- content_block   [DRAFT copy]
 -- ===========================================================================
 insert into public.content_block (key, label, "group", value_md) values
-  ('home.hero_heading', 'Home — hero heading', 'home', 'The expert who comes to you.'),
+  ('home.hero_heading', 'Home — hero heading', 'home', 'Expert automotive engineering, wherever you need it.'),
   ('home.hero_sub', 'Home — hero subheading', 'home',
-   'A DT Dobie–trained engineer running a mobile automotive workshop from Kitengela. General repairs, diagnostics, pre-purchase inspections, preventive maintenance and press & lathe engineering.'),
+   'Professional diagnostics, mechanical repairs, vehicle assessments, pre-purchase inspections, preventive maintenance and precision press & lathe services — backed by the experience of a former DT Dobie engineer.'),
   ('home.why_points', 'Home — why choose us (list)', 'home',
    E'- Former **DT Dobie** engineer with experience across many makes\n- We come to you — home, office or roadside\n- In-house **press & lathe** for suspension, bearing and brake work\n- Honest diagnosis before you spend on parts\n- Bodywork handled through trusted partners'),
   ('about.body', 'About — main body', 'about',
@@ -136,7 +136,7 @@ insert into public.content_block (key, label, "group", value_md) values
   ('booking.time_windows', 'Booking — time window options', 'booking',
    E'Morning (9:00–12:00)\nMidday (12:00–15:00)\nAfternoon (15:00–18:00)'),
   ('cta.default', 'Reusable call-to-action', 'general',
-   'Get your vehicle looked at — call, WhatsApp, or request a visit.'),
+   'Need help with your vehicle? Let''s get it assessed.'),
   ('privacy.body', 'Privacy Policy — body', 'legal',
    E'**DRAFT — legal review required (§14.2 Q10).**\n\nPlatinum Point Automotive Engineering collects the contact and vehicle details you submit through this website solely to respond to your enquiry, booking or inspection request, and to provide the services you ask for. We do not sell your data. We retain enquiry records for as long as needed to serve you and for our business records. To ask what we hold about you, or to have it deleted, contact us on the details on the Contact page.\n\nThis draft must be reviewed against the Kenya Data Protection Act, 2019 before launch.')
 on conflict (key) do update set

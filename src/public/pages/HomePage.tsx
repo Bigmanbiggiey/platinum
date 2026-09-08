@@ -66,10 +66,18 @@ export function HomePage() {
               {sub}
             </p>
           )}
-          <div className="mt-8 flex flex-wrap items-center gap-3">
+          <p className="mt-8 font-semibold text-[color:var(--color-ink)]">
+            Need help with your vehicle? Let&rsquo;s get it assessed.
+          </p>
+          <div className="mt-4 flex flex-wrap items-center gap-3">
             <CallWhatsApp context="home-hero" />
+            <ButtonLink to="/request-service" variant="outline">
+              Request a Service
+            </ButtonLink>
+          </div>
+          <div className="mt-3">
             <ButtonLink to="/book" variant="outline">
-              Book a service
+              Or book a time
             </ButtonLink>
           </div>
         </Container>
@@ -121,13 +129,16 @@ export function HomePage() {
         </Section>
       )}
 
-      <Section title="Get your vehicle looked at">
+      <Section title={blocks['cta.default'] ?? 'Get your vehicle looked at'}>
         <p className="max-w-xl text-[color:var(--color-muted)]">
           Call, WhatsApp, or send a request and we&rsquo;ll come back to you — usually within a few
           hours.
         </p>
-        <div className="mt-5">
+        <div className="mt-5 flex flex-wrap gap-3">
           <CallWhatsApp context="home-footer-cta" />
+          <ButtonLink to="/request-service" variant="outline">
+            Request a Service
+          </ButtonLink>
         </div>
       </Section>
     </>

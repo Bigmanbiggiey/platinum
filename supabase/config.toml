@@ -12,3 +12,9 @@ verify_jwt = false
 
 [functions.admin-invite]
 verify_jwt = true
+
+[functions.rebuild]
+verify_jwt = true
+
+[functions.notify-customer]
+verify_jwt = true

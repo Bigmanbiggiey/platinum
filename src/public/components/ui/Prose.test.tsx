@@ -13,4 +13,12 @@ describe('<Prose />', () => {
     const { container } = render(<Prose markdown={''} />);
     expect(container.querySelector('.prose')).toBeInTheDocument();
   });
+
+  it('strips scripts and inline event handlers (admin-authored content)', () => {
+    const { container } = render(
+      <Prose markdown={'<script>alert(1)</script>\n\n<img src=x onerror="alert(1)">'} />,
+    );
+    expect(container.querySelector('script')).toBeNull();
+    expect(container.innerHTML).not.toMatch(/onerror/i);
+  });
 });
