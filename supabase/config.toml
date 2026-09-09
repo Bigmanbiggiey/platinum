@@ -7,6 +7,13 @@ project_id = "platinum-point"
 [db]
 major_version = 17
 
+# No public sign-up (ADR-0007). Accounts are created deliberately by an owner via the
+# `admin-invite` function; a new user still lands inactive (see the profile migration)
+# and an owner must activate them. Mirror this in the hosted project dashboard —
+# config.toml only governs local `supabase start` unless pushed.
+[auth]
+enable_signup = false
+
 [functions.submit]
 verify_jwt = false
 
