@@ -41,6 +41,10 @@ export function HomePage() {
   const heading = blocks['home.hero_heading'] ?? BUSINESS.name;
   const sub = blocks['home.hero_sub'] ?? '';
   const why = blocks['home.why_points'] ?? '';
+  const heroCta = blocks['home.hero_cta'] ?? "Need help with your vehicle? Let's get it assessed.";
+  const closingCtaBody =
+    blocks['home.closing_cta_body'] ??
+    "Call, WhatsApp, or send a request and we'll come back to you — usually within a few hours.";
 
   return (
     <>
@@ -66,9 +70,7 @@ export function HomePage() {
                   {sub}
                 </p>
               )}
-              <p className="mt-8 font-semibold text-[color:var(--color-ink)]">
-                Need help with your vehicle? Let&rsquo;s get it assessed.
-              </p>
+              <p className="mt-8 font-semibold text-[color:var(--color-ink)]">{heroCta}</p>
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 <CallWhatsApp context="home-hero" />
                 <ButtonLink to="/request-service" variant="outline">
@@ -144,10 +146,7 @@ export function HomePage() {
       )}
 
       <Section title={blocks['cta.default'] ?? 'Get your vehicle looked at'}>
-        <p className="max-w-xl text-[color:var(--color-muted)]">
-          Call, WhatsApp, or send a request and we&rsquo;ll come back to you — usually within a few
-          hours.
-        </p>
+        <p className="max-w-xl text-[color:var(--color-muted)]">{closingCtaBody}</p>
         <div className="mt-5 flex flex-wrap gap-3">
           <CallWhatsApp context="home-footer-cta" />
           <ButtonLink to="/request-service" variant="outline">
