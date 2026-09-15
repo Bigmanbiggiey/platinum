@@ -11,7 +11,7 @@ export function NotFoundPage() {
         path="/404"
         noindex
       />
-      <Section eyebrow="404" title="We couldn&rsquo;t find that page" narrow>
+      <Section title="We couldn&rsquo;t find that page" narrow>
         <p className="text-[color:var(--color-muted)]">
           Try the{' '}
           <Link to="/" className="font-semibold">

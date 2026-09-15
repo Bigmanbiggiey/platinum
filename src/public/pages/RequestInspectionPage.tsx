@@ -16,7 +16,6 @@ export function RequestInspectionPage() {
         ])}
       />
       <Section
-        eyebrow="Pre-purchase inspection"
         title="Check before you buy"
         narrow
         intro="Tell us where the car is and when you can view it. We inspect the vehicle, road test it and run a diagnostics scan, then give you a clear verdict."

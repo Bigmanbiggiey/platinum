@@ -23,7 +23,7 @@ export function ContactPage() {
         path="/contact"
         jsonLd={localBusinessJsonLd(settings)}
       />
-      <Section eyebrow="Contact" title="Get in touch">
+      <Section title="Get in touch">
         <div className="grid gap-10 lg:grid-cols-2">
           <div>
             <CallWhatsApp context="contact" />

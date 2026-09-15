@@ -27,6 +27,12 @@
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', 'Roboto Mono', Menlo, monospace;
   /* Newsreader is for the monogram ONLY — never body, headings or the wordmark. */
   --font-serif: 'Newsreader', ui-serif, Georgia, serif;
+
+  /* Radius roles (design-refresh-plan.md §4): structural surfaces (cards, spec
+     plates, containers) get a tight "machined" edge; interactive controls (buttons,
+     inputs) keep a friendlier one so CTAs stay inviting on a phone screen. */
+  --radius-structural: 2px;
+  --radius-button: 6px;
 }
 
 /*
@@ -41,6 +47,10 @@
   --color-muted: var(--color-steel);
   --color-line: var(--color-platinum);
   --color-accent: var(--color-signal);
+  /* Second functional accent (design-refresh-plan.md §4): status / confirmed /
+     active-state, kept distinct from --color-accent so amber stays reserved for
+     calls to action. */
+  --color-confirm: var(--color-teal);
   color-scheme: light;
 }
 
@@ -52,6 +62,7 @@
     --color-muted: var(--color-platinum);
     --color-line: #3a4046;
     --color-accent: var(--color-signal);
+    --color-confirm: var(--color-teal);
     color-scheme: dark;
   }
 }
@@ -63,6 +74,7 @@
   --color-muted: var(--color-platinum);
   --color-line: #3a4046;
   --color-accent: var(--color-signal);
+  --color-confirm: var(--color-teal);
   color-scheme: dark;
 }
 
@@ -118,4 +130,44 @@
 }
 .prose a {
   text-decoration: underline;
+}
+
+/* DatumMark motif (src/public/components/DatumMark.tsx) — the crosshair/node mark's
+   one opt-in, one-shot "draw in + settle" animation (Home hero only; Wordmark never
+   sets `animate`). Entirely CSS-gated on prefers-reduced-motion: a reduced-motion
+   user gets the plain static SVG with no JS branching required. Runs once
+   (`forwards`, no `infinite`) so it stops permanently after load. */
+@media (prefers-reduced-motion: no-preference) {
+  .datum-mark[data-animate='true'] .datum-mark-ring,
+  .datum-mark[data-animate='true'] .datum-mark-crosshair {
+    stroke-dasharray: var(--dm-len, 260);
+    stroke-dashoffset: var(--dm-len, 260);
+    animation: datum-draw 900ms ease-out forwards;
+  }
+  .datum-mark[data-animate='true'] .datum-mark-node {
+    opacity: 0;
+    transform-origin: center;
+    animation:
+      datum-node-in 300ms ease-out 750ms forwards,
+      datum-node-pulse 700ms ease-out 1050ms 1 forwards;
+  }
+}
+@keyframes datum-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes datum-node-in {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes datum-node-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.5);
+  }
 }

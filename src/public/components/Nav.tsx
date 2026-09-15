@@ -14,7 +14,11 @@ const links = [
 export function Nav() {
   const [open, setOpen] = useState(false);
   const linkClass = ({ isActive }: { isActive: boolean }) =>
-    `text-sm font-semibold ${isActive ? 'text-[color:var(--color-ink)]' : 'text-[color:var(--color-muted)]'} hover:text-[color:var(--color-ink)]`;
+    `border-b-2 pb-0.5 text-sm font-semibold transition-colors ${
+      isActive
+        ? 'border-[color:var(--color-confirm)] text-[color:var(--color-confirm)]'
+        : 'border-transparent text-[color:var(--color-muted)]'
+    } hover:text-[color:var(--color-ink)]`;
 
   return (
     <header className="sticky top-0 z-40 border-b border-[color:var(--color-line)] bg-[color:var(--color-ground)]/95 backdrop-blur">

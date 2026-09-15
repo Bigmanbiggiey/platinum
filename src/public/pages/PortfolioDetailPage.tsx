@@ -2,6 +2,7 @@ import { useLoaderData, Link, type LoaderFunctionArgs } from 'react-router-dom';
 import { SeoHead } from '../components/ui/SeoHead';
 import { Section } from '../components/ui/Section';
 import { Container } from '../components/ui/Container';
+import { DATUM_TEXT_CLASS } from '../components/ui/TitleStrip';
 import { Prose } from '../components/ui/Prose';
 import { Img } from '../components/ui/Img';
 import { CallWhatsApp } from '../components/ui/CallWhatsApp';
@@ -41,7 +42,7 @@ export function PortfolioDetailPage() {
 
       <section className="border-b border-[color:var(--color-line)] py-14">
         <Container narrow>
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted)]">
+          <p className={DATUM_TEXT_CLASS}>
             <Link to="/portfolio">Work</Link>
             {vehicle && ` / ${vehicle}`}
           </p>
@@ -57,20 +58,20 @@ export function PortfolioDetailPage() {
           <Img
             media={project.cover}
             eager
-            className="w-full rounded-lg"
+            className="w-full rounded-structural"
             sizes="(min-width: 768px) 640px, 100vw"
           />
         )}
         {project.body_md && <Prose markdown={project.body_md} className="mt-8" />}
         {project.outcome && (
-          <p className="mt-8 rounded-lg border border-[color:var(--color-line)] p-4 text-[color:var(--color-ink)]">
+          <p className="mt-8 rounded-structural border border-[color:var(--color-line)] p-4 text-[color:var(--color-ink)]">
             <span className="font-semibold">Outcome:</span> {project.outcome}
           </p>
         )}
         {project.gallery.length > 0 && (
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             {project.gallery.map((m) => (
-              <Img key={m.id} media={m} className="w-full rounded-lg" />
+              <Img key={m.id} media={m} className="w-full rounded-structural" />
             ))}
           </div>
         )}

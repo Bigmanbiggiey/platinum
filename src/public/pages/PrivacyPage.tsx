@@ -20,7 +20,7 @@ export function PrivacyPage() {
         path="/privacy"
         noindex
       />
-      <Section eyebrow="Legal" title="Privacy policy" narrow>
+      <Section title="Privacy policy" narrow>
         {body ? (
           <Prose markdown={body} />
         ) : (

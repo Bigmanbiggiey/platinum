@@ -1,22 +1,25 @@
 import type { ReactNode } from 'react';
 import { Container } from './Container';
+import { TitleStrip, type DatumStripProps } from './TitleStrip';
 
 /**
- * Vertical page section with consistent rhythm and an optional eyebrow + heading.
+ * Vertical page section with consistent rhythm and an optional heading. Pass `datum`
+ * only where the section's content is a genuine countable record (see TitleStrip) —
+ * most sections should pass just `title`.
  */
 export function Section({
   children,
-  eyebrow,
   title,
   intro,
+  datum,
   narrow = false,
   tint = false,
   as: As = 'section',
 }: {
   children: ReactNode;
-  eyebrow?: string;
   title?: string;
   intro?: ReactNode;
+  datum?: DatumStripProps;
   narrow?: boolean;
   tint?: boolean;
   as?: 'section' | 'div';
@@ -24,21 +27,7 @@ export function Section({
   return (
     <As className={`py-14 sm:py-20 ${tint ? 'bg-[color:var(--color-surface)]' : ''}`}>
       <Container narrow={narrow}>
-        {(eyebrow || title) && (
-          <header className="mb-8 max-w-2xl">
-            {eyebrow && (
-              <p className="font-mono text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted)]">
-                {eyebrow}
-              </p>
-            )}
-            {title && (
-              <h2 className="mt-3 text-2xl font-bold tracking-tight text-[color:var(--color-ink)] sm:text-3xl">
-                {title}
-              </h2>
-            )}
-            {intro && <div className="mt-4 text-[color:var(--color-muted)]">{intro}</div>}
-          </header>
-        )}
+        <TitleStrip title={title} intro={intro} datum={datum} />
         {children}
       </Container>
     </As>

@@ -21,7 +21,7 @@ export function AboutPage() {
         description="A former DT Dobie engineer running a mobile automotive workshop from Kitengela, with in-house press and lathe engineering."
         path="/about"
       />
-      <Section eyebrow="About" title="The expert who comes to you" narrow>
+      <Section title="The expert who comes to you" narrow>
         {body ? (
           <Prose markdown={body} />
         ) : (
@@ -30,7 +30,7 @@ export function AboutPage() {
       </Section>
 
       {partners.length > 0 && (
-        <Section eyebrow="Partners" title="Who we work with" tint narrow>
+        <Section title="Who we work with" tint narrow>
           <p className="mb-4 text-[color:var(--color-muted)]">
             Bodywork and specialist jobs are handled through trusted partners, with Platinum Point
             as your single point of contact.

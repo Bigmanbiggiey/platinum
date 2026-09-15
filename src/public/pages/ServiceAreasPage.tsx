@@ -23,7 +23,6 @@ export function ServiceAreasPage() {
         path="/service-areas"
       />
       <Section
-        eyebrow="Service areas"
         title="Where we work"
         intro={intro || `Based in ${BUSINESS.baseArea}. ${BUSINESS.serviceAreaSummary}.`}
       >
@@ -42,7 +41,7 @@ export function ServiceAreasPage() {
         {others.length > 0 && (
           <ul className="mt-4 grid gap-3 sm:grid-cols-2">
             {others.map((a) => (
-              <li key={a.id} className="rounded-lg border border-[color:var(--color-line)] p-4">
+              <li key={a.id} className="rounded-structural border border-[color:var(--color-line)] p-4">
                 <p className="font-semibold text-[color:var(--color-ink)]">{a.name}</p>
                 {a.region && <p className="text-xs text-[color:var(--color-muted)]">{a.region}</p>}
                 {a.note && <p className="mt-1 text-sm text-[color:var(--color-muted)]">{a.note}</p>}

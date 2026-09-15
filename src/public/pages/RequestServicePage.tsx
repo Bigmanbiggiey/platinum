@@ -11,7 +11,6 @@ export function RequestServicePage() {
         path="/request-service"
       />
       <Section
-        eyebrow="Request a service"
         title="What does your vehicle need?"
         narrow
         intro="Pricing is per job. Send the details and we'll come back with a quote by call or WhatsApp."

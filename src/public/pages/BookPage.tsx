@@ -25,7 +25,6 @@ export function BookPage() {
         noindex={false}
       />
       <Section
-        eyebrow="Book a service"
         title="Request a booking"
         narrow
         intro={
