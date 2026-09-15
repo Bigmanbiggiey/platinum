@@ -23,7 +23,7 @@ export function PortfolioPage() {
           { name: 'Work', path: '/portfolio' },
         ])}
       />
-      <Section eyebrow="Our work" title="Jobs we&rsquo;ve done">
+      <Section title="Jobs we&rsquo;ve done">
         {projects.length === 0 ? (
           <p className="max-w-lg text-[color:var(--color-muted)]">
             We&rsquo;re adding write-ups of recent jobs. In the meantime, ask us about work on your

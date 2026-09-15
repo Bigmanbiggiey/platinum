@@ -108,7 +108,7 @@ export function EnquiryForm({ variant, timeWindows = [], confirmationNote }: Pro
 
   if (status === 'ok') {
     return (
-      <div className="rounded-lg border border-teal/40 bg-teal/10 p-5">
+      <div className="rounded-structural border border-[color:var(--color-confirm)]/40 bg-[color:var(--color-confirm)]/10 p-5">
         <p className="font-semibold text-[color:var(--color-ink)]">
           Thank you — we&rsquo;ve got that.
         </p>

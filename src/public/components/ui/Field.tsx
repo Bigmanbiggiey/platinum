@@ -6,7 +6,7 @@ import type {
 } from 'react';
 
 const controlClass =
-  'mt-1 w-full rounded-md border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3 py-2 text-[color:var(--color-ink)] outline-none focus:border-signal';
+  'mt-1 w-full rounded-button border border-[color:var(--color-line)] bg-[color:var(--color-surface)] px-3 py-2 text-[color:var(--color-ink)] outline-none focus:border-signal';
 
 export function Field({
   label,

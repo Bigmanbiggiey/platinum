@@ -19,7 +19,7 @@ export function TestimonialsPage() {
         description="What Platinum Point customers say about our mobile mechanic and engineering work."
         path="/testimonials"
       />
-      <Section eyebrow="Testimonials" title="What customers say">
+      <Section title="What customers say">
         {testimonials.length === 0 ? (
           <p className="text-[color:var(--color-muted)]">
             No testimonials published yet. If we&rsquo;ve worked on your vehicle, we&rsquo;d be glad
@@ -33,7 +33,7 @@ export function TestimonialsPage() {
           </div>
         )}
       </Section>
-      <Section eyebrow="Leave a testimonial" title="Worked with us?" tint narrow>
+      <Section title="Worked with us?" tint narrow>
         <TestimonialForm />
       </Section>
     </>

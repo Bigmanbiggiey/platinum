@@ -43,7 +43,7 @@ export function TestimonialForm() {
 
   if (status === 'ok') {
     return (
-      <div className="rounded-lg border border-teal/40 bg-teal/10 p-5 text-sm">
+      <div className="rounded-structural border border-[color:var(--color-confirm)]/40 bg-[color:var(--color-confirm)]/10 p-5 text-sm">
         <p className="font-semibold text-[color:var(--color-ink)]">Thank you!</p>
         <p className="mt-2 text-[color:var(--color-muted)]">
           Your testimonial has been sent for review. Once approved it will appear here as your first

@@ -1,9 +1,12 @@
+import { useMemo } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { SeoHead } from '../components/ui/SeoHead';
 import { Section } from '../components/ui/Section';
 import { Container } from '../components/ui/Container';
 import { CallWhatsApp } from '../components/ui/CallWhatsApp';
 import { ButtonLink } from '../components/ui/Button';
+import { DatumMark } from '../components/DatumMark';
+import { ProgressReadout } from '../components/ProgressReadout';
 import { Prose } from '../components/ui/Prose';
 import { ServiceCard, ProjectCard, TestimonialCard } from '../components/cards';
 import {
@@ -40,6 +43,25 @@ export function HomePage() {
   const heading = blocks['home.hero_heading'] ?? BUSINESS.name;
   const sub = blocks['home.hero_sub'] ?? '';
   const why = blocks['home.why_points'] ?? '';
+  const heroCta = blocks['home.hero_cta'] ?? "Need help with your vehicle? Let's get it assessed.";
+  const closingCtaBody =
+    blocks['home.closing_cta_body'] ??
+    "Call, WhatsApp, or send a request and we'll come back to you — usually within a few hours.";
+
+  const progressSections = useMemo(
+    () =>
+      [
+        { id: 'home-hero', label: 'INTRO', show: true },
+        { id: 'home-why', label: 'APPROACH', show: Boolean(why) },
+        { id: 'home-services', label: 'SERVICES', show: services.length > 0 },
+        { id: 'home-work', label: 'RECENT WORK', show: projects.length > 0 },
+        { id: 'home-testimonials', label: 'TESTIMONIALS', show: testimonials.length > 0 },
+        { id: 'home-cta', label: 'CONTACT', show: true },
+      ]
+        .filter((s) => s.show)
+        .map(({ id, label }) => ({ id, label })),
+    [why, services.length, projects.length, testimonials.length],
+  );
 
   return (
     <>
@@ -53,45 +75,53 @@ export function HomePage() {
         jsonLd={localBusinessJsonLd(settings)}
       />
 
-      <section className="border-b border-[color:var(--color-line)] py-16 sm:py-24">
+      <ProgressReadout sections={progressSections} />
+
+      <section id="home-hero" className="border-b border-[color:var(--color-line)] py-16 sm:py-24">
         <Container>
-          <p className="font-mono text-xs uppercase tracking-[0.28em] text-[color:var(--color-muted)]">
-            {BUSINESS.name}
-          </p>
-          <h1 className="mt-4 max-w-3xl text-4xl font-bold leading-tight tracking-tight text-[color:var(--color-ink)] sm:text-5xl">
-            {heading}
-          </h1>
-          {sub && (
-            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[color:var(--color-muted)]">
-              {sub}
-            </p>
-          )}
-          <p className="mt-8 font-semibold text-[color:var(--color-ink)]">
-            Need help with your vehicle? Let&rsquo;s get it assessed.
-          </p>
-          <div className="mt-4 flex flex-wrap items-center gap-3">
-            <CallWhatsApp context="home-hero" />
-            <ButtonLink to="/request-service" variant="outline">
-              Request a Service
-            </ButtonLink>
-          </div>
-          <div className="mt-3">
-            <ButtonLink to="/book" variant="outline">
-              Or book a time
-            </ButtonLink>
+          <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,80ch)_auto] lg:gap-16">
+            <div>
+              <h1 className="text-4xl font-extrabold leading-[1.05] tracking-tight text-[color:var(--color-ink)] sm:text-5xl lg:text-6xl">
+                {heading}
+              </h1>
+              {sub && (
+                <p className="mt-5 max-w-2xl text-lg leading-relaxed text-[color:var(--color-muted)]">
+                  {sub}
+                </p>
+              )}
+              <p className="mt-8 font-semibold text-[color:var(--color-ink)]">{heroCta}</p>
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <CallWhatsApp context="home-hero" />
+                <ButtonLink to="/request-service" variant="outline">
+                  Request a Service
+                </ButtonLink>
+              </div>
+              <div className="mt-3">
+                <ButtonLink to="/book" variant="outline">
+                  Or book a time
+                </ButtonLink>
+              </div>
+            </div>
+            <DatumMark size="lg" animate className="order-first justify-self-center lg:order-none" />
           </div>
         </Container>
       </section>
 
       {why && (
-        <Section eyebrow="Why Platinum Point" title="Dealer-level work, wherever your vehicle is">
+        <Section id="home-why" title="Dealer-level work, wherever your vehicle is">
           <Prose markdown={why} />
         </Section>
       )}
 
       {services.length > 0 && (
         <Section
-          eyebrow="Services"
+          id="home-services"
+          datum={{
+            count: services.length,
+            label: 'SERVICES',
+            meta: BUSINESS.baseArea.toUpperCase(),
+            animate: true,
+          }}
           title="What we do"
           tint
           intro="Every job is quoted individually — tell us what you need and we come back with a price."
@@ -110,7 +140,11 @@ export function HomePage() {
       )}
 
       {projects.length > 0 && (
-        <Section eyebrow="Recent work" title="Jobs we&rsquo;ve done">
+        <Section
+          id="home-work"
+          datum={{ count: projects.length, label: 'RECENT WORK', animate: true }}
+          title="Jobs we&rsquo;ve done"
+        >
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {projects.map((p) => (
               <ProjectCard key={p.id} project={p} />
@@ -120,7 +154,7 @@ export function HomePage() {
       )}
 
       {testimonials.length > 0 && (
-        <Section eyebrow="Testimonials" title="What customers say" tint>
+        <Section id="home-testimonials" title="What customers say" tint>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {testimonials.map((t) => (
               <TestimonialCard key={t.id} t={t} />
@@ -129,11 +163,8 @@ export function HomePage() {
         </Section>
       )}
 
-      <Section title={blocks['cta.default'] ?? 'Get your vehicle looked at'}>
-        <p className="max-w-xl text-[color:var(--color-muted)]">
-          Call, WhatsApp, or send a request and we&rsquo;ll come back to you — usually within a few
-          hours.
-        </p>
+      <Section id="home-cta" title={blocks['cta.default'] ?? 'Get your vehicle looked at'}>
+        <p className="max-w-xl text-[color:var(--color-muted)]">{closingCtaBody}</p>
         <div className="mt-5 flex flex-wrap gap-3">
           <CallWhatsApp context="home-footer-cta" />
           <ButtonLink to="/request-service" variant="outline">

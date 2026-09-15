@@ -53,7 +53,7 @@ export function RequestsPage() {
       ) : (
         <div className="overflow-x-auto rounded-lg border border-[color:var(--color-line)]">
           <table className="w-full text-sm">
-            <thead className="bg-[color:var(--color-surface)] text-left">
+            <thead className="sticky top-16 z-10 bg-[color:var(--color-surface)] text-left">
               <tr className="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-muted)]">
                 <th className="px-3 py-2">When</th>
                 <th className="px-3 py-2">Name</th>

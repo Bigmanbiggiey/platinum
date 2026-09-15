@@ -24,7 +24,6 @@ export function ServicesPage() {
         ])}
       />
       <Section
-        eyebrow="Services"
         title="What we do"
         intro="Pricing is per job — request a quote through the booking or service form."
       >
