@@ -120,12 +120,14 @@ export function ClientsPage() {
         </Card>
       )}
 
-      <Input
-        placeholder="Search name, phone or area…"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="max-w-sm"
-      />
+      <div className="sticky top-16 z-10 bg-[color:var(--color-ground)] py-2">
+        <Input
+          placeholder="Search name, phone or area…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="max-w-sm"
+        />
+      </div>
 
       {filtered.length === 0 ? (
         <EmptyState>

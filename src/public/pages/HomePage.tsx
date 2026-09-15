@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import { SeoHead } from '../components/ui/SeoHead';
 import { Section } from '../components/ui/Section';
@@ -5,6 +6,7 @@ import { Container } from '../components/ui/Container';
 import { CallWhatsApp } from '../components/ui/CallWhatsApp';
 import { ButtonLink } from '../components/ui/Button';
 import { DatumMark } from '../components/DatumMark';
+import { ProgressReadout } from '../components/ProgressReadout';
 import { Prose } from '../components/ui/Prose';
 import { ServiceCard, ProjectCard, TestimonialCard } from '../components/cards';
 import {
@@ -46,6 +48,21 @@ export function HomePage() {
     blocks['home.closing_cta_body'] ??
     "Call, WhatsApp, or send a request and we'll come back to you — usually within a few hours.";
 
+  const progressSections = useMemo(
+    () =>
+      [
+        { id: 'home-hero', label: 'INTRO', show: true },
+        { id: 'home-why', label: 'APPROACH', show: Boolean(why) },
+        { id: 'home-services', label: 'SERVICES', show: services.length > 0 },
+        { id: 'home-work', label: 'RECENT WORK', show: projects.length > 0 },
+        { id: 'home-testimonials', label: 'TESTIMONIALS', show: testimonials.length > 0 },
+        { id: 'home-cta', label: 'CONTACT', show: true },
+      ]
+        .filter((s) => s.show)
+        .map(({ id, label }) => ({ id, label })),
+    [why, services.length, projects.length, testimonials.length],
+  );
+
   return (
     <>
       <SeoHead
@@ -58,7 +75,9 @@ export function HomePage() {
         jsonLd={localBusinessJsonLd(settings)}
       />
 
-      <section className="border-b border-[color:var(--color-line)] py-16 sm:py-24">
+      <ProgressReadout sections={progressSections} />
+
+      <section id="home-hero" className="border-b border-[color:var(--color-line)] py-16 sm:py-24">
         <Container>
           <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,80ch)_auto] lg:gap-16">
             <div>
@@ -83,27 +102,25 @@ export function HomePage() {
                 </ButtonLink>
               </div>
             </div>
-            <DatumMark
-              size="lg"
-              animate
-              className="order-first justify-self-center lg:order-none"
-            />
+            <DatumMark size="lg" animate className="order-first justify-self-center lg:order-none" />
           </div>
         </Container>
       </section>
 
       {why && (
-        <Section title="Dealer-level work, wherever your vehicle is">
+        <Section id="home-why" title="Dealer-level work, wherever your vehicle is">
           <Prose markdown={why} />
         </Section>
       )}
 
       {services.length > 0 && (
         <Section
+          id="home-services"
           datum={{
             count: services.length,
             label: 'SERVICES',
             meta: BUSINESS.baseArea.toUpperCase(),
+            animate: true,
           }}
           title="What we do"
           tint
@@ -124,7 +141,8 @@ export function HomePage() {
 
       {projects.length > 0 && (
         <Section
-          datum={{ count: projects.length, label: 'RECENT WORK' }}
+          id="home-work"
+          datum={{ count: projects.length, label: 'RECENT WORK', animate: true }}
           title="Jobs we&rsquo;ve done"
         >
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -136,7 +154,7 @@ export function HomePage() {
       )}
 
       {testimonials.length > 0 && (
-        <Section title="What customers say" tint>
+        <Section id="home-testimonials" title="What customers say" tint>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {testimonials.map((t) => (
               <TestimonialCard key={t.id} t={t} />
@@ -145,7 +163,7 @@ export function HomePage() {
         </Section>
       )}
 
-      <Section title={blocks['cta.default'] ?? 'Get your vehicle looked at'}>
+      <Section id="home-cta" title={blocks['cta.default'] ?? 'Get your vehicle looked at'}>
         <p className="max-w-xl text-[color:var(--color-muted)]">{closingCtaBody}</p>
         <div className="mt-5 flex flex-wrap gap-3">
           <CallWhatsApp context="home-footer-cta" />

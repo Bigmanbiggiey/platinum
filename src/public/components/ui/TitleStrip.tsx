@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { CountUpNumeral } from './CountUpNumeral';
 
 /**
  * Shared section-header block. Replaces the old decorative "eyebrow" label that used
@@ -15,6 +16,8 @@ export interface DatumStripProps {
   label: string;
   /** Optional trailing segment after " · ", e.g. an area name. */
   meta?: string;
+  /** Opt-in: count up from 0 on scroll-into-view instead of a static number. */
+  animate?: boolean;
 }
 
 /** The mono/tracked-caps treatment reserved for real data (counts, breadcrumbs). */
@@ -35,7 +38,8 @@ export function TitleStrip({
     <header className="mb-8 max-w-2xl">
       {datum && (
         <p className={DATUM_TEXT_CLASS}>
-          {String(datum.count).padStart(2, '0')} {datum.label}
+          {datum.animate ? <CountUpNumeral count={datum.count} /> : String(datum.count).padStart(2, '0')}{' '}
+          {datum.label}
           {datum.meta ? ` · ${datum.meta}` : ''}
         </p>
       )}

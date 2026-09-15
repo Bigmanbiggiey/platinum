@@ -5,6 +5,7 @@ import { Container } from '../components/ui/Container';
 import { DATUM_TEXT_CLASS } from '../components/ui/TitleStrip';
 import { Prose } from '../components/ui/Prose';
 import { Img } from '../components/ui/Img';
+import { RevealImage } from '../components/ui/RevealImage';
 import { CallWhatsApp } from '../components/ui/CallWhatsApp';
 import { NotFoundPage } from './NotFoundPage';
 import { getProjectBySlug, getProjects } from '../../shared/content/queries';
@@ -55,10 +56,9 @@ export function PortfolioDetailPage() {
 
       <Section narrow>
         {project.cover && (
-          <Img
+          <RevealImage
             media={project.cover}
-            eager
-            className="w-full rounded-structural"
+            className="w-full"
             sizes="(min-width: 768px) 640px, 100vw"
           />
         )}

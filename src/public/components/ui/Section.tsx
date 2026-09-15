@@ -15,6 +15,8 @@ export function Section({
   narrow = false,
   tint = false,
   as: As = 'section',
+  id,
+  className = '',
 }: {
   children: ReactNode;
   title?: string;
@@ -23,9 +25,14 @@ export function Section({
   narrow?: boolean;
   tint?: boolean;
   as?: 'section' | 'div';
+  id?: string;
+  className?: string;
 }) {
   return (
-    <As className={`py-14 sm:py-20 ${tint ? 'bg-[color:var(--color-surface)]' : ''}`}>
+    <As
+      id={id}
+      className={`py-14 sm:py-20 ${tint ? 'bg-[color:var(--color-surface)]' : ''} ${className}`}
+    >
       <Container narrow={narrow}>
         <TitleStrip title={title} intro={intro} datum={datum} />
         {children}

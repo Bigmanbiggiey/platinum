@@ -1,9 +1,11 @@
+import { useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { Badge, Card, EmptyState, Label, PageTitle, Spinner } from '../components/ui';
 import { getDb, prettyType, statusTone } from '../lib/db';
 import { useUnreadCount } from '../lib/notifications';
 import { useRequests } from '../lib/requests';
+import { loadGsapCore, prefersReducedMotion } from '../../shared/lib/scrollFx';
 
 type CountFilter = [column: string, op: 'eq' | 'is', value: unknown];
 function useCount(key: string, table: string, filter?: CountFilter) {
@@ -21,11 +23,67 @@ function useCount(key: string, table: string, filter?: CountFilter) {
   });
 }
 
+/**
+ * Counts arrive asynchronously from React Query (undefined while loading, then a
+ * number) and these tiles are always above the fold, so the right trigger is value
+ * arrival, not scroll position — loadGsapCore(), no ScrollTrigger needed here.
+ */
+function AnimatedStatValue({ value }: { value: number | undefined }) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const prevRef = useRef(0);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    if (value === undefined) {
+      ref.current.textContent = '—';
+      return;
+    }
+    if (prefersReducedMotion()) {
+      ref.current.textContent = String(value);
+      prevRef.current = value;
+      return;
+    }
+
+    const el = ref.current;
+    const state = { val: prevRef.current };
+    let cancelled = false;
+    let ctx: { revert: () => void } | undefined;
+
+    loadGsapCore().then(({ gsap }) => {
+      if (cancelled) return;
+      ctx = gsap.context(() => {
+        gsap.to(state, {
+          val: value,
+          duration: 0.8,
+          ease: 'power2.out',
+          onUpdate: () => {
+            el.textContent = String(Math.round(state.val));
+          },
+          onComplete: () => {
+            prevRef.current = value;
+          },
+        });
+      });
+    });
+
+    return () => {
+      cancelled = true;
+      ctx?.revert();
+    };
+  }, [value]);
+
+  return (
+    <p ref={ref} className="mt-1 text-2xl font-bold text-[color:var(--color-ink)]">
+      {value ?? '—'}
+    </p>
+  );
+}
+
 function Stat({ label, value, to }: { label: string; value: number | undefined; to?: string }) {
   const body = (
     <div className="rounded-lg border border-[color:var(--color-line)] bg-[color:var(--color-surface)] p-4">
       <Label>{label}</Label>
-      <p className="mt-1 text-2xl font-bold text-[color:var(--color-ink)]">{value ?? '—'}</p>
+      <AnimatedStatValue value={value} />
     </div>
   );
   return to ? <Link to={to}>{body}</Link> : body;
