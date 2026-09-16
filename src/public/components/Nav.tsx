@@ -75,6 +75,9 @@ export function Nav() {
           });
         }
       });
+    }).catch(() => {
+      // gsap failed to load — don't leave the panel stuck open forever.
+      if (!cancelled && !open) setMounted(false);
     });
 
     return () => {

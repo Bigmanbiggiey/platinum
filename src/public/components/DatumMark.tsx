@@ -38,18 +38,21 @@ export function DatumMark({
         stroke="currentColor"
         strokeWidth="3"
         className="datum-mark-ring text-[color:var(--color-ink)]"
+        style={{ ['--dm-len' as string]: 252 }}
       />
       <path
         d="M50 6v10M50 84v10M6 50h10M84 50h10"
         stroke="currentColor"
         strokeWidth="3"
         className="datum-mark-crosshair text-[color:var(--color-ink)]"
+        style={{ ['--dm-len' as string]: 42 }}
       />
       <path
         d="M50 30 68 64H32Z"
         stroke="currentColor"
         strokeWidth="3"
         className="datum-mark-crosshair text-[color:var(--color-ink)]"
+        style={{ ['--dm-len' as string]: 114 }}
       />
       <circle cx="50" cy="30" r="5" className="datum-mark-node fill-signal" />
     </svg>

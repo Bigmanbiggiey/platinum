@@ -30,6 +30,14 @@ export function RevealImage({
 
     loadScrollTrigger().then(({ gsap }) => {
       if (cancelled || !overlayRef.current || !containerRef.current) return;
+      // If the image is already past the reveal point by the time gsap loads (e.g. it
+      // sits near the top of the page), leave it alone — setting the overlay opaque
+      // now would flash a solid block over an already-visible image before wiping it
+      // away again. Baseline scale-x-0 already shows the image; nothing to do.
+      const rect = containerRef.current.getBoundingClientRect();
+      const alreadyRevealed = rect.top <= window.innerHeight * 0.75;
+      if (alreadyRevealed) return;
+
       ctx = gsap.context(() => {
         gsap.set(overlayRef.current, { scaleX: 1 });
         gsap.to(overlayRef.current, {

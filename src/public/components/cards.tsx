@@ -70,8 +70,9 @@ export function TestimonialCard({ t }: { t: TestimonialPublicRow }) {
           {t.first_name} · {t.vehicle_label}
         </span>
         {t.rating && (
-          <span className="text-signal" aria-label={`${t.rating} out of 5`}>
-            {'★'.repeat(t.rating)}
+          <span aria-label={`${t.rating} out of 5`}>
+            <span className="text-signal">{'★'.repeat(t.rating)}</span>
+            <span className="text-[color:var(--color-line)]">{'★'.repeat(5 - t.rating)}</span>
           </span>
         )}
       </figcaption>
