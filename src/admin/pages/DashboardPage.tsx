@@ -68,6 +68,10 @@ function AnimatedStatValue({ value }: { value: number | undefined }) {
 
     return () => {
       cancelled = true;
+      // Capture wherever the tween had actually reached before killing it — revert()
+      // skips onComplete, so without this the next tween would restart from a stale
+      // (often 0) baseline instead of the number still on screen.
+      prevRef.current = state.val;
       ctx?.revert();
     };
   }, [value]);

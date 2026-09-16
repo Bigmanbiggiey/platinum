@@ -15,7 +15,14 @@ let scrollTriggerPromise: Promise<{
  */
 export function loadGsapCore() {
   if (!corePromise) {
-    corePromise = import('gsap').then(({ gsap }) => ({ gsap }));
+    corePromise = import('gsap')
+      .then(({ gsap }) => ({ gsap }))
+      .catch((err) => {
+        // Don't memoize a failed import — a flaky connection should get a real retry
+        // on the next call, not a permanently-rejected cached promise.
+        corePromise = null;
+        throw err;
+      });
   }
   return corePromise;
 }
@@ -26,8 +33,8 @@ export function loadGsapCore() {
  */
 export function loadScrollTrigger() {
   if (!scrollTriggerPromise) {
-    scrollTriggerPromise = Promise.all([import('gsap'), import('gsap/ScrollTrigger')]).then(
-      ([{ gsap }, { ScrollTrigger }]) => {
+    scrollTriggerPromise = Promise.all([import('gsap'), import('gsap/ScrollTrigger')])
+      .then(([{ gsap }, { ScrollTrigger }]) => {
         if (!scrollTriggerRegistered) {
           gsap.registerPlugin(ScrollTrigger);
           // Mobile-first audience: address-bar show/hide shouldn't re-trigger recalcs.
@@ -35,8 +42,11 @@ export function loadScrollTrigger() {
           scrollTriggerRegistered = true;
         }
         return { gsap, ScrollTrigger };
-      },
-    );
+      })
+      .catch((err) => {
+        scrollTriggerPromise = null;
+        throw err;
+      });
   }
   return scrollTriggerPromise;
 }
