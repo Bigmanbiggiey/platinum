@@ -31,7 +31,7 @@ review. Purpose: transparency and accountability to clients.
 | D2 | When does a job go public? | **Owner publishes manually, after completion.** Jobs are private by default. Client consent (checkbox at check-in) is a hard precondition. |
 | D3 | Relationship to Portfolio | **Linked entry.** Publishing creates a `portfolio_project` with `job_id`; the public page renders live from the job. Manual portfolio entries remain for non-job showcase work. |
 | D4 | Testimonials | **Both:** one-time private review link (primary) + owner-entered on the client's behalf (fallback, labelled publicly). |
-| D5 | Public vs private fields | Odometer **private**. Parts **public by name only** — no quantity field exists; any part cost is private. |
+| D5 | Public vs private fields | Odometer **private**. Parts **public by name only**. Quantity and cost are recorded in the admin but **never shown publicly**. |
 | D6 | Admin job page shape | **Tabs per stage**, fillable in any order (not a forced wizard). |
 
 ## 4. Data model
@@ -106,7 +106,8 @@ create type public.job_photo_stage as enum ('check_in', 'diagnosis', 'repair');
 | `job_id` | uuid → `job` on delete cascade | |
 | `finding_id` | uuid → `job_finding` on delete set null | Which fix it was used for. |
 | `name` | text not null | **Public** (when the job is published). |
-| `cost_kes` | integer | **Private.** Optional. No quantity field (D5). |
+| `quantity` | numeric(8,2) not null default 1 | **Private** (admin only, D5). Numeric so litres of oil etc. fit. |
+| `cost_kes` | integer | **Private.** Optional; the cost of this line (not a unit price). |
 
 **`review_invite`**
 
@@ -161,7 +162,7 @@ to `anon, authenticated`, and **no other anon access to any job table**:
 
 **Never selected into the view:** client name/phone/email/any `client` column,
 `vehicle.registration`, `vehicle.vin`, `odometer_km`, `labour_*`, `internal_notes`,
-`job_part.cost_kes`, anything on `review_invite`.
+`job_part.quantity`, `job_part.cost_kes`, anything on `review_invite`.
 
 **Media policy:** extend `"media: anon reads images of published work"` with a third
 `exists` branch — the media row is referenced by a `job_photo` with `is_public` whose job
@@ -209,7 +210,7 @@ panel (§5.5).
 2. **Diagnosis** — findings list: add / reorder / edit title + diagnosis; per-finding
    photo upload (stage `diagnosis`). Uses the phone camera (`<input type=file accept="image/*" capture="environment">`).
 3. **Repair** — per finding: fix notes, outcome (fixed / deferred / not fixed), "after"
-   photos (stage `repair`), parts (name + optional private cost).
+   photos (stage `repair`), parts (name + quantity + optional cost; quantity and cost are private).
 4. **Wrap-up** — labour hours + cost, a private cost summary (labour + parts),
    **Mark completed**; **Generate review link** (shows the URL once; Copy, and
    "Send on WhatsApp" opening `wa.me/<client whatsapp or phone>?text=…`); **Add testimonial
