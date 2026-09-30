@@ -14,6 +14,7 @@
 | **1 — Foundation** | ✅ Complete & approved. |
 | **2 — Public website MVP** | 🟢 Built; **live on private staging**; DB schema + RLS + `submit` function applied. Left: formal Lighthouse/axe pass + **Go-Live (WP14 Part C)**. |
 | **3 — Admin MVP** | 🟢 **Functionally complete (WP1–WP13).** Auth+roles+Team, Dashboard+Notifications, Requests+convert, Schedule, full CMS, Media, Business Settings, publish→rebuild + emails (functions deployed; switch on with secrets). Left: WP14 owner acceptance run; `gen types` cleanup. |
+| **Jobs (ADR-0014)** | 🟡 **J1 (admin work orders) built** on `feature/jobs-j1`. Next: owner acceptance on staging, then J2 (publish to portfolio) and J3 (review links) — each planned separately. Spec: `docs/superpowers/specs/2026-09-30-jobs-work-orders-design.md`. |
 
 ## What's live / where
 
