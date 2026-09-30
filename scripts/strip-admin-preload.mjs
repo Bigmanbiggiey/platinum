@@ -24,6 +24,8 @@ async function htmlFiles(dir) {
 
 let changed = 0;
 for (const file of await htmlFiles(DIST)) {
+  // admin.html is the admin's own entry — it needs its preloads.
+  if (file === join(DIST, 'admin.html')) continue;
   const html = await readFile(file, 'utf8');
   const next = html.replace(PRELOAD_RE, '');
   if (next !== html) {

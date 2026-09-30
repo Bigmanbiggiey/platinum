@@ -57,8 +57,9 @@ Left:
     — customer booking emails + owner enquiry emails.
 - **Add the staff member:** Team → Invite (needs their email).
 - **Carried cleanup:** swap `src/shared/supabase/types.ts` for
-  `npx supabase gen types typescript --linked`; the `/admin` hydration warning is
-  still benign (dedicated entry optional).
+  `npx supabase gen types typescript --linked`. (The `/admin` hydration error —
+  React #418 on any hard load of an admin URL — is fixed: the admin has its own
+  client-only entry, `admin.html`.)
 
 ### B. Phase 2 — to close it out
 

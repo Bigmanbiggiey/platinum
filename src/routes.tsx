@@ -25,8 +25,8 @@ import { NotFoundPage } from './public/pages/NotFoundPage';
 
 /**
  * Route table (ADR-0010). Public routes prerender via vite-react-ssg (ADR-0003) with
- * their loader data baked in; `/admin/*` is a lazy noindex chunk excluded from
- * prerender in main.tsx.
+ * their loader data baked in. The admin is NOT here: it has its own client-only
+ * entry (admin.html → src/admin/main.tsx) so it is never hydrated over public HTML.
  */
 export const routes: RouteRecord[] = [
   {
@@ -59,10 +59,6 @@ export const routes: RouteRecord[] = [
       { path: '404', element: <NotFoundPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
-  },
-  {
-    path: '/admin/*',
-    lazy: () => import('./admin/AdminEntry'),
   },
 ];
 
