@@ -16,7 +16,7 @@ export function PartsEditor({
   busy = false,
 }: {
   parts: JobPart[];
-  onAdd: (p: NewPart) => void;
+  onAdd: (p: NewPart) => Promise<unknown> | void;
   onRemove: (id: string) => void;
   busy?: boolean;
 }) {
@@ -25,12 +25,16 @@ export function PartsEditor({
   const [cost, setCost] = useState('');
   const canAdd = name.trim() !== '' && Number(qty) > 0 && !busy;
 
-  const add = () => {
-    onAdd({
-      name: name.trim(),
-      quantity: Number(qty),
-      cost_kes: cost.trim() === '' ? null : Math.round(Number(cost)),
-    });
+  const add = async () => {
+    try {
+      await onAdd({
+        name: name.trim(),
+        quantity: Number(qty),
+        cost_kes: cost.trim() === '' ? null : Math.round(Number(cost)),
+      });
+    } catch {
+      return; // keep the row so nothing typed is lost; the caller shows the error
+    }
     setName('');
     setQty('1');
     setCost('');
@@ -89,7 +93,7 @@ export function PartsEditor({
           aria-label="Add part"
           className="col-span-2 sm:col-span-1"
           disabled={!canAdd}
-          onClick={add}
+          onClick={() => void add()}
         >
           Add
         </Button>

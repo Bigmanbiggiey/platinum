@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Card, Input, Label, Labeled } from '../../components/ui';
-import { findings, parts, useDeleteJob, useUpdateJob } from '../../lib/jobData';
+import { findings, parts, photos, useDeleteJob, useUpdateJob } from '../../lib/jobData';
 import { formatKes, jobCostSummary, pendingFindingsCount, type JobWithRefs } from '../../lib/jobs';
+import { JobPhotos } from './JobPhotos';
+import { PartsEditor } from './PartsEditor';
+import { usePhotoActions } from './usePhotoActions';
 
 export function WrapUpTab({ job }: { job: JobWithRefs }) {
   return (
     <div className="space-y-4">
       <LabourCard key={`${job.labour_hours}|${job.labour_cost_kes}`} job={job} />
+      <UnlinkedCard job={job} />
       <CostSummary job={job} />
       <StatusCard job={job} />
       <DeleteCard job={job} />
@@ -53,6 +57,49 @@ function LabourCard({ job }: { job: JobWithRefs }) {
       >
         Save labour
       </Button>
+      {update.isError && <p className="text-xs text-signal">{(update.error as Error).message}</p>}
+    </Card>
+  );
+}
+
+/** Photos and parts whose problem was deleted: still on the job, still costed, but shown nowhere else. */
+function UnlinkedCard({ job }: { job: JobWithRefs }) {
+  const allPhotos = photos.useList(job.id);
+  const allParts = parts.useList(job.id);
+  const addPart = parts.useCreate(job.id);
+  const removePart = parts.useRemove(job.id);
+  const actions = usePhotoActions(job);
+  const loosePhotos = (allPhotos.data ?? []).filter(
+    (p) => p.finding_id === null && p.stage !== 'check_in',
+  );
+  const looseParts = (allParts.data ?? []).filter((p) => p.finding_id === null);
+  if (loosePhotos.length === 0 && looseParts.length === 0) return null;
+  return (
+    <Card className="space-y-3">
+      <Label>Unlinked photos &amp; parts</Label>
+      <p className="text-xs text-[color:var(--color-muted)]">
+        These belonged to a problem that was deleted.
+      </p>
+      {loosePhotos.length > 0 && (
+        <JobPhotos
+          photos={loosePhotos}
+          canUpload={false}
+          onUpload={() => undefined}
+          onTogglePublic={actions.togglePublic}
+          onDelete={actions.remove}
+        />
+      )}
+      {actions.error && <p className="text-xs text-signal">{actions.error}</p>}
+      <PartsEditor
+        parts={looseParts}
+        busy={addPart.isPending}
+        onAdd={(p) => addPart.mutateAsync({ ...p, finding_id: null })}
+        onRemove={(id) => removePart.mutate(id)}
+      />
+      {addPart.isError && <p className="text-xs text-signal">{(addPart.error as Error).message}</p>}
+      {removePart.isError && (
+        <p className="text-xs text-signal">{(removePart.error as Error).message}</p>
+      )}
     </Card>
   );
 }
@@ -136,6 +183,7 @@ function StatusCard({ job }: { job: JobWithRefs }) {
           </Button>
         </div>
       )}
+      {update.isError && <p className="text-xs text-signal">{(update.error as Error).message}</p>}
       {job.service_request_id && job.status !== 'completed' && (
         <p className="text-xs text-[color:var(--color-muted)]">
           Completing the job also marks its request completed.
@@ -148,22 +196,32 @@ function StatusCard({ job }: { job: JobWithRefs }) {
 function DeleteCard({ job }: { job: JobWithRefs }) {
   const del = useDeleteJob();
   const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
   return (
-    <Button
-      variant="danger"
-      disabled={del.isPending}
-      onClick={async () => {
-        if (
-          confirm(
-            `Delete job ${job.job_number}? Its problems, photo links and parts are removed. Photos stay in the media library.`,
-          )
-        ) {
-          await del.mutateAsync(job.id);
-          navigate('/admin/jobs');
-        }
-      }}
-    >
-      Delete job
-    </Button>
+    <div className="space-y-2">
+      <Button
+        variant="danger"
+        disabled={del.isPending}
+        onClick={async () => {
+          if (
+            confirm(
+              `Delete job ${job.job_number}? Its problems, photo links and parts are removed. Photos stay in the media library.`,
+            )
+          ) {
+            setError(null);
+            try {
+              await del.mutateAsync(job.id);
+            } catch (e) {
+              setError((e as Error).message);
+              return;
+            }
+            navigate('/admin/jobs');
+          }
+        }}
+      >
+        Delete job
+      </Button>
+      {error && <p className="text-xs text-signal">{error}</p>}
+    </div>
   );
 }

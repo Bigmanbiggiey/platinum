@@ -47,6 +47,9 @@ function ConsentCard({ job }: { job: JobWithRefs }) {
           </span>
         </span>
       </label>
+      {update.isError && (
+        <p className="mt-2 text-xs text-signal">{(update.error as Error).message}</p>
+      )}
     </Card>
   );
 }

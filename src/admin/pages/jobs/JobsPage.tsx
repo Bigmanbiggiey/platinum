@@ -60,6 +60,8 @@ export function JobsPage() {
 
       {q.isLoading ? (
         <Spinner />
+      ) : q.isError ? (
+        <p className="text-sm text-signal">{(q.error as Error).message}</p>
       ) : rows.length === 0 ? (
         <EmptyState>
           {filter === 'open' && !search.trim()

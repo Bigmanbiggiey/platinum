@@ -11,6 +11,7 @@ export function JobPhotos({
   onDelete,
   uploading = false,
   label = 'Add photos',
+  canUpload = true,
 }: {
   photos: JobPhoto[];
   onUpload: (files: File[]) => void;
@@ -18,6 +19,7 @@ export function JobPhotos({
   onDelete: (photo: JobPhoto) => void;
   uploading?: boolean;
   label?: string;
+  canUpload?: boolean;
 }) {
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -59,23 +61,27 @@ export function JobPhotos({
           ))}
         </div>
       )}
-      {/* No `capture` attribute: phones then offer both "Take photo" and the gallery. */}
-      <input
-        ref={fileRef}
-        type="file"
-        accept="image/*"
-        multiple
-        aria-label={label}
-        className="sr-only"
-        onChange={(e) => {
-          const files = Array.from(e.target.files ?? []);
-          if (files.length) onUpload(files);
-          e.target.value = '';
-        }}
-      />
-      <Button className="mt-2" disabled={uploading} onClick={() => fileRef.current?.click()}>
-        {uploading ? 'Uploading…' : label}
-      </Button>
+      {canUpload && (
+        <>
+          {/* No `capture` attribute: phones then offer both "Take photo" and the gallery. */}
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            multiple
+            aria-label={label}
+            className="sr-only"
+            onChange={(e) => {
+              const files = Array.from(e.target.files ?? []);
+              if (files.length) onUpload(files);
+              e.target.value = '';
+            }}
+          />
+          <Button className="mt-2" disabled={uploading} onClick={() => fileRef.current?.click()}>
+            {uploading ? 'Uploading…' : label}
+          </Button>
+        </>
+      )}
     </div>
   );
 }

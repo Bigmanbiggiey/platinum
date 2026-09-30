@@ -126,6 +126,9 @@ function JobHeader({ job }: { job: JobWithRefs }) {
           </Select>
           <Badge tone={jobStatusTone(job.status)}>{jobStatusLabel[job.status]}</Badge>
         </div>
+        {update.isError && (
+          <p className="mt-1 text-xs text-signal">{(update.error as Error).message}</p>
+        )}
       </Labeled>
     </Card>
   );

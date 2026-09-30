@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { PartsEditor } from './PartsEditor';
 import type { JobPart } from '../../lib/jobs';
@@ -52,5 +52,19 @@ describe('<PartsEditor />', () => {
     expect(screen.getByText('KES 800')).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Remove Oil filter' }));
     expect(onRemove).toHaveBeenCalledWith('p1');
+  });
+
+  it('keeps the row when onAdd rejects, and only clears it once onAdd resolves', async () => {
+    const user = userEvent.setup();
+    const onAdd = vi.fn().mockRejectedValueOnce(new Error('nope')).mockResolvedValueOnce(undefined);
+    render(<PartsEditor parts={[]} onAdd={onAdd} onRemove={vi.fn()} />);
+
+    await user.type(screen.getByLabelText('Part name'), 'Spark plug');
+    await user.click(screen.getByRole('button', { name: 'Add part' }));
+    expect(onAdd).toHaveBeenCalledTimes(1);
+    expect(screen.getByLabelText('Part name')).toHaveValue('Spark plug');
+
+    await user.click(screen.getByRole('button', { name: 'Add part' }));
+    await waitFor(() => expect(screen.getByLabelText('Part name')).toHaveValue(''));
   });
 });

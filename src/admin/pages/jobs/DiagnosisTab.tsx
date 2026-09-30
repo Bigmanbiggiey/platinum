@@ -18,8 +18,10 @@ export function DiagnosisTab({ job }: { job: JobWithRefs }) {
 
   const add = () => {
     const last = rows[rows.length - 1];
-    create.mutate({ title: title.trim(), display_order: (last?.display_order ?? 0) + 10 });
-    setTitle('');
+    create.mutate(
+      { title: title.trim(), display_order: (last?.display_order ?? 0) + 10 },
+      { onSuccess: () => setTitle('') },
+    );
   };
 
   // Swap display_order with the neighbour.
@@ -46,11 +48,13 @@ export function DiagnosisTab({ job }: { job: JobWithRefs }) {
             (p) => p.finding_id === fd.id && p.stage === 'diagnosis',
           )}
           actions={actions}
+          moving={update.isPending}
           onUp={i > 0 ? () => move(i, -1) : undefined}
           onDown={i < rows.length - 1 ? () => move(i, 1) : undefined}
         />
       ))}
       {actions.error && <p className="text-xs text-signal">{actions.error}</p>}
+      {update.isError && <p className="text-xs text-signal">{(update.error as Error).message}</p>}
 
       <Card>
         <Labeled label="Add a problem found">
@@ -69,6 +73,9 @@ export function DiagnosisTab({ job }: { job: JobWithRefs }) {
             </Button>
           </div>
         </Labeled>
+        {create.isError && (
+          <p className="mt-2 text-xs text-signal">{(create.error as Error).message}</p>
+        )}
       </Card>
     </div>
   );
@@ -79,6 +86,7 @@ function FindingCard({
   finding,
   photos: findingPhotos,
   actions,
+  moving = false,
   onUp,
   onDown,
 }: {
@@ -86,6 +94,7 @@ function FindingCard({
   finding: JobFinding;
   photos: JobPhoto[];
   actions: PhotoActions;
+  moving?: boolean;
   onUp?: () => void;
   onDown?: () => void;
 }) {
@@ -103,7 +112,7 @@ function FindingCard({
           <button
             type="button"
             aria-label="Move up"
-            disabled={!onUp}
+            disabled={!onUp || moving}
             onClick={onUp}
             className="px-1 disabled:opacity-30"
           >
@@ -112,7 +121,7 @@ function FindingCard({
           <button
             type="button"
             aria-label="Move down"
-            disabled={!onDown}
+            disabled={!onDown || moving}
             onClick={onDown}
             className="px-1 disabled:opacity-30"
           >
@@ -150,6 +159,8 @@ function FindingCard({
           Delete problem
         </Button>
       </div>
+      {update.isError && <p className="text-xs text-signal">{(update.error as Error).message}</p>}
+      {remove.isError && <p className="text-xs text-signal">{(remove.error as Error).message}</p>}
       <Label>Before photos</Label>
       <JobPhotos
         photos={findingPhotos}

@@ -39,11 +39,18 @@ export function usePhotoActions(job: Pick<Job, 'id' | 'vehicle_label'>) {
     }
   };
 
-  const togglePublic = (p: JobPhoto) =>
-    update.mutate({ id: p.id, patch: { is_public: !p.is_public } });
+  const onError = (e: unknown) => setError((e as Error).message);
+
+  const togglePublic = (p: JobPhoto) => {
+    setError(null);
+    update.mutate({ id: p.id, patch: { is_public: !p.is_public } }, { onError });
+  };
 
   const remove = (p: JobPhoto) => {
-    if (confirm('Remove this photo from the job? It stays in the media library.')) del.mutate(p.id);
+    if (confirm('Remove this photo from the job? It stays in the media library.')) {
+      setError(null);
+      del.mutate(p.id, { onError });
+    }
   };
 
   return { upload, togglePublic, remove, uploading, error };
