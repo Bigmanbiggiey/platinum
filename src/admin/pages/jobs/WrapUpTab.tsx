@@ -1,5 +1,169 @@
-import type { JobWithRefs } from '../../lib/jobs';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button, Card, Input, Label, Labeled } from '../../components/ui';
+import { findings, parts, useDeleteJob, useUpdateJob } from '../../lib/jobData';
+import { formatKes, jobCostSummary, pendingFindingsCount, type JobWithRefs } from '../../lib/jobs';
 
 export function WrapUpTab({ job }: { job: JobWithRefs }) {
-  return <p className="text-sm text-[color:var(--color-muted)]">{job.job_number}</p>;
+  return (
+    <div className="space-y-4">
+      <LabourCard key={`${job.labour_hours}|${job.labour_cost_kes}`} job={job} />
+      <CostSummary job={job} />
+      <StatusCard job={job} />
+      <DeleteCard job={job} />
+    </div>
+  );
+}
+
+function LabourCard({ job }: { job: JobWithRefs }) {
+  const update = useUpdateJob(job.id);
+  const [hours, setHours] = useState(job.labour_hours?.toString() ?? '');
+  const [cost, setCost] = useState(job.labour_cost_kes?.toString() ?? '');
+  return (
+    <Card className="space-y-3">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Labeled label="Labour hours — private">
+          <Input
+            type="number"
+            min="0"
+            step="0.25"
+            inputMode="decimal"
+            value={hours}
+            onChange={(e) => setHours(e.target.value)}
+          />
+        </Labeled>
+        <Labeled label="Labour cost (KES) — private">
+          <Input
+            type="number"
+            min="0"
+            inputMode="numeric"
+            value={cost}
+            onChange={(e) => setCost(e.target.value)}
+          />
+        </Labeled>
+      </div>
+      <Button
+        disabled={update.isPending}
+        onClick={() =>
+          update.mutate({
+            labour_hours: hours.trim() === '' ? null : Number(hours),
+            labour_cost_kes: cost.trim() === '' ? null : Math.round(Number(cost)),
+          })
+        }
+      >
+        Save labour
+      </Button>
+    </Card>
+  );
+}
+
+function CostSummary({ job }: { job: JobWithRefs }) {
+  const allParts = parts.useList(job.id);
+  const s = jobCostSummary(job.labour_cost_kes, allParts.data ?? []);
+  return (
+    <Card>
+      <Label>Cost summary — private, never shown on the website</Label>
+      <dl className="mt-2 grid grid-cols-[1fr_auto] gap-y-1 text-sm">
+        <dt className="text-[color:var(--color-muted)]">Labour</dt>
+        <dd className="text-right font-mono">{formatKes(s.labour)}</dd>
+        <dt className="text-[color:var(--color-muted)]">Parts</dt>
+        <dd className="text-right font-mono">{formatKes(s.parts)}</dd>
+        <dt className="font-semibold text-[color:var(--color-ink)]">Total</dt>
+        <dd className="text-right font-mono font-semibold">{formatKes(s.total)}</dd>
+      </dl>
+    </Card>
+  );
+}
+
+function StatusCard({ job }: { job: JobWithRefs }) {
+  const update = useUpdateJob(job.id);
+  const list = findings.useList(job.id);
+  const pending = pendingFindingsCount(list.data ?? []);
+
+  const complete = () => {
+    if (
+      pending > 0 &&
+      !confirm(`${pending} problem(s) still have no outcome. Mark the job completed anyway?`)
+    ) {
+      return;
+    }
+    update.mutate({ status: 'completed' });
+  };
+
+  return (
+    <Card className="space-y-3">
+      <Label>Job status</Label>
+      {job.status === 'completed' ? (
+        <>
+          <p className="text-sm text-teal">
+            ✓ Completed{' '}
+            {job.completed_at &&
+              new Date(job.completed_at).toLocaleDateString('en-KE', { dateStyle: 'medium' })}
+            .
+          </p>
+          <Button
+            disabled={update.isPending}
+            onClick={() => update.mutate({ status: 'in_repair' })}
+          >
+            Re-open job
+          </Button>
+        </>
+      ) : job.status === 'cancelled' ? (
+        <>
+          <p className="text-sm text-[color:var(--color-muted)]">This job was cancelled.</p>
+          <Button
+            disabled={update.isPending}
+            onClick={() => update.mutate({ status: 'checked_in' })}
+          >
+            Re-open job
+          </Button>
+        </>
+      ) : (
+        <div className="flex flex-wrap gap-2">
+          <Button variant="accent" disabled={update.isPending} onClick={complete}>
+            Mark completed
+          </Button>
+          <Button
+            variant="danger"
+            disabled={update.isPending}
+            onClick={() => {
+              if (confirm('Cancel this job? It stays on file for history.')) {
+                update.mutate({ status: 'cancelled' });
+              }
+            }}
+          >
+            Cancel job
+          </Button>
+        </div>
+      )}
+      {job.service_request_id && job.status !== 'completed' && (
+        <p className="text-xs text-[color:var(--color-muted)]">
+          Completing the job also marks its request completed.
+        </p>
+      )}
+    </Card>
+  );
+}
+
+function DeleteCard({ job }: { job: JobWithRefs }) {
+  const del = useDeleteJob();
+  const navigate = useNavigate();
+  return (
+    <Button
+      variant="danger"
+      disabled={del.isPending}
+      onClick={async () => {
+        if (
+          confirm(
+            `Delete job ${job.job_number}? Its problems, photo links and parts are removed. Photos stay in the media library.`,
+          )
+        ) {
+          await del.mutateAsync(job.id);
+          navigate('/admin/jobs');
+        }
+      }}
+    >
+      Delete job
+    </Button>
+  );
 }
