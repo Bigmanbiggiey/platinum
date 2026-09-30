@@ -14,7 +14,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (active) setState({ loading: false, session: null, profile: null });
         return;
       }
-      const profile = await getProfile();
+      const profile = await getProfile(session.user.id);
       if (active) setState({ loading: false, session, profile });
     };
 
