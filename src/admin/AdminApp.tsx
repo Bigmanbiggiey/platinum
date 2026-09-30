@@ -25,6 +25,9 @@ import { ServiceEditPage } from './pages/content/ServiceEditPage';
 import { PortfolioListPage } from './pages/content/PortfolioListPage';
 import { PortfolioEditPage } from './pages/content/PortfolioEditPage';
 import { MediaPage } from './pages/content/MediaPage';
+import { JobsPage } from './pages/jobs/JobsPage';
+import { NewJobPage } from './pages/jobs/NewJobPage';
+import { JobDetailPage } from './pages/jobs/JobDetailPage';
 import { PlaceholderPage } from './pages/PlaceholderPage';
 
 const queryClient = new QueryClient({
@@ -46,6 +49,9 @@ export function AdminApp() {
               <Route path="notifications" element={<NotificationsPage />} />
               <Route path="requests" element={<RequestsPage />} />
               <Route path="requests/:id" element={<RequestDetailPage />} />
+              <Route path="jobs" element={<JobsPage />} />
+              <Route path="jobs/new" element={<NewJobPage />} />
+              <Route path="jobs/:id" element={<JobDetailPage />} />
               <Route path="schedule" element={<SchedulePage />} />
               <Route path="clients" element={<ClientsPage />} />
               <Route path="clients/:id" element={<ClientDetailPage />} />

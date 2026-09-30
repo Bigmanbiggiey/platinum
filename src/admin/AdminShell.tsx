@@ -10,6 +10,7 @@ const baseNav = [
   { to: '/admin', label: 'Dashboard', icon: 'dashboard', end: true },
   { to: '/admin/notifications', label: 'Notifications', icon: 'notifications', badge: true },
   { to: '/admin/requests', label: 'Requests', icon: 'requests' },
+  { to: '/admin/jobs', label: 'Jobs', icon: 'jobs' },
   { to: '/admin/schedule', label: 'Schedule', icon: 'schedule' },
   { to: '/admin/clients', label: 'Clients', icon: 'clients' },
   { to: '/admin/content', label: 'Website content', icon: 'content' },
