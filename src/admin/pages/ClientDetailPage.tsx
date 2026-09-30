@@ -15,6 +15,8 @@ import {
 } from '../components/ui';
 import { clients, vehicles, type AdminClient } from '../lib/resources';
 import { getDb, statusTone } from '../lib/db';
+import { useClientJobs } from '../lib/jobData';
+import { groupJobsByVehicle, jobStatusLabel, jobStatusTone } from '../lib/jobs';
 import { InlineCrud, type FieldDef } from '../components/InlineCrud';
 
 const vehicleFields: FieldDef[] = [
@@ -51,6 +53,8 @@ export function ClientDetailPage() {
       return data ?? [];
     },
   });
+
+  const jobs = useClientJobs(id);
 
   // Scope the vehicles resource list to this client.
   const clientVehicles = vehicles.useList((rows) => rows.filter((v) => v.client_id === id));
@@ -145,6 +149,42 @@ export function ClientDetailPage() {
       </div>
 
       <div>
+        <h2 className="mb-2 font-semibold text-[color:var(--color-ink)]">Jobs</h2>
+        {jobs.isLoading ? (
+          <Spinner />
+        ) : (jobs.data ?? []).length === 0 ? (
+          <EmptyState>No jobs for this client yet.</EmptyState>
+        ) : (
+          <div className="space-y-3">
+            {groupJobsByVehicle(jobs.data!).map((g) => (
+              <div key={g.key}>
+                <h3 className="mb-1 text-sm font-semibold text-[color:var(--color-muted)]">
+                  {g.label}
+                </h3>
+                <Card className="divide-y divide-[color:var(--color-line)] p-0">
+                  {g.jobs.map((j) => (
+                    <Link
+                      key={j.id}
+                      to={`/admin/jobs/${j.id}`}
+                      className="flex items-center gap-3 px-4 py-2 hover:bg-[color:var(--color-ground)]"
+                    >
+                      <span className="font-mono text-[10px] text-steel">
+                        {new Date(j.checked_in_at).toLocaleDateString('en-KE')}
+                      </span>
+                      <span className="font-mono text-xs">{j.job_number}</span>
+                      <span className="ml-auto">
+                        <Badge tone={jobStatusTone(j.status)}>{jobStatusLabel[j.status]}</Badge>
+                      </span>
+                    </Link>
+                  ))}
+                </Card>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div>
         <h2 className="mb-2 font-semibold text-[color:var(--color-ink)]">Requests</h2>
         {requests.isLoading ? (
           <Spinner />
@@ -172,7 +212,11 @@ export function ClientDetailPage() {
       <Button
         variant="danger"
         onClick={async () => {
-          if (confirm('Delete this client? Vehicles are removed too; requests are unlinked.')) {
+          if (
+            confirm(
+              'Delete this client? Vehicles are removed too; requests and jobs are kept but unlinked.',
+            )
+          ) {
             await remove.mutateAsync(id!);
             navigate('/admin/clients');
           }
