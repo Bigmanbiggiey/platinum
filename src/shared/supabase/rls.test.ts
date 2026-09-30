@@ -72,6 +72,13 @@ describe.skipIf(!anon)('RLS — anon role', () => {
       expect(error?.code, `${table} must be sealed from anon`).toBe('42501');
     }
   });
+
+  it('CANNOT read the job tables (J1)', async () => {
+    for (const table of ['job', 'job_finding', 'job_photo', 'job_part', 'job_number_counter']) {
+      const { error } = await db.from(table).select('*').limit(1);
+      expect(error?.code, `${table} must be sealed from anon`).toBe('42501');
+    }
+  });
 });
 
 describe.skipIf(!anon || !adminEmail || !adminPassword)('RLS — authenticated admin', () => {
@@ -102,6 +109,15 @@ describe.skipIf(!anon || !adminEmail || !adminPassword)('RLS — authenticated a
       const { error } = await admin.from(table).select('id').limit(1);
       expect(error, `${table} should be readable by admin`).toBeNull();
     }
+  });
+
+  it('can read the job tables but not the job-number counter (J1)', async () => {
+    for (const table of ['job', 'job_finding', 'job_photo', 'job_part']) {
+      const { error } = await admin.from(table).select('id').limit(1);
+      expect(error, `${table} should be readable by admin`).toBeNull();
+    }
+    const counter = await admin.from('job_number_counter').select('*').limit(1);
+    expect(counter.error?.code).toBe('42501');
   });
 
   it('can create + delete a client (full CRUD)', async () => {
