@@ -510,7 +510,7 @@ handling — a significant build that would materially delay the MVP.
 
 ## ADR-0014 — Jobs (work orders) published as portfolio timelines
 
-**Status:** **Proposed 2026-09-30.** Awaiting owner approval. Design:
+**Status:** **Accepted 2026-09-30.** Design:
 `docs/superpowers/specs/2026-09-30-jobs-work-orders-design.md`.
 
 ### Context
@@ -528,7 +528,7 @@ management) and covers **P-1** (vehicle service history), both Post-MVP.
 | B. Copy job into portfolio | Publish copies fields into a normal portfolio entry. | Simpler, but the two drift. |
 | C. Replace Portfolio with `/jobs` | New public section, Portfolio retired. | Breaks URLs/nav; loses non-job showcase pieces. |
 
-### Decision (proposed)
+### Decision
 **Option A.** Full work order (`job`, `job_finding`, `job_photo`, `job_part`,
 `review_invite`); private by default; the owner publishes manually after completion, and
 only with recorded client consent (enforced in the database). Client identity,

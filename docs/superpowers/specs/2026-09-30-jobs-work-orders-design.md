@@ -1,10 +1,9 @@
 # Jobs (work orders) → published portfolio timeline — design
 
-> **Status:** DRAFT — design approved section-by-section in chat (2026-09-30).
-> **Not approved for build.** Pulls roadmap items **P-1** (vehicle service history) and
-> **P-2** (job / work-order management) forward, ahead of Phase 2 Part C (Go-Live). Per the
-> phase-gated workflow this needs the owner's explicit sign-off — see ADR-0014 in
-> `docs/decisions.md` (Proposed).
+> **Status:** **APPROVED 2026-09-30** (spec + ADR-0014). Pulls roadmap items **P-1**
+> (vehicle service history) and **P-2** (job / work-order management) forward, ahead of
+> Phase 2 Part C (Go-Live). Build plans: `docs/superpowers/plans/2026-09-30-jobs-j1-admin.md`
+> (J1); J2 and J3 are planned after J1 is accepted on staging.
 
 ---
 
