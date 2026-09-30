@@ -5,8 +5,8 @@
  * - When VITE_SITE_NOINDEX is set (staging / not-yet-public), robots.txt becomes a
  *   blanket `Disallow: /` and the sitemap line is omitted. The static
  *   public/robots.txt is a dev-only fallback; this file is authoritative for builds.
- * - The admin is never prerendered (main.tsx `includedRoutes`), so it can't appear
- *   in the sitemap; it is also Disallowed in robots for good measure.
+ * - The admin is never prerendered; its client-only entry (admin.html) is skipped
+ *   below, so it can't appear in the sitemap. It is also Disallowed in robots.
  */
 import { readdir, writeFile } from 'node:fs/promises';
 import { join, relative, sep } from 'node:path';
@@ -29,6 +29,7 @@ function toRoute(file) {
   const rel = relative(DIST, file).split(sep).join('/');
   if (rel === 'index.html') return '/';
   if (rel === '404.html') return null;
+  if (rel === 'admin.html') return null; // the admin's client-only entry, never public
   if (rel.endsWith('/index.html')) return `/${rel.slice(0, -'/index.html'.length)}`;
   return `/${rel.slice(0, -'.html'.length)}`;
 }

@@ -7,8 +7,8 @@ import './index.css';
 export const createRoot = ViteReactSSG({ routes });
 
 /**
- * Keep the admin out of the static prerender. It ships as a client-only lazy chunk
- * and must never be crawled or turned into HTML files.
+ * Belt and braces: never prerender anything under /admin. The admin is not in this
+ * route table at all — it has its own client-only entry (admin.html).
  */
 export function includedRoutes(paths: string[]): string[] {
   return paths.filter((path) => !path.startsWith('/admin'));
