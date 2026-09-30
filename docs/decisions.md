@@ -508,6 +508,44 @@ handling — a significant build that would materially delay the MVP.
 
 ---
 
+## ADR-0014 — Jobs (work orders) published as portfolio timelines
+
+**Status:** **Accepted 2026-09-30.** Design:
+`docs/superpowers/specs/2026-09-30-jobs-work-orders-design.md`.
+
+### Context
+Completed work lives only as a `service_request` marked `completed`; showcasing it means
+re-typing it in Content → Portfolio, with no record of what was found or fixed and no
+per-vehicle history. The business wants each job documented — check-in, diagnosis with
+photo evidence, repair with "after" photos, optional client review — and shown publicly
+for transparency and accountability. This is roadmap **P-2** (job / work-order
+management) and covers **P-1** (vehicle service history), both Post-MVP.
+
+### Options
+| Option | Summary | Trade-off |
+| --- | --- | --- |
+| **A. Linked portfolio entry** | Publishing a job creates a `portfolio_project` with `job_id`; the public page renders live from the job via a column-limited `job_public` view. | One source of truth; manual showcase entries still possible. |
+| B. Copy job into portfolio | Publish copies fields into a normal portfolio entry. | Simpler, but the two drift. |
+| C. Replace Portfolio with `/jobs` | New public section, Portfolio retired. | Breaks URLs/nav; loses non-job showcase pieces. |
+
+### Decision
+**Option A.** Full work order (`job`, `job_finding`, `job_photo`, `job_part`,
+`review_invite`); private by default; the owner publishes manually after completion, and
+only with recorded client consent (enforced in the database). Client identity,
+registration/VIN, odometer, costs and internal notes are never exposed publicly. Client
+reviews via a one-time private link, with owner-entered reviews as a labelled fallback.
+Delivered as three packages (J1 admin, J2 publish, J3 reviews).
+
+### Consequences
+- **Pulls P-1/P-2 ahead of Phase 2 Part C (Go-Live).** Go-Live slips by the J1–J3 build
+  unless run in parallel.
+- Adds the second and third anon read surfaces (`job_public`, `review_invite_summary`)
+  since Phase 2 — covered by RLS tests.
+- Job photo uploads are re-encoded to strip EXIF/GPS.
+- Foundation for later quotes/invoices (P-4/P-5) on the same `job`.
+
+---
+
 ## Decisions explicitly deferred (not ADRs yet)
 
 | Topic | Why deferred | When to decide |
