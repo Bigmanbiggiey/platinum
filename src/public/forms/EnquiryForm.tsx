@@ -114,7 +114,9 @@ export function EnquiryForm({ variant, timeWindows = [], confirmationNote }: Pro
         </p>
         <p className="mt-2 text-sm text-[color:var(--color-muted)]">
           {confirmationNote ??
-            'We&rsquo;ll get back to you by call or WhatsApp, usually within a few hours.'}
+            // A JS string, not JSX text — HTML entities are NOT decoded here, so use the
+            // real character (’), never &rsquo;.
+            'We’ll get back to you by call or WhatsApp, usually within a few hours.'}
         </p>
         <div className="mt-4">
           <CallWhatsApp context={`confirm-${variant}`} size="sm" />
