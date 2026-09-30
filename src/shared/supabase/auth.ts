@@ -54,13 +54,20 @@ export async function updatePassword(password: string): Promise<{ error: string 
   return { error: error?.message ?? null };
 }
 
-/** Loads the current user's admin profile (role, etc.). Null if not an admin. */
-export async function getProfile(): Promise<AdminProfile | null> {
+/**
+ * Loads the signed-in user's admin profile (role, etc.). Null if they have none.
+ *
+ * Must filter by user id: RLS lets an owner read EVERY profile, so an unfiltered
+ * `.maybeSingle()` errors as soon as a second account exists — which locked the owner
+ * out ("doesn't have admin access").
+ */
+export async function getProfile(userId: string): Promise<AdminProfile | null> {
   const db = getSupabaseClient();
   if (!db) return null;
   const { data, error } = await db
     .from('profile')
     .select('user_id, email, display_name, role, is_active')
+    .eq('user_id', userId)
     .maybeSingle();
   if (error || !data) return null;
   return data as AdminProfile;
