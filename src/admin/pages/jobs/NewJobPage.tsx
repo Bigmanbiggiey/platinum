@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Button,
@@ -12,7 +12,7 @@ import {
 } from '../../components/ui';
 import { clients, services, vehicles } from '../../lib/resources';
 import { useRequest } from '../../lib/requests';
-import { useCreateJob } from '../../lib/jobData';
+import { useCreateJob, useJobByRequest } from '../../lib/jobData';
 import { jobPrefillFromRequest, vehicleLabel } from '../../lib/jobs';
 
 const NEW_VEHICLE = 'new';
@@ -27,7 +27,10 @@ export function NewJobPage() {
   const serviceList = services.useList();
   const createVehicle = vehicles.useCreate();
   const createJob = useCreateJob();
+  const existingJob = useJobByRequest(requestId);
   const navigate = useNavigate();
+  // A vehicle inserted by a submit whose job insert then failed — reused on retry.
+  const createdVehicle = useRef<Awaited<ReturnType<typeof createVehicle.mutateAsync>> | null>(null);
 
   const [clientId, setClientId] = useState('');
   const [vehicleId, setVehicleId] = useState('');
@@ -35,6 +38,7 @@ export function NewJobPage() {
   const [serviceId, setServiceId] = useState('');
   const [complaint, setComplaint] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [duplicateJobId, setDuplicateJobId] = useState<string | null>(null);
 
   // Prefill once the request arrives.
   const req = request.data;
@@ -59,16 +63,20 @@ export function NewJobPage() {
 
   const submit = async () => {
     setError(null);
+    setDuplicateJobId(null);
     try {
       let vehicle = clientVehicles.find((v) => v.id === vehicleId);
       if (vehicleId === NEW_VEHICLE) {
-        vehicle = await createVehicle.mutateAsync({
-          client_id: clientId,
-          make: newVehicle.make.trim(),
-          model: newVehicle.model.trim() || null,
-          year: newVehicle.year ? Number(newVehicle.year) : null,
-          registration: newVehicle.registration.trim() || null,
-        });
+        if (!createdVehicle.current) {
+          createdVehicle.current = await createVehicle.mutateAsync({
+            client_id: clientId,
+            make: newVehicle.make.trim(),
+            model: newVehicle.model.trim() || null,
+            year: newVehicle.year ? Number(newVehicle.year) : null,
+            registration: newVehicle.registration.trim() || null,
+          });
+        }
+        vehicle = createdVehicle.current;
       }
       if (!vehicle) throw new Error('Pick a vehicle.');
       const id = await createJob.mutateAsync({
@@ -81,12 +89,20 @@ export function NewJobPage() {
       });
       navigate(`/admin/jobs/${id}`, { replace: true });
     } catch (e) {
+      if ((e as { code?: string }).code === '23505' && requestId) {
+        const found = await existingJob.refetch();
+        setDuplicateJobId(found.data?.id ?? null);
+        setError('A job already exists for this request.');
+        return;
+      }
       setError((e as Error).message);
     }
   };
 
-  const setNv = (k: keyof typeof newVehicle) => (e: { target: { value: string } }) =>
+  const setNv = (k: keyof typeof newVehicle) => (e: { target: { value: string } }) => {
+    createdVehicle.current = null;
     setNewVehicle((p) => ({ ...p, [k]: e.target.value }));
+  };
 
   return (
     <section className="space-y-4">
@@ -110,6 +126,7 @@ export function NewJobPage() {
             onChange={(e) => {
               setClientId(e.target.value);
               setVehicleId('');
+              createdVehicle.current = null;
             }}
           >
             <option value="">— pick a client —</option>
@@ -176,7 +193,19 @@ export function NewJobPage() {
         </Labeled>
       </Card>
 
-      {error && <p className="text-sm text-signal">{error}</p>}
+      {error && (
+        <p className="text-sm text-signal">
+          {error}
+          {duplicateJobId && (
+            <>
+              {' '}
+              <Link className="underline" to={`/admin/jobs/${duplicateJobId}`}>
+                Open it
+              </Link>
+            </>
+          )}
+        </p>
+      )}
       <Button variant="accent" disabled={!canCreate} onClick={submit}>
         {busy ? 'Creating…' : 'Check in vehicle'}
       </Button>
