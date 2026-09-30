@@ -3,11 +3,12 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { Badge, Card, EmptyState, Label, PageTitle, Spinner } from '../components/ui';
 import { getDb, prettyType, statusTone } from '../lib/db';
+import { OPEN_STATUSES } from '../lib/jobs';
 import { useUnreadCount } from '../lib/notifications';
 import { useRequests } from '../lib/requests';
 import { loadGsapCore, prefersReducedMotion } from '../../shared/lib/scrollFx';
 
-type CountFilter = [column: string, op: 'eq' | 'is', value: unknown];
+type CountFilter = [column: string, op: 'eq' | 'is' | 'in', value: unknown];
 function useCount(key: string, table: string, filter?: CountFilter) {
   return useQuery({
     queryKey: ['count', table, key],
@@ -15,7 +16,12 @@ function useCount(key: string, table: string, filter?: CountFilter) {
       let q = getDb().from(table).select('id', { count: 'exact', head: true });
       if (filter) {
         const [col, op, val] = filter;
-        q = op === 'is' ? q.is(col, val as never) : q.eq(col, val as never);
+        q =
+          op === 'is'
+            ? q.is(col, val as never)
+            : op === 'in'
+              ? q.in(col, val as never[])
+              : q.eq(col, val as never);
       }
       const { count } = await q;
       return count ?? 0;
@@ -96,6 +102,7 @@ function Stat({ label, value, to }: { label: string; value: number | undefined; 
 export function DashboardPage() {
   const unread = useUnreadCount();
   const newReqs = useCount('new', 'service_request', ['status', 'eq', 'new']);
+  const openJobs = useCount('open', 'job', ['status', 'in', [...OPEN_STATUSES]]);
   const pendingT = useCount('pending', 'testimonial', ['status', 'eq', 'pending']);
   const clients = useCount('all', 'client');
   const vehicles = useCount('all', 'vehicle');
@@ -105,9 +112,10 @@ export function DashboardPage() {
     <section className="space-y-8">
       <PageTitle>Dashboard</PageTitle>
 
-      <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
         <Stat label="Unread" value={unread.data} to="/admin/notifications" />
         <Stat label="New requests" value={newReqs.data} to="/admin/requests" />
+        <Stat label="Open jobs" value={openJobs.data} to="/admin/jobs" />
         <Stat label="Pending testimonials" value={pendingT.data} to="/admin/content" />
         <Stat label="Clients" value={clients.data} to="/admin/clients" />
         <Stat label="Vehicles" value={vehicles.data} />

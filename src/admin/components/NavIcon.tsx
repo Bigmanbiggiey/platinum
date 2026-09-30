@@ -4,6 +4,7 @@ type IconName =
   | 'dashboard'
   | 'notifications'
   | 'requests'
+  | 'jobs'
   | 'schedule'
   | 'clients'
   | 'content'
@@ -29,6 +30,11 @@ const paths: Record<IconName, ReactNode> = {
   requests: (
     <>
       <path d="M4 5h16M4 12h16M4 19h10" />
+    </>
+  ),
+  jobs: (
+    <>
+      <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4Z" />
     </>
   ),
   schedule: (

@@ -47,6 +47,31 @@ The side menu:
 3. If email is set up, the customer is emailed automatically. If not, you'll see a
    note reminding you to tell them by call or WhatsApp.
 
+## Recording a job
+
+**Jobs** in the menu is where you log each car you work on, from arrival to hand-back.
+
+1. **Start the job.** From a request: open it, **Convert to client** if you haven't, then
+   **Start job**. For a walk-in: **Jobs → New job**, pick the client and vehicle (or
+   **+ Add a vehicle**). Each job gets a number like `PP-2026-0042`.
+2. **Check-in tab.** Odometer, the customer's complaint in your words, and photos of the
+   car as it arrived. Tick **Client agrees to this job being shown on our website** only
+   if they said yes.
+3. **Diagnosis tab.** Add each problem you find, explain it, and add **before** photos.
+4. **Repair tab.** For each problem: what you did, the outcome (**Fixed**, **Deferred** if
+   the client chose not to fix it now, or **Not fixed**), **after** photos and the parts
+   you used.
+5. **Wrap-up tab.** Labour hours and cost, then **Mark completed**. If the job came from a
+   request, that request is marked completed too.
+
+Photos: tap **Hide from website** on any photo that shows a number plate, a face or a
+home. Location data is removed from every photo automatically when you upload it.
+
+Private — never on the website: the client's name and phone, number plate, odometer,
+labour, part quantities and costs, and internal notes.
+
+Jobs don't appear on the website yet — publishing is the next update.
+
 ## Editing the website
 
 Everything under **Website content**:

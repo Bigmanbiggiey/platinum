@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   Badge,
   Button,
@@ -14,6 +14,7 @@ import {
 } from '../components/ui';
 import { useConvertToClient, useRequest, useUpdateRequest } from '../lib/requests';
 import { STATUSES, prettyType, statusTone } from '../lib/db';
+import { useJobByRequest } from '../lib/jobData';
 
 function Row({ label, value }: { label: string; value: ReactNode }) {
   if (value === null || value === undefined || value === '') return null;
@@ -31,6 +32,8 @@ export function RequestDetailPage() {
   const update = useUpdateRequest(id!);
   const r = q.data;
   const convert = useConvertToClient(r ?? ({} as never));
+  const job = useJobByRequest(id);
+  const navigate = useNavigate();
 
   const [internal, setInternal] = useState('');
   const [outcome, setOutcome] = useState('');
@@ -136,6 +139,33 @@ export function RequestDetailPage() {
                   <p className="text-xs text-signal">{(convert.error as Error).message}</p>
                 )}
               </div>
+            )}
+          </Card>
+
+          <Card>
+            <Label>Job</Label>
+            {job.data ? (
+              <p className="mt-1 text-sm">
+                <Link
+                  to={`/admin/jobs/${job.data.id}`}
+                  className="text-teal underline-offset-2 hover:underline"
+                >
+                  Open job {job.data.job_number} →
+                </Link>
+              </p>
+            ) : r.client_id ? (
+              <div className="mt-2">
+                <Button
+                  variant="accent"
+                  onClick={() => navigate(`/admin/jobs/new?request=${r.id}`)}
+                >
+                  Start job
+                </Button>
+              </div>
+            ) : (
+              <p className="mt-1 text-sm text-[color:var(--color-muted)]">
+                Convert to a client first, then start a job.
+              </p>
             )}
           </Card>
         </div>
