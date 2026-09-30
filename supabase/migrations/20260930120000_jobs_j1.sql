@@ -113,7 +113,7 @@ create or replace function public.assign_job_number()
 returns trigger
 language plpgsql
 security definer
-set search_path = public
+set search_path = ''
 as $$
 declare
   y integer := extract(year from (coalesce(new.checked_in_at, now()) at time zone 'Africa/Nairobi'))::int;
@@ -123,7 +123,7 @@ begin
     values (y, 1)
     on conflict (year) do update set last_value = c.last_value + 1
     returning c.last_value into n;
-  new.job_number := format('PP-%s-%s', y, lpad(n::text, 4, '0'));
+  new.job_number := format('PP-%s-%s', y, case when n < 10000 then lpad(n::text, 4, '0') else n::text end);
   return new;
 end;
 $$;
@@ -135,6 +135,7 @@ create trigger job_assign_number before insert on public.job
 create or replace function public.job_stamp_times()
 returns trigger
 language plpgsql
+set search_path = ''
 as $$
 begin
   if new.public_consent then
@@ -142,6 +143,9 @@ begin
       new.consent_recorded_at := now();
     elsif not old.public_consent then
       new.consent_recorded_at := now();
+    else
+      -- consent stays true: the timestamp is immutable (callers cannot forge it)
+      new.consent_recorded_at := old.consent_recorded_at;
     end if;
   else
     new.consent_recorded_at := null;
@@ -168,6 +172,7 @@ create trigger job_stamp_times before insert or update on public.job
 create or replace function public.job_complete_request()
 returns trigger
 language plpgsql
+set search_path = ''
 as $$
 begin
   if new.status = 'completed' and new.service_request_id is not null then

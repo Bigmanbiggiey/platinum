@@ -10,7 +10,7 @@ declare
   j1 uuid; j2 uuid; j3 uuid;
   n1 text; n2 text; n3 text;
   s  text;
-  t  timestamptz;
+  t  timestamptz; t2 timestamptz;
   cnt integer;
   y  text := extract(year from (now() at time zone 'Africa/Nairobi'))::int::text;
 begin
@@ -47,6 +47,14 @@ begin
   update public.job set public_consent = false where id = j1;
   select consent_recorded_at into t from public.job where id = j1;
   if t is not null then raise exception 'FAIL consent_recorded_at not cleared'; end if;
+
+  -- 3b. A caller cannot forge consent_recorded_at while consent stays true
+  update public.job set public_consent = true where id = j1;
+  select consent_recorded_at into t from public.job where id = j1;
+  update public.job set consent_recorded_at = '2000-01-01' where id = j1;
+  select consent_recorded_at into t2 from public.job where id = j1;
+  if t2 is distinct from t then raise exception 'FAIL consent_recorded_at forged: %', t2; end if;
+  update public.job set public_consent = false where id = j1;
 
   -- 4. Completing sets completed_at and moves the linked request to completed
   update public.job set status = 'completed' where id = j1;
@@ -102,6 +110,13 @@ begin
     raise exception 'FAIL zero quantity allowed';
   exception when check_violation then null;
   end;
+
+  -- 10. Job numbers never truncate past 9999
+  update public.job_number_counter set last_value = 9999 where year = y::int;
+  insert into public.job (vehicle_label) values ('overflow') returning job_number into n1;
+  if n1 !~ ('^PP-' || y || '-10000$') then
+    raise exception 'FAIL job_number overflow: %', n1;
+  end if;
 
   raise exception 'ALL_PASSED';
 end $$;
