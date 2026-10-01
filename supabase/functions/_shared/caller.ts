@@ -10,6 +10,8 @@ import { createClient } from 'jsr:@supabase/supabase-js@2';
 export interface CallerProfile {
   userId: string;
   email: string | null;
+  /** The auth user's own email (never stale, unlike the profile copy). */
+  authEmail: string | null;
   role: 'owner' | 'staff';
   isActive: boolean;
 }
@@ -38,6 +40,7 @@ export async function getCaller(req: Request): Promise<CallerProfile | null> {
   return {
     userId: user.id,
     email: (data.email as string | null) ?? user.email ?? null,
+    authEmail: user.email ?? null,
     role: data.role as 'owner' | 'staff',
     isActive: data.is_active === true,
   };

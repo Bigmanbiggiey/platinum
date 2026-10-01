@@ -10,6 +10,8 @@
 //   4. sets the profile's role + is_active = true (D8: the owner's invite is the
 //      approval). The service role is not restricted by guard_profile_privileges.
 // The owner shares the link (copy / WhatsApp / email) — no server email.
+// Extra errors: 422 cannot-invite-self (also checked by user id), 409 would-demote-owner
+//   (re-inviting an existing owner as staff; change owners' roles on the Team page).
 //
 // Secrets: SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY (injected),
 //   ADMIN_SITE_URL (required, e.g. https://platinum-point.vercel.app), ADMIN_ALLOWED_ORIGIN?
@@ -52,7 +54,9 @@ Deno.serve(async (req) => {
   const parsed = parseInviteRequest(raw);
   if (!parsed.ok) return json({ ok: false, error: parsed.error }, 422);
   const { email, displayName, role } = parsed.value;
-  if (me.email && email === me.email.toLowerCase()) {
+  if (
+    [me.email, me.authEmail].some((mine) => mine && email === mine.toLowerCase())
+  ) {
     // Re-inviting yourself could change your own role — never useful, easy to get wrong.
     return json({ ok: false, error: 'cannot-invite-self' }, 422);
   }
@@ -83,6 +87,19 @@ Deno.serve(async (req) => {
   const tokenHash = link.data?.properties?.hashed_token;
   if (link.error || !userId || !tokenHash) {
     return json({ ok: false, error: link.error?.message ?? 'link-failed' }, 400);
+  }
+
+  // Defence in depth: never target the caller, whatever their stored emails say.
+  if (userId === me.userId) return json({ ok: false, error: 'cannot-invite-self' }, 422);
+
+  // An invite never changes an existing owner's role (demoting happens on the Team page).
+  if (type === 'recovery' && role !== 'owner') {
+    const { data: existing } = await admin
+      .from('profile')
+      .select('role')
+      .eq('user_id', userId)
+      .maybeSingle();
+    if (existing?.role === 'owner') return json({ ok: false, error: 'would-demote-owner' }, 409);
   }
 
   // 4. Role + activation (D8). handle_new_user() already created the profile row for a
