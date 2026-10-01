@@ -8,6 +8,7 @@
 //   RESEND_API_KEY?, RESEND_FROM? (default onboarding@resend.dev)
 
 import { createClient } from 'jsr:@supabase/supabase-js@2';
+import { getCaller } from '../_shared/caller.ts';
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
@@ -22,12 +23,8 @@ Deno.serve(async (req) => {
   if (req.method !== 'POST') return json({ ok: false, error: 'method-not-allowed' }, 405);
 
   const url = Deno.env.get('SUPABASE_URL')!;
-  const caller = createClient(url, Deno.env.get('SUPABASE_ANON_KEY')!, {
-    global: { headers: { Authorization: req.headers.get('Authorization') ?? '' } },
-    auth: { persistSession: false },
-  });
-  const { data: me } = await caller.from('profile').select('is_active').maybeSingle();
-  if (!me?.is_active) return json({ ok: false, error: 'forbidden' }, 403);
+  const me = await getCaller(req);
+  if (!me?.isActive) return json({ ok: false, error: 'forbidden' }, 403);
 
   const { requestId, kind } = (await req.json().catch(() => ({}))) as {
     requestId?: string;

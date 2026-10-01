@@ -6,7 +6,7 @@
 // Secrets: SUPABASE_URL / SUPABASE_ANON_KEY (injected), VERCEL_DEPLOY_HOOK_URL (set
 //   later: `npx supabase secrets set VERCEL_DEPLOY_HOOK_URL=https://api.vercel.com/v1/integrations/deploy/...`)
 
-import { createClient } from 'jsr:@supabase/supabase-js@2';
+import { getCaller } from '../_shared/caller.ts';
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
@@ -20,13 +20,9 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
   if (req.method !== 'POST') return json({ ok: false, error: 'method-not-allowed' }, 405);
 
-  // Caller must be an active admin.
-  const supabase = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_ANON_KEY')!, {
-    global: { headers: { Authorization: req.headers.get('Authorization') ?? '' } },
-    auth: { persistSession: false },
-  });
-  const { data: me } = await supabase.from('profile').select('is_active').maybeSingle();
-  if (!me?.is_active) return json({ ok: false, error: 'forbidden' }, 403);
+  // Caller must be an active admin (their own profile — see _shared/caller.ts).
+  const me = await getCaller(req);
+  if (!me?.isActive) return json({ ok: false, error: 'forbidden' }, 403);
 
   const hook = Deno.env.get('VERCEL_DEPLOY_HOOK_URL');
   if (!hook) return json({ ok: true, configured: false });
