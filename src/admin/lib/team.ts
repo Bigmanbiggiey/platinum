@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getDb } from './db';
 import { getSupabaseEnv } from '../../shared/env';
+import { inviteErrorMessage } from './inviteShare';
 
 export interface TeamMember {
   user_id: string;
@@ -43,11 +44,26 @@ export function useUpdateMember() {
   });
 }
 
-/** Calls the owner-only `admin-invite` Edge Function; returns an invite link. */
+export interface InviteInput {
+  email: string;
+  displayName: string;
+  role: 'owner' | 'staff';
+}
+
+export interface InviteResult {
+  inviteUrl: string;
+  email: string;
+  displayName: string;
+  role: 'owner' | 'staff';
+  /** The email already had an account — the link sets a new password instead. */
+  existed: boolean;
+}
+
+/** Calls the owner-only `admin-invite` Edge Function; returns a shareable link. */
 export function useInviteStaff() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ email, displayName }: { email: string; displayName?: string }) => {
+    mutationFn: async (input: InviteInput): Promise<InviteResult> => {
       const env = getSupabaseEnv();
       if (!env) throw new Error('Not configured.');
       const {
@@ -60,11 +76,26 @@ export function useInviteStaff() {
           apikey: env.anonKey,
           Authorization: `Bearer ${session?.access_token ?? env.anonKey}`,
         },
-        body: JSON.stringify({ email, display_name: displayName }),
+        body: JSON.stringify({
+          email: input.email,
+          display_name: input.displayName,
+          role: input.role,
+        }),
       });
-      const body = (await res.json()) as { ok?: boolean; inviteUrl?: string; error?: string };
-      if (!res.ok || !body.ok) throw new Error(body.error ?? 'Invite failed.');
-      return body.inviteUrl ?? '';
+      const body = (await res.json().catch(() => ({}))) as {
+        ok?: boolean;
+        inviteUrl?: string;
+        existed?: boolean;
+        error?: string;
+      };
+      if (!res.ok || !body.ok || !body.inviteUrl) throw new Error(inviteErrorMessage(body.error));
+      return {
+        inviteUrl: body.inviteUrl,
+        email: input.email,
+        displayName: input.displayName,
+        role: input.role,
+        existed: body.existed === true,
+      };
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['team'] }),
   });
