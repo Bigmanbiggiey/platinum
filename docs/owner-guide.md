@@ -103,7 +103,12 @@ switched on yet, ask the developer to add the deploy hook.)
 
 ## Adding a staff member (owner only)
 
-1. **Team → Invite a staff member** → enter their email → **Create invite**.
-2. Copy the one-time link and send it to them. They open it and set their own
-   password. They can then do everything except manage the team.
-3. Use **Deactivate** on the Team list to switch off a login.
+1. **Team → Invite someone** → enter their **email** and **name** (the name is what the
+   job activity shows), pick **Staff** (or **Owner**) → **Create invite**.
+2. Send the link with **Share on WhatsApp**, **Email** (opens your own email app) or
+   **Copy link**. They open it, choose a password and are straight in — the invite is
+   your approval.
+3. The link works once and expires after 24 hours. If it expires, create the invite
+   again for a fresh link. Inviting an email that already has an account gives them a
+   "set a new password" link instead.
+4. Use **Deactivate** on the Team list to switch off a login.

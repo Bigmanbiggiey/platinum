@@ -7,10 +7,18 @@ import {
   Input,
   Labeled,
   PageTitle,
+  Select,
   Spinner,
 } from '../components/ui';
 import { useAuth } from '../auth/authContext';
-import { useInviteStaff, useTeam, useUpdateMember } from '../lib/team';
+import { InviteLinkPanel } from '../components/InviteLinkPanel';
+import {
+  useInviteStaff,
+  useTeam,
+  useUpdateMember,
+  type InviteInput,
+  type InviteResult,
+} from '../lib/team';
 
 export function TeamPage() {
   const { profile } = useAuth();
@@ -19,7 +27,8 @@ export function TeamPage() {
   const updateMember = useUpdateMember();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
-  const [link, setLink] = useState<string | null>(null);
+  const [role, setRole] = useState<InviteInput['role']>('staff');
+  const [result, setResult] = useState<InviteResult | null>(null);
 
   if (profile?.role !== 'owner') {
     return <EmptyState>Only the owner can manage the team.</EmptyState>;
@@ -27,14 +36,20 @@ export function TeamPage() {
 
   const onInvite = async (e: FormEvent) => {
     e.preventDefault();
-    setLink(null);
-    const url = await invite.mutateAsync({
-      email: email.trim(),
-      displayName: name.trim() || undefined,
-    });
-    setLink(url);
-    setEmail('');
-    setName('');
+    setResult(null);
+    try {
+      const r = await invite.mutateAsync({
+        email: email.trim(),
+        displayName: name.trim(),
+        role,
+      });
+      setResult(r);
+      setEmail('');
+      setName('');
+      setRole('staff');
+    } catch {
+      /* invite.error is shown below */
+    }
   };
 
   return (
@@ -42,16 +57,32 @@ export function TeamPage() {
       <PageTitle>Team</PageTitle>
 
       <Card>
-        <h2 className="font-semibold text-[color:var(--color-ink)]">Invite a staff member</h2>
+        <h2 className="font-semibold text-[color:var(--color-ink)]">Invite someone</h2>
         <form
           onSubmit={onInvite}
-          className="mt-3 grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end"
+          className="mt-3 grid gap-3 sm:grid-cols-[1fr_1fr_9rem_auto] sm:items-end"
         >
           <Labeled label="Email">
             <Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
           </Labeled>
-          <Labeled label="Name (optional)">
-            <Input value={name} onChange={(e) => setName(e.target.value)} />
+          <Labeled label="Name">
+            <Input
+              required
+              maxLength={80}
+              placeholder="Shown in the job activity"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </Labeled>
+          <Labeled label="Role">
+            <Select
+              aria-label="Role"
+              value={role}
+              onChange={(e) => setRole(e.target.value as InviteInput['role'])}
+            >
+              <option value="staff">Staff</option>
+              <option value="owner">Owner</option>
+            </Select>
           </Labeled>
           <Button variant="accent" type="submit" disabled={invite.isPending}>
             {invite.isPending ? 'Creating…' : 'Create invite'}
@@ -60,19 +91,7 @@ export function TeamPage() {
         {invite.isError && (
           <p className="mt-2 text-sm text-signal">{(invite.error as Error).message}</p>
         )}
-        {link && (
-          <div className="mt-3 rounded border border-teal/40 bg-teal/10 p-3 text-sm">
-            <p className="text-[color:var(--color-ink)]">
-              Send this one-time link to the staff member — they set their own password:
-            </p>
-            <div className="mt-2 flex items-center gap-2">
-              <code className="min-w-0 flex-1 truncate rounded bg-slate px-2 py-1 font-mono text-[11px]">
-                {link}
-              </code>
-              <Button onClick={() => void navigator.clipboard?.writeText(link)}>Copy</Button>
-            </div>
-          </div>
-        )}
+        {result && <InviteLinkPanel result={result} />}
       </Card>
 
       {team.isLoading ? (

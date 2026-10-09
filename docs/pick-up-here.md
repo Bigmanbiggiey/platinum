@@ -1,6 +1,6 @@
 # Pick up here — status & remaining work
 
-> Snapshot for resuming the build. Written 2026-09-07 EOD.
+> Snapshot for resuming the build. Written 2026-09-07 EOD; status updated 2026-10-09.
 > Authoritative detail lives in `project-state.md` (change log), `phase-2-plan.md` §8,
 > `phase-3-plan.md` §6, and `wp14-staging-plan.md`. This file is the one-page summary.
 
@@ -14,7 +14,8 @@
 | **1 — Foundation** | ✅ Complete & approved. |
 | **2 — Public website MVP** | 🟢 Built; **live on private staging**; DB schema + RLS + `submit` function applied. Left: formal Lighthouse/axe pass + **Go-Live (WP14 Part C)**. |
 | **3 — Admin MVP** | 🟢 **Functionally complete (WP1–WP13).** Auth+roles+Team, Dashboard+Notifications, Requests+convert, Schedule, full CMS, Media, Business Settings, publish→rebuild + emails (functions deployed; switch on with secrets). Left: WP14 owner acceptance run; `gen types` cleanup. |
-| **Jobs (ADR-0014)** | 🟡 **J1 (admin work orders) built** on `feature/jobs-j1`. Next: owner acceptance on staging, then J2 (publish to portfolio) and J3 (review links) — each planned separately. Spec: `docs/superpowers/specs/2026-09-30-jobs-work-orders-design.md`. |
+| **Jobs (ADR-0014)** | 🟢 **J1 (admin work orders) merged** (PR #4). Next: owner acceptance on staging, then J2 (publish to portfolio) and J3 (review links) — each planned separately. Spec: `docs/superpowers/specs/2026-09-30-jobs-work-orders-design.md`. |
+| **RBAC (owner/staff)** | 🟡 **R-A (shareable staff invites)** code done (PR #9 + `feature/rbac-r-a-team-share`). Left: one-time Supabase setup, deploy `admin-invite` / `rebuild` / `notify-customer`, live check. Then R-B (permissions) and R-C (attribution). Spec: `docs/superpowers/specs/2026-09-30-rbac-and-invites-design.md`. |
 
 ## What's live / where
 
@@ -35,8 +36,15 @@ npm run dev          # http://localhost:5173  (+ /admin)
 npm run typecheck && npm run lint && npm run test && npm run build
 ```
 
-Supabase CLI is linked & authenticated (`npx supabase ...`). Apply DB changes with
+Supabase CLI is linked (`npx supabase ...`). Apply DB changes with
 `npx supabase db push`; run one-off SQL with `npx supabase db query --linked`.
+After the 2026-10-07 Windows reset the Supabase, Vercel and GitHub CLIs need logging in
+again (`npx supabase login`, `npx vercel login`, `gh auth login`).
+
+`npm run build` ends with `scripts/check-content.mjs`: when Supabase is configured it
+fails the build if pages prerender with no services / site settings, so an empty build
+never replaces the live site. On Vercel, a "Redeploy" with the build cache can re-serve
+the old output — untick **Use existing Build Cache** to force a real rebuild.
 
 ---
 
@@ -55,7 +63,10 @@ Left:
     hook in **Vercel → Project Settings → Git → Deploy Hooks** (branch `main`).
   - `npx supabase secrets set RESEND_API_KEY=<key> RESEND_FROM=<verified sender> NOTIFY_EMAIL=gatama98p@gmail.com`
     — customer booking emails + owner enquiry emails.
-- **Add the staff member:** Team → Invite (needs their email).
+- **Add the staff member:** Team → Invite (email + name + role) → share the link by
+  WhatsApp/email. One-time setup first (RBAC R-A): Supabase Site URL + Redirect URLs,
+  Email OTP expiry 86400 s, and `npx supabase secrets set ADMIN_SITE_URL=https://platinum-point.vercel.app`.
+  Until RBAC R-B ships, staff still have full admin access.
 - **Carried cleanup:** swap `src/shared/supabase/types.ts` for
   `npx supabase gen types typescript --linked`. (The `/admin` hydration error —
   React #418 on any hard load of an admin URL — is fixed: the admin has its own
