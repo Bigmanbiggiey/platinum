@@ -54,6 +54,23 @@ export async function updatePassword(password: string): Promise<{ error: string 
   return { error: error?.message ?? null };
 }
 
+export type InviteLinkType = 'invite' | 'recovery';
+
+/**
+ * Consumes a one-time invite/recovery token (from /admin/accept-invite) and signs the
+ * person in. Called only when they submit the password form — never on page open, so
+ * link previews in WhatsApp / email can't use the token up.
+ */
+export async function verifyInviteToken(
+  tokenHash: string,
+  type: InviteLinkType,
+): Promise<{ error: string | null }> {
+  const db = getSupabaseClient();
+  if (!db) return { error: 'Auth is not configured.' };
+  const { error } = await db.auth.verifyOtp({ type, token_hash: tokenHash });
+  return { error: error?.message ?? null };
+}
+
 /**
  * Loads the signed-in user's admin profile (role, etc.). Null if they have none.
  *

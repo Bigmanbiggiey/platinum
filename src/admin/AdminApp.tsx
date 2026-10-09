@@ -6,6 +6,7 @@ import { AdminShell } from './AdminShell';
 import { LoginPage } from './pages/LoginPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { ResetPasswordPage } from './pages/ResetPasswordPage';
+import { AcceptInvitePage } from './pages/AcceptInvitePage';
 import { DashboardPage } from './pages/DashboardPage';
 import { NotificationsPage } from './pages/NotificationsPage';
 import { RequestsPage } from './pages/RequestsPage';
@@ -43,6 +44,7 @@ export function AdminApp() {
           <Route path="login" element={<LoginPage />} />
           <Route path="forgot" element={<ForgotPasswordPage />} />
           <Route path="reset" element={<ResetPasswordPage />} />
+          <Route path="accept-invite" element={<AcceptInvitePage />} />
           <Route element={<RequireAuth />}>
             <Route element={<AdminShell />}>
               <Route index element={<DashboardPage />} />
