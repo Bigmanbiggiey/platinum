@@ -89,6 +89,11 @@ describe.skipIf(!anon)('RLS — anon role', () => {
       expect(error?.code, `${table} must be sealed from anon`).toBe('42501');
     }
   });
+
+  it('CANNOT read the job activity log (RBAC R-C)', async () => {
+    const { error } = await db.from('job_activity').select('*').limit(1);
+    expect(error?.code).toBe('42501');
+  });
 });
 
 describe.skipIf(!anon || !adminEmail || !adminPassword)('RLS — authenticated admin', () => {
@@ -135,6 +140,15 @@ describe.skipIf(!anon || !adminEmail || !adminPassword)('RLS — authenticated a
       const { error } = await admin.from(table).select('*').limit(1);
       expect(error, `${table} should be readable by the owner`).toBeNull();
     }
+  });
+
+  it('owner reads the activity log but cannot write it (RBAC R-C)', async () => {
+    const read = await admin.from('job_activity').select('id').limit(1);
+    expect(read.error).toBeNull();
+    const write = await admin
+      .from('job_activity')
+      .insert({ job_id: '00000000-0000-0000-0000-000000000000', action: 'checked_in' });
+    expect(write.error?.code).toBe('42501');
   });
 
   it('can create + delete a client (full CRUD)', async () => {
@@ -218,5 +232,14 @@ describe.skipIf(!anon || !staffEmail || !staffPassword)('RLS — authenticated s
   it('cannot create a client', async () => {
     const { error } = await staff.from('client').insert({ name: 'RLS staff probe' });
     expect(error?.code).toBe('42501');
+  });
+
+  it('reads the activity log but cannot write it (RBAC R-C)', async () => {
+    const read = await staff.from('job_activity').select('id').limit(1);
+    expect(read.error).toBeNull();
+    const write = await staff
+      .from('job_activity')
+      .insert({ job_id: '00000000-0000-0000-0000-000000000000', action: 'checked_in' });
+    expect(write.error?.code).toBe('42501');
   });
 });

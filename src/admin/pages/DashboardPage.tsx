@@ -6,6 +6,8 @@ import { getDb, prettyType, statusTone } from '../lib/db';
 import { OPEN_STATUSES } from '../lib/jobs';
 import { useUnreadCount } from '../lib/notifications';
 import { useRequests } from '../lib/requests';
+import { useRecentActivity } from '../lib/activityData';
+import { ActivityList } from '../components/ActivityList';
 import { loadGsapCore, prefersReducedMotion } from '../../shared/lib/scrollFx';
 
 type CountFilter = [column: string, op: 'eq' | 'is' | 'in', value: unknown];
@@ -107,6 +109,7 @@ export function DashboardPage() {
   const clients = useCount('all', 'client');
   const vehicles = useCount('all', 'vehicle');
   const recent = useRequests({ status: 'all', type: 'all', search: '' });
+  const activity = useRecentActivity(20);
 
   return (
     <section className="space-y-8">
@@ -119,6 +122,19 @@ export function DashboardPage() {
         <Stat label="Pending testimonials" value={pendingT.data} to="/admin/content" />
         <Stat label="Clients" value={clients.data} to="/admin/clients" />
         <Stat label="Vehicles" value={vehicles.data} />
+      </div>
+
+      <div>
+        <h2 className="mb-3 font-semibold text-[color:var(--color-ink)]">Recent job activity</h2>
+        {activity.isLoading ? (
+          <Spinner />
+        ) : activity.isError ? (
+          <p className="text-sm text-signal">{(activity.error as Error).message}</p>
+        ) : (
+          <Card className="p-0">
+            <ActivityList items={activity.data ?? []} showJob />
+          </Card>
+        )}
       </div>
 
       <div>

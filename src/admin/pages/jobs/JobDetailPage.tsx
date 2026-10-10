@@ -1,6 +1,7 @@
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { EmptyState, PageTitle, Spinner } from '../../components/ui';
 import { useJob } from '../../lib/jobData';
+import { ActivityTab } from './ActivityTab';
 import { CheckInTab } from './CheckInTab';
 import { DiagnosisTab } from './DiagnosisTab';
 import { JobHeader } from './JobHeader';
@@ -12,6 +13,7 @@ const TABS = [
   { key: 'diagnosis', label: 'Diagnosis' },
   { key: 'repair', label: 'Repair' },
   { key: 'wrap-up', label: 'Wrap-up' },
+  { key: 'activity', label: 'Activity' },
 ] as const;
 type TabKey = (typeof TABS)[number]['key'];
 
@@ -71,6 +73,7 @@ export function JobDetailPage() {
         {tab === 'diagnosis' && <DiagnosisTab job={job} />}
         {tab === 'repair' && <RepairTab job={job} />}
         {tab === 'wrap-up' && <WrapUpTab job={job} />}
+        {tab === 'activity' && <ActivityTab job={job} />}
       </div>
     </section>
   );
