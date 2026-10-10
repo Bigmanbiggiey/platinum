@@ -11,6 +11,7 @@ const jobs: AgendaJob[] = [
     vehicle_label: '2015 Mazda Demio',
     status: 'checked_in',
     booked_at: '2026-10-02T06:00:00+00:00',
+    created_by: null,
   },
   {
     id: 'j1',
@@ -18,6 +19,7 @@ const jobs: AgendaJob[] = [
     vehicle_label: '2014 Toyota Fielder',
     status: 'in_repair',
     booked_at: '2026-10-01T06:00:00+00:00',
+    created_by: null,
   },
 ];
 
@@ -34,5 +36,15 @@ describe('<JobAgendaList />', () => {
     expect(screen.getByText('2014 Toyota Fielder')).toBeInTheDocument();
     expect(screen.getByText('In repair')).toBeInTheDocument();
     expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(2);
+  });
+
+  it('marks a staff member’s own jobs "Yours"', () => {
+    render(
+      <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <JobAgendaList jobs={jobs} isMine={(j) => j.id === 'j2'} />
+      </MemoryRouter>,
+    );
+    expect(screen.getAllByText('Yours')).toHaveLength(1);
+    expect(screen.getByText('Yours').closest('a')).toHaveAttribute('href', '/admin/jobs/j2');
   });
 });

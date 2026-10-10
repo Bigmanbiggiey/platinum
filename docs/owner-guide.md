@@ -31,10 +31,14 @@ The side menu:
 
 **What staff can do:** staff see only **Jobs** and **Schedule** (booked jobs). They can
 check in a walk-in from the vehicle details, record diagnosis, repairs, photos, parts
-(no prices), labour hours, and complete or re-open a job. They never see clients,
-phone numbers, requests, costs, website content or settings, and they can't cancel or
-delete a job. A walk-in they check in shows **"Walk-in — no client yet"** on the job —
-pick the client there and tap **Link**.
+(no prices) and labour hours, then **Submit for review** — only you complete a job.
+They never see clients, phone numbers, requests, costs, website content or settings,
+and they can't cancel or delete a job. On **Jobs** they see **My jobs** (assigned to
+them, or checked in by them) first, then the other jobs.
+
+A walk-in they check in shows **"Walk-in — no client yet"** on the job: tap **Link
+existing** to pick a client, or **New client** to add their name and phone — the car
+from check-in is added to that client for you.
 
 ## Handling an enquiry
 
@@ -71,6 +75,16 @@ pick the client there and tap **Link**.
    you used.
 5. **Wrap-up tab.** Labour hours and cost, then **Mark completed**. If the job came from a
    request, that request is marked completed too.
+
+**Assigning work:** on any job, **Assigned to → Assign** puts one person or several on
+it (tap **×** to take someone off). You can also tick people when you create the job.
+Their jobs show first on their Jobs page and are marked **Yours** on their Schedule.
+
+**Reviewing staff work:** when staff tap **Submit for review**, the job shows **Awaiting
+review**, you get a notification, and it appears under **Jobs → To review** (and the
+Dashboard's **Jobs to review**). Open **Wrap-up**: check the summary (and the Diagnosis
+and Repair tabs), then **Approve & complete**, or write a note and **Send back** — the
+job returns to In repair and staff see your note at the top of Wrap-up.
 
 Photos: tap **Hide from website** on any photo that shows a number plate, a face or a
 home. Location data is removed from every photo automatically when you upload it.

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Badge, Card, EmptyState, Spinner } from '../../components/ui';
-import { useJobAgenda } from '../../lib/jobData';
+import { useAuth, useRole } from '../../auth/authContext';
+import { useJobAgenda, useMyAssignedJobIds } from '../../lib/jobData';
 import {
   agendaDayLabel,
   groupAgendaByDay,
@@ -9,8 +10,17 @@ import {
   type AgendaJob,
 } from '../../lib/jobs';
 
-/** Job schedule (D6): job number, vehicle, status by booked day — no customer data. */
-export function JobAgendaList({ jobs }: { jobs: AgendaJob[] }) {
+/**
+ * Job schedule (D6): job number, vehicle, status by booked day — no customer data.
+ * `isMine` marks a staff member's own jobs "Yours" (R-D D4).
+ */
+export function JobAgendaList({
+  jobs,
+  isMine,
+}: {
+  jobs: AgendaJob[];
+  isMine?: (j: AgendaJob) => boolean;
+}) {
   return (
     <div className="space-y-4">
       {groupAgendaByDay(jobs).map((d) => (
@@ -29,6 +39,7 @@ export function JobAgendaList({ jobs }: { jobs: AgendaJob[] }) {
                 <span className="font-semibold text-[color:var(--color-ink)]">
                   {j.vehicle_label}
                 </span>
+                {isMine?.(j) && <Badge tone="attention">Yours</Badge>}
                 <span className="ml-auto">
                   <Badge tone={jobStatusTone(j.status)}>{jobStatusLabel[j.status]}</Badge>
                 </span>
@@ -43,10 +54,16 @@ export function JobAgendaList({ jobs }: { jobs: AgendaJob[] }) {
 
 export function JobAgendaSection() {
   const q = useJobAgenda();
+  const isOwner = useRole() === 'owner';
+  const userId = useAuth().profile?.user_id ?? null;
+  const mine = useMyAssignedJobIds(isOwner ? null : userId);
   if (q.isLoading) return <Spinner />;
   if (q.isError) return <p className="text-sm text-signal">{(q.error as Error).message}</p>;
   if ((q.data ?? []).length === 0) {
     return <EmptyState>No open jobs with a booked date.</EmptyState>;
   }
-  return <JobAgendaList jobs={q.data!} />;
+  const isMine = isOwner
+    ? undefined
+    : (j: AgendaJob) => (mine.data?.has(j.id) ?? false) || j.created_by === userId;
+  return <JobAgendaList jobs={q.data!} isMine={isMine} />;
 }

@@ -94,6 +94,13 @@ describe.skipIf(!anon)('RLS — anon role', () => {
     const { error } = await db.from('job_activity').select('*').limit(1);
     expect(error?.code).toBe('42501');
   });
+
+  it('CANNOT read job assignments (R-D)', async () => {
+    for (const table of ['job_assignee', 'job_assignee_named']) {
+      const { error } = await db.from(table).select('*').limit(1);
+      expect(error?.code, `${table} must be sealed from anon`).toBe('42501');
+    }
+  });
 });
 
 describe.skipIf(!anon || !adminEmail || !adminPassword)('RLS — authenticated admin', () => {
@@ -232,6 +239,17 @@ describe.skipIf(!anon || !staffEmail || !staffPassword)('RLS — authenticated s
   it('cannot create a client', async () => {
     const { error } = await staff.from('client').insert({ name: 'RLS staff probe' });
     expect(error?.code).toBe('42501');
+  });
+
+  it('reads job assignments but cannot assign anyone (R-D)', async () => {
+    const read = await staff.from('job_assignee').select('job_id').limit(1);
+    expect(read.error).toBeNull();
+    const me = await staff.auth.getUser();
+    const write = await staff.from('job_assignee').insert({
+      job_id: '00000000-0000-0000-0000-000000000000',
+      user_id: me.data.user!.id,
+    });
+    expect(write.error?.code).toBe('42501');
   });
 
   it('reads the activity log but cannot write it (RBAC R-C)', async () => {

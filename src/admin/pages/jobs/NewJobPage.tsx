@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   Input,
+  Label,
   Labeled,
   PageTitle,
   Select,
@@ -12,7 +13,8 @@ import {
 } from '../../components/ui';
 import { clients, services, vehicles } from '../../lib/resources';
 import { useRequest } from '../../lib/requests';
-import { useCreateJob, useJobByRequest } from '../../lib/jobData';
+import { useAssignablePeople, useCreateJob, useJobByRequest } from '../../lib/jobData';
+import { getDb } from '../../lib/db';
 import { jobPrefillFromRequest, vehicleLabel } from '../../lib/jobs';
 import { useRole } from '../../auth/authContext';
 import { WalkInForm } from './WalkInForm';
@@ -44,6 +46,8 @@ function OwnerNewJobPage() {
   const [newVehicle, setNewVehicle] = useState({ make: '', model: '', year: '', registration: '' });
   const [serviceId, setServiceId] = useState('');
   const [complaint, setComplaint] = useState('');
+  const people = useAssignablePeople();
+  const [assignees, setAssignees] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [duplicateJobId, setDuplicateJobId] = useState<string | null>(null);
 
@@ -94,6 +98,13 @@ function OwnerNewJobPage() {
         service_id: serviceId || null,
         complaint: complaint.trim() || null,
       });
+      if (assignees.length > 0) {
+        // The job exists now, so never fail the submit here (a retry would duplicate it):
+        // anyone not saved can still be assigned from the job header.
+        await getDb()
+          .from('job_assignee')
+          .insert(assignees.map((user_id) => ({ job_id: id, user_id })));
+      }
       navigate(`/admin/jobs/${id}`, { replace: true });
     } catch (e) {
       if ((e as { code?: string }).code === '23505' && requestId) {
@@ -199,6 +210,29 @@ function OwnerNewJobPage() {
           <Textarea rows={3} value={complaint} onChange={(e) => setComplaint(e.target.value)} />
         </Labeled>
       </Card>
+
+      {(people.data ?? []).length > 0 && (
+        <Card>
+          <Label>Assign to (optional) — one person or a team</Label>
+          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2">
+            {(people.data ?? []).map((p) => (
+              <label key={p.user_id} className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={assignees.includes(p.user_id)}
+                  onChange={(e) =>
+                    setAssignees((a) =>
+                      e.target.checked ? [...a, p.user_id] : a.filter((x) => x !== p.user_id),
+                    )
+                  }
+                />
+                {p.display_name ?? p.email}
+                {p.role === 'owner' ? ' (owner)' : ''}
+              </label>
+            ))}
+          </div>
+        </Card>
+      )}
 
       {error && (
         <p className="text-sm text-signal">
