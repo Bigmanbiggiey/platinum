@@ -29,9 +29,11 @@ export function useNotifications() {
   });
 }
 
-export function useUnreadCount() {
+/** `enabled = false` for staff: notifications are owner-only (spec §3). */
+export function useUnreadCount(enabled = true) {
   return useQuery({
     queryKey: ['notifications', 'unreadCount'],
+    enabled,
     queryFn: async () => {
       const { count } = await getDb()
         .from('notification')
@@ -39,7 +41,7 @@ export function useUnreadCount() {
         .is('read_at', null);
       return count ?? 0;
     },
-    refetchInterval: 60_000,
+    refetchInterval: enabled ? 60_000 : false,
   });
 }
 

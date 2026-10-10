@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './auth/AuthProvider';
 import { RequireAuth } from './RequireAuth';
+import { RequireOwner, RoleHome } from './RequireOwner';
 import { AdminShell } from './AdminShell';
 import { LoginPage } from './pages/LoginPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
@@ -47,28 +48,32 @@ export function AdminApp() {
           <Route path="accept-invite" element={<AcceptInvitePage />} />
           <Route element={<RequireAuth />}>
             <Route element={<AdminShell />}>
-              <Route index element={<DashboardPage />} />
-              <Route path="notifications" element={<NotificationsPage />} />
-              <Route path="requests" element={<RequestsPage />} />
-              <Route path="requests/:id" element={<RequestDetailPage />} />
+              <Route index element={<RoleHome owner={<DashboardPage />} />} />
+              {/* Owner + staff (spec §3) */}
               <Route path="jobs" element={<JobsPage />} />
               <Route path="jobs/new" element={<NewJobPage />} />
               <Route path="jobs/:id" element={<JobDetailPage />} />
               <Route path="schedule" element={<SchedulePage />} />
-              <Route path="clients" element={<ClientsPage />} />
-              <Route path="clients/:id" element={<ClientDetailPage />} />
-              <Route path="team" element={<TeamPage />} />
-              <Route path="settings" element={<SettingsPage />} />
-              <Route path="content" element={<ContentHubPage />} />
-              <Route path="content/services" element={<ServicesListPage />} />
-              <Route path="content/services/:id" element={<ServiceEditPage />} />
-              <Route path="content/portfolio" element={<PortfolioListPage />} />
-              <Route path="content/portfolio/:id" element={<PortfolioEditPage />} />
-              <Route path="content/testimonials" element={<TestimonialsPage />} />
-              <Route path="content/media" element={<MediaPage />} />
-              <Route path="content/copy" element={<CopyPage />} />
-              <Route path="content/areas" element={<AreasPage />} />
-              <Route path="content/partners" element={<PartnersPage />} />
+              {/* Owner only */}
+              <Route element={<RequireOwner />}>
+                <Route path="notifications" element={<NotificationsPage />} />
+                <Route path="requests" element={<RequestsPage />} />
+                <Route path="requests/:id" element={<RequestDetailPage />} />
+                <Route path="clients" element={<ClientsPage />} />
+                <Route path="clients/:id" element={<ClientDetailPage />} />
+                <Route path="team" element={<TeamPage />} />
+                <Route path="settings" element={<SettingsPage />} />
+                <Route path="content" element={<ContentHubPage />} />
+                <Route path="content/services" element={<ServicesListPage />} />
+                <Route path="content/services/:id" element={<ServiceEditPage />} />
+                <Route path="content/portfolio" element={<PortfolioListPage />} />
+                <Route path="content/portfolio/:id" element={<PortfolioEditPage />} />
+                <Route path="content/testimonials" element={<TestimonialsPage />} />
+                <Route path="content/media" element={<MediaPage />} />
+                <Route path="content/copy" element={<CopyPage />} />
+                <Route path="content/areas" element={<AreasPage />} />
+                <Route path="content/partners" element={<PartnersPage />} />
+              </Route>
             </Route>
           </Route>
           <Route path="*" element={<PlaceholderPage title="Not found" wp="—" />} />

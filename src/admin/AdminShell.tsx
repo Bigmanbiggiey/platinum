@@ -1,21 +1,11 @@
 import { useEffect, useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from './auth/authContext';
+import { useAuth, useRole } from './auth/authContext';
+import { navFor } from './nav';
 import { signOut } from '../shared/supabase/auth';
 import { AdminBrand } from './brand/AdminBrand';
 import { NavIcon } from './components/NavIcon';
 import { useUnreadCount } from './lib/notifications';
-
-const baseNav = [
-  { to: '/admin', label: 'Dashboard', icon: 'dashboard', end: true },
-  { to: '/admin/notifications', label: 'Notifications', icon: 'notifications', badge: true },
-  { to: '/admin/requests', label: 'Requests', icon: 'requests' },
-  { to: '/admin/jobs', label: 'Jobs', icon: 'jobs' },
-  { to: '/admin/schedule', label: 'Schedule', icon: 'schedule' },
-  { to: '/admin/clients', label: 'Clients', icon: 'clients' },
-  { to: '/admin/content', label: 'Website content', icon: 'content' },
-  { to: '/admin/settings', label: 'Settings', icon: 'settings' },
-] as const;
 
 const NAV_KEY = 'pp_admin_nav_expanded';
 
@@ -29,7 +19,8 @@ export function AdminShell() {
   const { profile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const unread = useUnreadCount();
+  const role = useRole();
+  const unread = useUnreadCount(role === 'owner');
 
   const [expanded, setExpanded] = useState<boolean>(() => {
     try {
@@ -54,10 +45,7 @@ export function AdminShell() {
     if (typeof window !== 'undefined' && window.innerWidth < 768) setExpanded(false);
   }, [location.pathname]);
 
-  const nav =
-    profile?.role === 'owner'
-      ? [...baseNav, { to: '/admin/team', label: 'Team', icon: 'team' as const }]
-      : baseNav;
+  const nav = navFor(role);
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `relative flex items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold ${
@@ -134,7 +122,7 @@ export function AdminShell() {
             <NavLink
               key={n.to}
               to={n.to}
-              end={'end' in n ? n.end : false}
+              end={n.end ?? false}
               title={n.label}
               className={linkClass}
             >
@@ -142,7 +130,7 @@ export function AdminShell() {
                 <NavIcon name={n.icon} />
               </span>
               <span className={expanded ? 'flex-1 truncate' : 'sr-only'}>{n.label}</span>
-              {'badge' in n && n.badge && (unread.data ?? 0) > 0 && (
+              {n.badge && (unread.data ?? 0) > 0 && (
                 <span
                   className={`rounded-full bg-signal px-1.5 font-mono text-[10px] text-paper ${
                     expanded ? '' : 'absolute right-1 top-1'
