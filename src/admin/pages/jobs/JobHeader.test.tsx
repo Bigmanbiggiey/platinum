@@ -1,14 +1,33 @@
 import { describe, it, expect, vi } from 'vitest';
+import userEvent from '@testing-library/user-event';
 import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { AuthContext, type AuthState } from '../../auth/authContext';
 import { JobHeader } from './JobHeader';
 import type { JobWithRefs } from '../../lib/jobs';
 
-vi.mock('../../lib/jobData', () => ({
-  useUpdateJob: () => ({ mutate: vi.fn(), isPending: false, isError: false, error: null }),
-  useLinkJobClient: () => ({ mutate: vi.fn(), isPending: false, isError: false, error: null }),
-}));
+const assign = vi.fn();
+const unassign = vi.fn();
+const createClient = vi.fn();
+vi.mock('../../lib/jobData', () => {
+  const m = (mutate = vi.fn()) => ({ mutate, isPending: false, isError: false, error: null });
+  return {
+    useUpdateJob: () => m(),
+    useLinkJobClient: () => m(),
+    useJobAssignees: () => ({
+      data: [{ job_id: 'j1', user_id: 's1', display_name: 'Kevin', assigned_at: '' }],
+    }),
+    useAssignablePeople: () => ({
+      data: [
+        { user_id: 's1', display_name: 'Kevin', email: 'k@x.co', role: 'staff' },
+        { user_id: 's2', display_name: 'Ann', email: 'a@x.co', role: 'staff' },
+      ],
+    }),
+    useAssignJob: () => m(assign),
+    useUnassignJob: () => m(unassign),
+    useCreateClientForJob: () => m(createClient),
+  };
+});
 vi.mock('../../lib/resources', () => ({
   clients: { useList: () => ({ data: [{ id: 'c1', name: 'Jane Wanjiku', phone: null }] }) },
 }));
@@ -77,5 +96,39 @@ describe('<JobHeader />', () => {
     renderAs('owner', { ...job, client_id: null, client: null, service_request_id: null });
     expect(screen.getByText(/walk-in/i)).toBeInTheDocument();
     expect(screen.getByLabelText('Link a client')).toBeInTheDocument();
+  });
+
+  it('owner assigns and removes people; staff only see who is on the job', async () => {
+    const user = userEvent.setup();
+    const { unmount } = renderAs('owner');
+    expect(screen.getByText('Kevin')).toBeInTheDocument();
+    await user.selectOptions(screen.getByLabelText('Assign someone'), 's2');
+    await user.click(screen.getByRole('button', { name: 'Assign' }));
+    expect(assign).toHaveBeenCalledWith('s2');
+    await user.click(screen.getByRole('button', { name: 'Remove Kevin' }));
+    expect(unassign).toHaveBeenCalledWith('s1');
+    unmount();
+
+    renderAs('staff', { ...job, client: null });
+    expect(screen.getByText('Kevin')).toBeInTheDocument();
+    expect(screen.queryByLabelText('Assign someone')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Remove Kevin' })).not.toBeInTheDocument();
+  });
+
+  it('owner creates a client from a walk-in; the check-in vehicle is shown', async () => {
+    const user = userEvent.setup();
+    renderAs('owner', { ...job, client_id: null, client: null, service_request_id: null });
+    await user.click(screen.getByRole('button', { name: 'New client' }));
+    expect(screen.getByText(/2014 Toyota Fielder · KDA 123A/)).toBeInTheDocument();
+    const create = screen.getByRole('button', { name: 'Create client' });
+    expect(create).toBeDisabled();
+    await user.type(screen.getByLabelText('Client name'), ' Jane Wanjiku ');
+    await user.type(screen.getByLabelText('Client phone'), '0722 000000');
+    await user.click(create);
+    expect(createClient).toHaveBeenCalledWith({
+      name: 'Jane Wanjiku',
+      phone: '0722 000000',
+      email: null,
+    });
   });
 });
