@@ -15,6 +15,7 @@ import type {
   SiteSettingsPublicRow,
   TestimonialPublicRow,
 } from '../supabase/types';
+import type { JobPublic } from '../jobs/publicTimeline';
 
 async function safe<T>(run: () => Promise<T>, fallback: T): Promise<T> {
   try {
@@ -90,6 +91,8 @@ export async function getProjects(): Promise<ProjectWithMedia[]> {
       .from('portfolio_project')
       .select('*, cover:cover_media_id(*), portfolio_media(display_order, media(*))')
       .eq('is_published', true)
+      // Most recent work first (jobs spec §6.1), then the owner's manual order.
+      .order('project_date', { ascending: false, nullsFirst: false })
       .order('display_order');
     if (error) throw error;
     return normaliseProjects(data ?? []);
@@ -108,6 +111,21 @@ export async function getProjectBySlug(slug: string): Promise<ProjectWithMedia |
       .maybeSingle();
     if (error) throw error;
     return data ? normaliseProjects([data])[0] : null;
+  }, null);
+}
+
+/** The public timeline of a published job (J2) — read only through the job_public view. */
+export async function getJobPublic(jobId: string): Promise<JobPublic | null> {
+  return safe(async () => {
+    const db = getSupabaseClient();
+    if (!db) return null;
+    const { data, error } = await db
+      .from('job_public')
+      .select('*')
+      .eq('job_id', jobId)
+      .maybeSingle();
+    if (error) throw error;
+    return (data as JobPublic) ?? null;
   }, null);
 }
 
