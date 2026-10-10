@@ -29,6 +29,17 @@ describe('describeActivity', () => {
     expect(d('labour_updated', { from: 2, to: null })).toBe('cleared the labour hours');
     expect(d('consent_changed', { to: true })).toBe('recorded the customer’s consent to publish');
     expect(d('consent_changed', { to: false })).toBe('withdrew consent to publish');
+    expect(d('assigned', { name: 'Kevin' })).toBe('assigned Kevin to the job');
+    expect(d('unassigned', { name: 'Kevin' })).toBe('took Kevin off the job');
+    expect(d('status_changed', { from: 'in_repair', to: 'awaiting_review' })).toBe(
+      'submitted the job for review',
+    );
+    expect(d('status_changed', { from: 'awaiting_review', to: 'completed' })).toBe(
+      'approved and completed the job',
+    );
+    expect(d('status_changed', { from: 'awaiting_review', to: 'in_repair' })).toBe(
+      'sent the job back',
+    );
   });
 });
 

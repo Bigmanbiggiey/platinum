@@ -105,6 +105,7 @@ export function DashboardPage() {
   const unread = useUnreadCount();
   const newReqs = useCount('new', 'service_request', ['status', 'eq', 'new']);
   const openJobs = useCount('open', 'job', ['status', 'in', [...OPEN_STATUSES]]);
+  const toReview = useCount('review', 'job', ['status', 'eq', 'awaiting_review']);
   const pendingT = useCount('pending', 'testimonial', ['status', 'eq', 'pending']);
   const clients = useCount('all', 'client');
   const vehicles = useCount('all', 'vehicle');
@@ -115,10 +116,11 @@ export function DashboardPage() {
     <section className="space-y-8">
       <PageTitle>Dashboard</PageTitle>
 
-      <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
+      <div className="grid gap-3 sm:grid-cols-4 lg:grid-cols-7">
         <Stat label="Unread" value={unread.data} to="/admin/notifications" />
         <Stat label="New requests" value={newReqs.data} to="/admin/requests" />
         <Stat label="Open jobs" value={openJobs.data} to="/admin/jobs" />
+        <Stat label="Jobs to review" value={toReview.data} to="/admin/jobs?show=review" />
         <Stat label="Pending testimonials" value={pendingT.data} to="/admin/content" />
         <Stat label="Clients" value={clients.data} to="/admin/clients" />
         <Stat label="Vehicles" value={vehicles.data} />

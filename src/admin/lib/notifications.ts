@@ -3,7 +3,7 @@ import { getDb } from './db';
 
 export interface Notification {
   id: string;
-  type: 'request' | 'booking' | 'testimonial';
+  type: 'request' | 'booking' | 'testimonial' | 'job_review';
   title: string;
   body: string | null;
   entity_type: string;

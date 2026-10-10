@@ -15,6 +15,8 @@ export const ACTIVITY_ACTIONS = [
   'part_removed',
   'labour_updated',
   'consent_changed',
+  'assigned',
+  'unassigned',
 ] as const;
 export type ActivityAction = (typeof ACTIVITY_ACTIONS)[number];
 
@@ -59,6 +61,11 @@ export function describeActivity(a: Pick<JobActivity, 'action' | 'detail'>): str
     case 'checked_in':
       return 'checked in the vehicle';
     case 'status_changed': {
+      // Review steps read as actions, not status moves (R-D).
+      if (d.to === 'awaiting_review') return 'submitted the job for review';
+      if (d.from === 'awaiting_review' && d.to === 'completed')
+        return 'approved and completed the job';
+      if (d.from === 'awaiting_review') return 'sent the job back';
       const to = jobStatusLabel[d.to as JobStatus] ?? str(d.to);
       const from = jobStatusLabel[d.from as JobStatus];
       return from ? `moved the job from ${from} to ${to}` : `moved the job to ${to}`;
@@ -93,6 +100,10 @@ export function describeActivity(a: Pick<JobActivity, 'action' | 'detail'>): str
       return d.to === true
         ? 'recorded the customer’s consent to publish'
         : 'withdrew consent to publish';
+    case 'assigned':
+      return `assigned ${str(d.name) || 'someone'} to the job`;
+    case 'unassigned':
+      return `took ${str(d.name) || 'someone'} off the job`;
   }
 }
 

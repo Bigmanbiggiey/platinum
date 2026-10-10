@@ -321,7 +321,7 @@ export function useJobAgenda() {
     queryFn: async (): Promise<AgendaJob[]> => {
       const { data, error } = await getDb()
         .from('job')
-        .select('id, job_number, vehicle_label, status, booked_at')
+        .select('id, job_number, vehicle_label, status, booked_at, created_by')
         .not('booked_at', 'is', null)
         .in('status', [...OPEN_STATUSES])
         .order('booked_at');

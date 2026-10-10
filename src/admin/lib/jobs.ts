@@ -286,7 +286,10 @@ export function reviewSummary(
   };
 }
 
-export type AgendaJob = Pick<Job, 'id' | 'job_number' | 'vehicle_label' | 'status' | 'booked_at'>;
+export type AgendaJob = Pick<
+  Job,
+  'id' | 'job_number' | 'vehicle_label' | 'status' | 'booked_at' | 'created_by'
+>;
 
 export interface AgendaDay<T> {
   day: string;

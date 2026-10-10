@@ -3,7 +3,11 @@ import { Badge, Button, EmptyState, PageTitle, Spinner } from '../components/ui'
 import { useMarkRead, useNotifications } from '../lib/notifications';
 
 const linkFor = (entityType: string, entityId: string) =>
-  entityType === 'service_request' ? `/admin/requests/${entityId}` : '/admin/content';
+  entityType === 'service_request'
+    ? `/admin/requests/${entityId}`
+    : entityType === 'job'
+      ? `/admin/jobs/${entityId}?tab=wrap-up`
+      : '/admin/content';
 
 export function NotificationsPage() {
   const list = useNotifications();
@@ -39,7 +43,9 @@ export function NotificationsPage() {
                   : 'border-signal/40 bg-signal/5'
               }`}
             >
-              <Badge tone={n.type === 'testimonial' ? 'neutral' : 'attention'}>{n.type}</Badge>
+              <Badge tone={n.type === 'testimonial' ? 'neutral' : 'attention'}>
+                {n.type === 'job_review' ? 'job review' : n.type}
+              </Badge>
               <Link to={linkFor(n.entity_type, n.entity_id)} className="min-w-0 flex-1">
                 <p className="truncate font-semibold text-[color:var(--color-ink)]">{n.title}</p>
                 {n.body && (
