@@ -18,7 +18,8 @@ it remembers your choice. On a phone the menu slides in over the page.
 
 The side menu:
 
-- **Dashboard** — the numbers at a glance, and your most recent requests.
+- **Dashboard** — the numbers at a glance, **recent job activity** (who did what on
+  which job, e.g. "Kevin · staff — added 2 after photos"), and your most recent requests.
 - **Notifications** — every new enquiry, booking and testimonial. A number next to it
   means unread. Tap an item to open it; tap **Mark read** when you've dealt with it.
 - **Requests** — every enquiry and booking, with filters.
@@ -78,6 +79,11 @@ Private — never on the website: the client's name and phone, number plate, odo
 labour, part quantities and costs, and internal notes.
 
 Jobs don't appear on the website yet — publishing is the next update.
+
+**Who did what:** every job has an **Activity** tab listing each check-in, status
+change, problem, photo, part, labour and consent change with the name of the person
+who made it and when. Several photos uploaded together show as one line ("added 3
+after photos"). Prices are never shown there, so staff can see it too.
 
 ## Editing the website
 
