@@ -1,6 +1,6 @@
 # Pick up here — status & remaining work
 
-> Snapshot for resuming the build. Written 2026-09-07 EOD; status updated 2026-10-09.
+> Snapshot for resuming the build. Written 2026-09-07 EOD; status updated 2026-10-10.
 > Authoritative detail lives in `project-state.md` (change log), `phase-2-plan.md` §8,
 > `phase-3-plan.md` §6, and `wp14-staging-plan.md`. This file is the one-page summary.
 
@@ -15,7 +15,7 @@
 | **2 — Public website MVP** | 🟢 Built; **live on private staging**; DB schema + RLS + `submit` function applied. Left: formal Lighthouse/axe pass + **Go-Live (WP14 Part C)**. |
 | **3 — Admin MVP** | 🟢 **Functionally complete (WP1–WP13).** Auth+roles+Team, Dashboard+Notifications, Requests+convert, Schedule, full CMS, Media, Business Settings, publish→rebuild + emails (functions deployed; switch on with secrets). Left: WP14 owner acceptance run; `gen types` cleanup. |
 | **Jobs (ADR-0014)** | 🟢 **J1 (admin work orders) merged** (PR #4). Next: owner acceptance on staging, then J2 (publish to portfolio) and J3 (review links) — each planned separately. Spec: `docs/superpowers/specs/2026-09-30-jobs-work-orders-design.md`. |
-| **RBAC (owner/staff)** | 🟡 **R-A (shareable staff invites)** ✅ live (PRs #9, #11, #12). **R-B (permissions)** ✅ live (PR #13). **R-C (attribution)** ✅ live (PR #14). **R-D (review, assignment, walk-in clients)** ✅ live (PR #15). **J2 (publish jobs to the portfolio)** on `feature/jobs-j2-publish` — plan `docs/superpowers/plans/2026-10-10-jobs-j2-publish.md`, migration `20261010120000`. Then J3 (review links). Spec: `docs/superpowers/specs/2026-09-30-rbac-and-invites-design.md`. |
+| **RBAC (owner/staff)** | 🟡 **R-A (shareable staff invites)** ✅ live (PRs #9, #11, #12). **R-B (permissions)** ✅ live (PR #13). **R-C (attribution)** ✅ live (PR #14). **R-D (review, assignment, walk-in clients)** ✅ live (PR #15). **J2 (publish jobs to the portfolio)** merged (PR #16), migration `20261010120000` applied, all 6 SQL suites pass live — ⚠️ **open issue, see "Resume here" below**. Then J3 (review links). Spec: `docs/superpowers/specs/2026-09-30-rbac-and-invites-design.md`. |
 
 ## What's live / where
 
@@ -98,7 +98,6 @@ Left:
 
 | Needed for | Item |
 | --- | --- |
-| WP10 | A **Vercel Deploy Hook** URL. |
 | WP11 / WP14 C | A **Resend** API key + verified sender email. |
 | WP3b (staff account) | The **staff person's email** — then use the Team page's "Create invite". |
 | WP14 C | Domain choice + host decision; Turnstile keys; CF Analytics token; Search Console + GBP access; Privacy Policy source. |
@@ -106,10 +105,37 @@ Left:
 
 ---
 
+## Resume here (2026-10-10) — J2 jobs not showing on the live site
+
+**Symptom:** two jobs were published from Wrap-up (13:56 and an Update at 14:00 UTC), but
+the live site (build `qoc7x5vz9f`) has no portfolio entries — `/portfolio` is empty and
+`/portfolio/<slug>` returns 404; the live `sitemap.xml` has no `/portfolio/` URLs.
+
+**Ruled out:**
+- Code: a local `npm run build` against the live DB generates both
+  `dist/portfolio/2021-toyota-fielder-0001.html` and
+  `dist/portfolio/daihatsu-charade-mechanical-inspection-0002.html` with the timeline.
+- Data: both `portfolio_project` rows are `is_published`, jobs completed + consented,
+  each visible in `job_public`.
+- Supabase: `rebuild` function deployed (v5); `VERCEL_DEPLOY_HOOK_URL` secret set.
+
+**So:** no Vercel build ran after publishing (watched 5 min), or one ran and failed.
+
+**Next steps:**
+1. Owner: Vercel → Deployments — is there a Deploy-Hook deployment ~13:56–14:01 UTC?
+   Failed? (grab the build log). Note what message the Website card showed after
+   Publish ("live in ~1–2 minutes" / "not switched on" / "could not reach").
+2. Quick unblock: Redeploy the latest deployment with **build cache off**.
+3. Proposed fix (awaiting OK): `usePublish` (`src/admin/lib/rebuild.ts`) debounces 20 s
+   client-side — closing/refreshing the admin within 20 s drops the rebuild. Make
+   Publish/Unpublish call the rebuild immediately (keep the debounce for CMS edits).
+4. Then the J2 acceptance check (hidden photo absent, no plate/odometer/costs, untick
+   consent → gone after rebuild), then plan J3.
+
 ## Suggested order to resume
 
-1. Owner: WP14 acceptance run on the admin; set the `VERCEL_DEPLOY_HOOK_URL` and
-   `RESEND_*` secrets to switch on auto-publish + emails.
+1. Owner: WP14 acceptance run on the admin; set the `RESEND_*` secrets to switch on
+   emails (`VERCEL_DEPLOY_HOOK_URL` is set as of 2026-10-10).
 2. Owner: replace the DRAFT site content via the CMS (Services, About/Page copy,
    Testimonials), then let it auto-publish.
 3. Phase 2 **Part C — Go-Live** when ready to go public (domain, remove noindex,
