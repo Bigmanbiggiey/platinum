@@ -7,6 +7,7 @@ import { WrapUpTab } from './WrapUpTab';
 import type { JobWithRefs } from '../../lib/jobs';
 
 const saveLabour = vi.fn();
+const updateJob = vi.fn();
 vi.mock('../../lib/jobData', () => {
   const list = () => ({ data: [] });
   const mutation = () => ({
@@ -22,7 +23,7 @@ vi.mock('../../lib/jobData', () => {
     photos: { useList: list },
     useAddPart: mutation,
     useSaveLabour: () => ({ mutate: saveLabour, isPending: false, isError: false, error: null }),
-    useUpdateJob: mutation,
+    useUpdateJob: () => ({ mutate: updateJob, isPending: false, isError: false, error: null }),
     useDeleteJob: mutation,
   };
 });
@@ -64,7 +65,7 @@ const job: JobWithRefs = {
   job_cost: { labour_cost_kes: 4000 },
 };
 
-function renderAs(role: 'owner' | 'staff') {
+function renderAs(role: 'owner' | 'staff', j: JobWithRefs = job) {
   const state: AuthState = {
     loading: false,
     session: null,
@@ -73,14 +74,17 @@ function renderAs(role: 'owner' | 'staff') {
   return render(
     <AuthContext.Provider value={state}>
       <MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <WrapUpTab job={job} />
+        <WrapUpTab job={j} />
       </MemoryRouter>
     </AuthContext.Provider>,
   );
 }
 
 describe('<WrapUpTab />', () => {
-  beforeEach(() => saveLabour.mockReset());
+  beforeEach(() => {
+    saveLabour.mockReset();
+    updateJob.mockReset();
+  });
 
   it('staff: labour hours and completion only — no costs, cancel or delete', async () => {
     const user = userEvent.setup();
@@ -90,7 +94,7 @@ describe('<WrapUpTab />', () => {
     expect(screen.queryByText(/cost summary/i)).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Cancel job' })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Delete job' })).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Mark completed' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Mark completed' })).not.toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Save labour' }));
     expect(saveLabour).toHaveBeenCalledWith({ hours: 2 });
@@ -106,5 +110,42 @@ describe('<WrapUpTab />', () => {
 
     await user.click(screen.getByRole('button', { name: 'Save labour' }));
     expect(saveLabour).toHaveBeenCalledWith({ hours: 2, costKes: 4000 });
+  });
+
+  it('staff: Submit for review moves the job to awaiting_review', async () => {
+    const user = userEvent.setup();
+    renderAs('staff');
+    await user.click(screen.getByRole('button', { name: 'Submit for review' }));
+    expect(updateJob).toHaveBeenCalledWith({ status: 'awaiting_review' });
+  });
+
+  it('staff: awaiting review is locked; a send-back note is shown', () => {
+    const { unmount } = renderAs('staff', { ...job, status: 'awaiting_review' });
+    expect(screen.getByText(/waiting for the owner/i)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Submit for review' })).not.toBeInTheDocument();
+    unmount();
+    renderAs('staff', { ...job, review_note: 'Torque the wheel nuts' });
+    expect(screen.getByText('Sent back by the owner')).toBeInTheDocument();
+    expect(screen.getByText('Torque the wheel nuts')).toBeInTheDocument();
+  });
+
+  it('owner: approves a job awaiting review', async () => {
+    const user = userEvent.setup();
+    renderAs('owner', { ...job, status: 'awaiting_review' });
+    await user.click(screen.getByRole('button', { name: 'Approve & complete' }));
+    expect(updateJob).toHaveBeenCalledWith({ status: 'completed' });
+  });
+
+  it('owner: sends a job back only with a note', async () => {
+    const user = userEvent.setup();
+    renderAs('owner', { ...job, status: 'awaiting_review' });
+    const sendBack = screen.getByRole('button', { name: 'Send back' });
+    expect(sendBack).toBeDisabled();
+    await user.type(screen.getByLabelText('Send-back note'), ' Torque the wheel nuts ');
+    await user.click(sendBack);
+    expect(updateJob).toHaveBeenCalledWith({
+      status: 'in_repair',
+      review_note: 'Torque the wheel nuts',
+    });
   });
 });

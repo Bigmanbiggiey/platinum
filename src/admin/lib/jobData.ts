@@ -330,3 +330,149 @@ export function useJobAgenda() {
     },
   });
 }
+
+// ---------------------------------------------------------------------------
+// R-D: team assignment + clients from walk-ins
+// ---------------------------------------------------------------------------
+
+export interface JobAssignee {
+  job_id: string;
+  user_id: string;
+  display_name: string | null;
+  assigned_at: string;
+}
+
+export interface AssignablePerson {
+  user_id: string;
+  display_name: string | null;
+  email: string | null;
+  role: 'owner' | 'staff';
+}
+
+const assigneesKey = (jobId: string) => ['job-assignees', jobId] as const;
+
+/** Who is on a job. Names come from a view because staff can't read other profiles. */
+export function useJobAssignees(jobId: string) {
+  return useQuery({
+    queryKey: assigneesKey(jobId),
+    queryFn: async (): Promise<JobAssignee[]> => {
+      const { data, error } = await getDb()
+        .from('job_assignee_named')
+        .select('job_id, user_id, display_name, assigned_at')
+        .eq('job_id', jobId)
+        .order('assigned_at');
+      if (error) throw error;
+      return (data ?? []) as JobAssignee[];
+    },
+  });
+}
+
+/** Staff "My jobs": ids of the jobs assigned to this person. */
+export function useMyAssignedJobIds(userId: string | null) {
+  return useQuery({
+    queryKey: ['job-assignees', 'mine', userId],
+    enabled: userId !== null,
+    queryFn: async (): Promise<Set<string>> => {
+      const { data, error } = await getDb()
+        .from('job_assignee')
+        .select('job_id')
+        .eq('user_id', userId!);
+      if (error) throw error;
+      return new Set(((data ?? []) as { job_id: string }[]).map((r) => r.job_id));
+    },
+  });
+}
+
+/** Owner: active team members who can be put on a job. */
+export function useAssignablePeople(enabled = true) {
+  return useQuery({
+    queryKey: ['assignable-people'],
+    enabled,
+    queryFn: async (): Promise<AssignablePerson[]> => {
+      const { data, error } = await getDb()
+        .from('profile')
+        .select('user_id, display_name, email, role')
+        .eq('is_active', true)
+        .order('display_name');
+      if (error) throw error;
+      return (data ?? []) as AssignablePerson[];
+    },
+  });
+}
+
+export function useAssignJob(jobId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (userId: string) => {
+      const { error } = await getDb()
+        .from('job_assignee')
+        .insert({ job_id: jobId, user_id: userId });
+      if (error) throw error;
+    },
+    onSettled: () => {
+      void qc.invalidateQueries({ queryKey: ['job-assignees'] });
+      void qc.invalidateQueries({ queryKey: ['job-activity'] });
+    },
+  });
+}
+
+export function useUnassignJob(jobId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (userId: string) => {
+      const { error } = await getDb()
+        .from('job_assignee')
+        .delete()
+        .eq('job_id', jobId)
+        .eq('user_id', userId);
+      if (error) throw error;
+    },
+    onSettled: () => {
+      void qc.invalidateQueries({ queryKey: ['job-assignees'] });
+      void qc.invalidateQueries({ queryKey: ['job-activity'] });
+    },
+  });
+}
+
+export interface NewClientInput {
+  name: string;
+  phone: string | null;
+  email: string | null;
+}
+
+/**
+ * Owner: create a client from a walk-in job card (R-D D5). The vehicle recorded at
+ * check-in is attached to the new client, and the job is linked to it.
+ */
+export function useCreateClientForJob(job: Pick<Job, 'id' | 'vehicle_id'>) {
+  const invalidate = useInvalidateJobs();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (c: NewClientInput): Promise<string> => {
+      const db = getDb();
+      const { data, error } = await db
+        .from('client')
+        .insert({ name: c.name, phone: c.phone, email: c.email, source: 'walk-in' })
+        .select('id')
+        .single();
+      if (error) throw error;
+      const clientId = (data as { id: string }).id;
+      if (job.vehicle_id) {
+        const { error: vErr } = await db
+          .from('vehicle')
+          .update({ client_id: clientId })
+          .eq('id', job.vehicle_id)
+          .is('client_id', null);
+        if (vErr) throw vErr;
+      }
+      const { error: jErr } = await db.from('job').update({ client_id: clientId }).eq('id', job.id);
+      if (jErr) throw jErr;
+      return clientId;
+    },
+    onSuccess: () => {
+      invalidate(job.id);
+      void qc.invalidateQueries({ queryKey: ['client'] });
+      void qc.invalidateQueries({ queryKey: ['vehicle'] });
+    },
+  });
+}
