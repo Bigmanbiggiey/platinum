@@ -79,6 +79,7 @@ interface SourcePhoto {
     alt_text: string;
     width?: number | null;
     height?: number | null;
+    variants?: number[] | null;
   } | null;
 }
 
@@ -93,6 +94,7 @@ function toPhoto(p: SourcePhoto): PublicPhoto {
     caption: p.caption,
     width: p.media!.width ?? null,
     height: p.media!.height ?? null,
+    variants: p.media!.variants ?? [],
   };
 }
 

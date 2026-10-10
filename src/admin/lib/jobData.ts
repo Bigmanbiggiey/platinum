@@ -209,7 +209,7 @@ function makeJobChild<T extends { id: string }>(table: string, select: string, o
 export const findings = makeJobChild<JobFinding>('job_finding', '*', 'display_order');
 export const photos = makeJobChild<JobPhoto>(
   'job_photo',
-  '*, media(storage_path, alt_text)',
+  '*, media(storage_path, alt_text, width, height, variants)',
   'display_order',
 );
 // job_part_cost is owner-only: null for staff.

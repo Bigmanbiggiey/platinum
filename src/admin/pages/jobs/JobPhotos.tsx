@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { Badge, Button } from '../../components/ui';
-import { publicImageUrl } from '../../../shared/content/media';
+import { mediaUrl } from '../../../shared/content/media';
 import type { JobPhoto } from '../../lib/jobs';
 
 /** Photo grid for one stage/finding with a per-photo website toggle. */
@@ -30,7 +30,7 @@ export function JobPhotos({
           {photos.map((p) => (
             <figure key={p.id} className="relative">
               <img
-                src={publicImageUrl(p.media?.storage_path ?? '', { width: 400 }) ?? undefined}
+                src={(p.media && mediaUrl(p.media, 480)) ?? undefined}
                 alt={p.media?.alt_text ?? ''}
                 loading="lazy"
                 className={`aspect-[4/3] w-full rounded object-cover ${p.is_public ? '' : 'opacity-50'}`}
@@ -67,7 +67,7 @@ export function JobPhotos({
           <input
             ref={fileRef}
             type="file"
-            accept="image/*"
+            accept="image/*,.heic,.heif"
             multiple
             aria-label={label}
             className="sr-only"

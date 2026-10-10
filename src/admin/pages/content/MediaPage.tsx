@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { Button, Card, EmptyState, Input, Label, PageTitle, Spinner } from '../../components/ui';
 import { media } from '../../lib/resources';
 import { useUploadMedia } from '../../lib/storage';
-import { publicImageUrl } from '../../../shared/content/media';
+import { mediaUrl } from '../../../shared/content/media';
 import { ContentBackLink } from './ContentBackLink';
 
 export function MediaPage() {
@@ -37,7 +37,7 @@ export function MediaPage() {
           <input
             ref={fileRef}
             type="file"
-            accept="image/jpeg,image/png,image/webp,image/avif"
+            accept="image/*,.heic,.heif"
             className="mt-1 block w-full text-sm text-[color:var(--color-muted)]"
           />
         </label>
@@ -58,7 +58,7 @@ export function MediaPage() {
           {list.data!.map((m) => (
             <Card key={m.id} className="space-y-2">
               <img
-                src={publicImageUrl(m.storage_path, { width: 400 }) ?? undefined}
+                src={mediaUrl(m, 480) ?? undefined}
                 alt={m.alt_text}
                 className="aspect-[4/3] w-full rounded object-cover"
               />

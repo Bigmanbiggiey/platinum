@@ -89,7 +89,13 @@ export interface JobPhoto {
   is_public: boolean;
   display_order: number;
   created_at: string;
-  media: { storage_path: string; alt_text: string } | null;
+  media: {
+    storage_path: string;
+    alt_text: string;
+    width?: number | null;
+    height?: number | null;
+    variants?: number[] | null;
+  } | null;
 }
 
 export interface JobPart {
