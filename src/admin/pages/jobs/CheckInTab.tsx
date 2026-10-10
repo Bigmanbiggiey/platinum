@@ -135,6 +135,9 @@ function CheckInPhotos({ job }: { job: JobWithRefs }) {
         />
       </div>
       {actions.error && <p className="mt-2 text-xs text-signal">{actions.error}</p>}
+      {actions.notice && (
+        <p className="mt-2 text-xs text-[color:var(--color-muted)]">{actions.notice}</p>
+      )}
     </Card>
   );
 }

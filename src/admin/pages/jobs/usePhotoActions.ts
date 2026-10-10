@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { photos, useAddPhoto } from '../../lib/jobData';
+import { usePublishedProject } from '../../lib/publishJob';
+import { usePublish } from '../../lib/rebuild';
 import {
   photoAlt,
   type Job,
@@ -8,11 +10,17 @@ import {
   type PhotoStage,
 } from '../../lib/jobs';
 
-/** Upload / show-hide / delete for a job's photos, shared by every tab. */
+/**
+ * Upload / show-hide / delete for a job's photos, shared by every tab. On a job that is
+ * on the website, a change rebuilds the site so the portfolio page keeps up.
+ */
 export function usePhotoActions(job: Pick<Job, 'id' | 'vehicle_label'>) {
   const add = useAddPhoto(job.id);
   const update = photos.useUpdate(job.id);
   const del = photos.useRemove(job.id);
+  const project = usePublishedProject(job.id);
+  const rebuild = usePublish();
+  const live = () => project.data?.is_published === true;
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,6 +31,7 @@ export function usePhotoActions(job: Pick<Job, 'id' | 'vehicle_label'>) {
   ) => {
     setUploading(true);
     setError(null);
+    let added = 0;
     try {
       for (const file of files) {
         await add.mutateAsync({
@@ -31,27 +40,42 @@ export function usePhotoActions(job: Pick<Job, 'id' | 'vehicle_label'>) {
           findingId: finding?.id ?? null,
           alt: photoAlt(job.vehicle_label, stage, finding?.title),
         });
+        added++;
       }
     } catch (e) {
       setError((e as Error).message);
     } finally {
       setUploading(false);
+      // One build for the whole batch, sent at once.
+      if (added > 0 && live()) rebuild.triggerNow();
     }
   };
 
   const onError = (e: unknown) => setError((e as Error).message);
+  // Debounced: a run of show/hide clicks makes one build.
+  const onSuccess = () => {
+    if (live()) rebuild.trigger();
+  };
 
   const togglePublic = (p: JobPhoto) => {
     setError(null);
-    update.mutate({ id: p.id, patch: { is_public: !p.is_public } }, { onError });
+    update.mutate({ id: p.id, patch: { is_public: !p.is_public } }, { onError, onSuccess });
   };
 
   const remove = (p: JobPhoto) => {
     if (confirm('Remove this photo from the job? It stays in the media library.')) {
       setError(null);
-      del.mutate(p.id, { onError });
+      del.mutate(p.id, { onError, onSuccess });
     }
   };
 
-  return { upload, togglePublic, remove, uploading, error };
+  return {
+    upload,
+    togglePublic,
+    remove,
+    uploading,
+    error,
+    /** "Live on the website in ~1–2 minutes" etc. — only on a published job. */
+    notice: live() ? rebuild.message : '',
+  };
 }

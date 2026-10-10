@@ -45,6 +45,9 @@ export function RepairTab({ job }: { job: JobWithRefs }) {
         />
       ))}
       {actions.error && <p className="text-xs text-signal">{actions.error}</p>}
+      {actions.notice && (
+        <p className="text-xs text-[color:var(--color-muted)]">{actions.notice}</p>
+      )}
     </div>
   );
 }
