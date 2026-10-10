@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Button,
@@ -80,6 +80,7 @@ export function PortfolioEditPage() {
 
   if (q.isLoading) return <Spinner />;
   if (!q.data) return <EmptyState>Project not found.</EmptyState>;
+  if (q.data.job_id) return <JobEntryNotice project={q.data} />;
   const set = <K extends keyof PortfolioProjectRow>(k: K, v: PortfolioProjectRow[K]) =>
     setF((p) => ({ ...p, [k]: v }));
 
@@ -267,6 +268,30 @@ export function PortfolioEditPage() {
       >
         Delete project
       </Button>
+    </section>
+  );
+}
+
+/** A documented job's entry (J2) is managed from the job, not edited here (spec §5.6). */
+function JobEntryNotice({ project }: { project: PortfolioProjectRow }) {
+  return (
+    <section className="space-y-4">
+      <PageTitle>{project.title}</PageTitle>
+      <Card className="space-y-2">
+        <p className="text-sm text-[color:var(--color-ink)]">
+          This is a <strong>documented job</strong> — its page is built from the job record, so it
+          is edited, published and unpublished from the job.
+        </p>
+        <p className="font-mono text-xs text-steel">
+          /portfolio/{project.slug} · {project.is_published ? 'live' : 'not live'}
+        </p>
+        <Link
+          to={`/admin/jobs/${project.job_id}?tab=wrap-up`}
+          className="inline-block font-semibold text-[color:var(--color-ink)] underline underline-offset-2"
+        >
+          Edit in Jobs →
+        </Link>
+      </Card>
     </section>
   );
 }

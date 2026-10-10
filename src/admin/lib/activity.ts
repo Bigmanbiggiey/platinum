@@ -17,6 +17,8 @@ export const ACTIVITY_ACTIONS = [
   'consent_changed',
   'assigned',
   'unassigned',
+  'published',
+  'unpublished',
 ] as const;
 export type ActivityAction = (typeof ACTIVITY_ACTIONS)[number];
 
@@ -104,6 +106,10 @@ export function describeActivity(a: Pick<JobActivity, 'action' | 'detail'>): str
       return `assigned ${str(d.name) || 'someone'} to the job`;
     case 'unassigned':
       return `took ${str(d.name) || 'someone'} off the job`;
+    case 'published':
+      return 'published the job to the website';
+    case 'unpublished':
+      return 'took the job off the website';
   }
 }
 
