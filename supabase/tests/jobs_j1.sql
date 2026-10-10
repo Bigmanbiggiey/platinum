@@ -84,8 +84,8 @@ begin
     returning id into m;
   insert into public.job_finding (job_id, title) values (j2, 'Worn pads') returning id into f;
   insert into public.job_photo (job_id, finding_id, media_id, stage) values (j2, f, m, 'diagnosis');
-  insert into public.job_part (job_id, finding_id, name, quantity, cost_kes)
-    values (j2, f, 'Brake pads', 1, 3500);
+  insert into public.job_part (job_id, finding_id, name, quantity)
+    values (j2, f, 'Brake pads', 1);
   delete from public.job_finding where id = f;
   select count(*) into cnt from public.job_photo where job_id = j2 and finding_id is null;
   if cnt <> 1 then raise exception 'FAIL photo not unlinked from deleted finding'; end if;
