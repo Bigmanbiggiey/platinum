@@ -55,7 +55,8 @@ export interface AdminClient {
 
 export interface AdminVehicle {
   id: string;
-  client_id: string;
+  /** Null for a walk-in until the owner links a client (RBAC D5). */
+  client_id: string | null;
   make: string;
   model: string | null;
   year: number | null;

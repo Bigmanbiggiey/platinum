@@ -1,9 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getDb } from './db';
 import { uploadMedia } from './storage';
-import type { Job, JobFinding, JobPart, JobPhoto, JobWithRefs, PhotoStage } from './jobs';
+import {
+  OPEN_STATUSES,
+  type AgendaJob,
+  type Job,
+  type JobFinding,
+  type JobPart,
+  type JobPhoto,
+  type JobWithRefs,
+  type PhotoStage,
+} from './jobs';
 
-const JOB_WITH_REFS = '*, client(name), vehicle(registration)';
+// client + job_cost are owner-only: for staff PostgREST returns null for both embeds.
+const JOB_WITH_REFS = '*, client(name), vehicle(registration), job_cost(labour_cost_kes)';
 
 export type ClientJobRow = Pick<
   Job,
@@ -202,7 +212,8 @@ export const photos = makeJobChild<JobPhoto>(
   '*, media(storage_path, alt_text)',
   'display_order',
 );
-export const parts = makeJobChild<JobPart>('job_part', '*', 'created_at');
+// job_part_cost is owner-only: null for staff.
+export const parts = makeJobChild<JobPart>('job_part', '*, job_part_cost(cost_kes)', 'created_at');
 
 /** Upload an image (EXIF stripped) and attach it to the job. */
 export function useAddPhoto(jobId: string) {
@@ -223,6 +234,99 @@ export function useAddPhoto(jobId: string) {
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: jobChildKey('job_photo', jobId) });
       void qc.invalidateQueries({ queryKey: ['media', 'list'] });
+    },
+  });
+}
+
+export interface NewPartInput {
+  name: string;
+  quantity: number;
+  /** Owner only; staff always send null. */
+  cost_kes: number | null;
+  finding_id: string | null;
+}
+
+/** Adds a part; its cost (owner) goes to the owner-only job_part_cost table. */
+export function useAddPart(jobId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (p: NewPartInput) => {
+      const db = getDb();
+      const { data, error } = await db
+        .from('job_part')
+        .insert({ job_id: jobId, finding_id: p.finding_id, name: p.name, quantity: p.quantity })
+        .select('id')
+        .single();
+      if (error) throw error;
+      if (p.cost_kes !== null) {
+        const { error: costError } = await db
+          .from('job_part_cost')
+          .upsert({ part_id: (data as { id: string }).id, cost_kes: p.cost_kes });
+        if (costError) throw costError;
+      }
+    },
+    // Settled, not success: a part saved without its cost must still show up.
+    onSettled: () => qc.invalidateQueries({ queryKey: jobChildKey('job_part', jobId) }),
+  });
+}
+
+/** Labour hours (shared) + labour cost (owner-only job_cost; omit costKes to leave it). */
+export function useSaveLabour(jobId: string) {
+  const invalidate = useInvalidateJobs();
+  return useMutation({
+    mutationFn: async (v: { hours: number | null; costKes?: number | null }) => {
+      const db = getDb();
+      const { error } = await db.from('job').update({ labour_hours: v.hours }).eq('id', jobId);
+      if (error) throw error;
+      if (v.costKes !== undefined) {
+        const { error: costError } = await db
+          .from('job_cost')
+          .upsert({ job_id: jobId, labour_cost_kes: v.costKes });
+        if (costError) throw costError;
+      }
+    },
+    onSuccess: () => invalidate(jobId),
+  });
+}
+
+/** Owner: link a walk-in job (and its client-less vehicle) to a client (D5). */
+export function useLinkJobClient(job: Pick<Job, 'id' | 'vehicle_id'>) {
+  const invalidate = useInvalidateJobs();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (clientId: string) => {
+      const db = getDb();
+      if (job.vehicle_id) {
+        const { error } = await db
+          .from('vehicle')
+          .update({ client_id: clientId })
+          .eq('id', job.vehicle_id)
+          .is('client_id', null);
+        if (error) throw error;
+      }
+      const { error } = await db.from('job').update({ client_id: clientId }).eq('id', job.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      invalidate(job.id);
+      void qc.invalidateQueries({ queryKey: ['vehicle', 'list'] });
+    },
+  });
+}
+
+/** Job schedule (D6): open jobs with a booked date, soonest first. No customer data. */
+export function useJobAgenda() {
+  return useQuery({
+    queryKey: ['jobs', 'agenda'],
+    queryFn: async (): Promise<AgendaJob[]> => {
+      const { data, error } = await getDb()
+        .from('job')
+        .select('id, job_number, vehicle_label, status, booked_at')
+        .not('booked_at', 'is', null)
+        .in('status', [...OPEN_STATUSES])
+        .order('booked_at');
+      if (error) throw error;
+      return (data ?? []) as AgendaJob[];
     },
   });
 }
