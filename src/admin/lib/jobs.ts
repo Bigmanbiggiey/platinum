@@ -8,11 +8,24 @@ export const JOB_STATUSES = [
   'checked_in',
   'diagnosing',
   'in_repair',
+  'awaiting_review',
   'completed',
   'cancelled',
 ] as const;
 export type JobStatus = (typeof JOB_STATUSES)[number];
-export const OPEN_STATUSES: readonly JobStatus[] = ['checked_in', 'diagnosing', 'in_repair'];
+/** Not finished yet — includes jobs waiting for the owner's review (R-D). */
+export const OPEN_STATUSES: readonly JobStatus[] = [
+  'checked_in',
+  'diagnosing',
+  'in_repair',
+  'awaiting_review',
+];
+/** What staff can set themselves (R-D: only the owner completes or cancels). */
+export const STAFF_WORKING_STATUSES: readonly JobStatus[] = [
+  'checked_in',
+  'diagnosing',
+  'in_repair',
+];
 
 export const FINDING_OUTCOMES = ['pending', 'fixed', 'deferred', 'not_fixed'] as const;
 export type FindingOutcome = (typeof FINDING_OUTCOMES)[number];
@@ -37,6 +50,11 @@ export interface Job {
   consent_recorded_at: string | null;
   labour_hours: number | null;
   internal_notes: string | null;
+  /** The owner's latest send-back note (R-D); cleared when the owner approves. */
+  review_note: string | null;
+  /** When the job last entered awaiting_review — set by the database. */
+  submitted_at: string | null;
+  created_by: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -90,6 +108,7 @@ export const jobStatusLabel: Record<JobStatus, string> = {
   checked_in: 'Checked in',
   diagnosing: 'Diagnosing',
   in_repair: 'In repair',
+  awaiting_review: 'Awaiting review',
   completed: 'Completed',
   cancelled: 'Cancelled',
 };
@@ -110,7 +129,7 @@ const stageLabel: Record<PhotoStage, string> = {
 export function jobStatusTone(s: JobStatus): 'neutral' | 'attention' | 'pass' | 'muted' {
   if (s === 'completed') return 'pass';
   if (s === 'cancelled') return 'muted';
-  if (s === 'checked_in') return 'attention';
+  if (s === 'checked_in' || s === 'awaiting_review') return 'attention';
   return 'neutral';
 }
 
@@ -126,11 +145,12 @@ export function vehicleLabel(v: {
     .join(' ');
 }
 
-export type JobListFilter = 'open' | 'completed' | 'cancelled' | 'all';
+export type JobListFilter = 'open' | 'review' | 'completed' | 'cancelled' | 'all';
 
 export function matchesJobFilter(job: Pick<Job, 'status'>, filter: JobListFilter): boolean {
   if (filter === 'all') return true;
   if (filter === 'open') return OPEN_STATUSES.includes(job.status);
+  if (filter === 'review') return job.status === 'awaiting_review';
   return job.status === filter;
 }
 
@@ -223,11 +243,47 @@ export function groupJobsByVehicle<T extends Pick<Job, 'vehicle_id' | 'vehicle_l
   return [...groups.values()];
 }
 
-/** Status choices in the job header. Only the owner cancels or restores a job (D5). */
+/**
+ * Status choices in the job header. Only the owner completes, cancels or restores a job;
+ * staff submit for review from Wrap-up (RBAC D5, R-D D1). The database enforces both.
+ */
 export function jobStatusOptions(current: JobStatus, isOwner: boolean): JobStatus[] {
   if (isOwner) return [...JOB_STATUSES];
-  if (current === 'cancelled') return ['cancelled'];
-  return JOB_STATUSES.filter((s) => s !== 'cancelled');
+  if (!STAFF_WORKING_STATUSES.includes(current)) return [current];
+  return [...STAFF_WORKING_STATUSES];
+}
+
+/** Staff Jobs page (R-D D4): jobs assigned to me or checked in by me, then the rest. */
+export function splitMyJobs<T extends { id: string; created_by: string | null }>(
+  jobs: T[],
+  assignedToMe: ReadonlySet<string>,
+  userId: string | null,
+): { mine: T[]; others: T[] } {
+  const mine: T[] = [];
+  const others: T[] = [];
+  for (const j of jobs) {
+    if (assignedToMe.has(j.id) || (userId !== null && j.created_by === userId)) mine.push(j);
+    else others.push(j);
+  }
+  return { mine, others };
+}
+
+/** What the owner checks before approving (R-D §4). */
+export function reviewSummary(
+  findings: Pick<JobFinding, 'outcome'>[],
+  parts: unknown[],
+  photos: Pick<JobPhoto, 'stage'>[],
+) {
+  const count = (o: FindingOutcome) => findings.filter((f) => f.outcome === o).length;
+  return {
+    problems: findings.length,
+    fixed: count('fixed'),
+    deferred: count('deferred'),
+    notFixed: count('not_fixed'),
+    pending: count('pending'),
+    parts: parts.length,
+    afterPhotos: photos.filter((p) => p.stage === 'repair').length,
+  };
 }
 
 export type AgendaJob = Pick<Job, 'id' | 'job_number' | 'vehicle_label' | 'status' | 'booked_at'>;

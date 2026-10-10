@@ -13,7 +13,9 @@ import {
   matchesJobSearch,
   partCost,
   pendingFindingsCount,
+  reviewSummary,
   photoAlt,
+  splitMyJobs,
   toDateInput,
   vehicleLabel,
 } from './jobs';
@@ -41,7 +43,8 @@ describe('jobStatusTone', () => {
 });
 
 describe('matchesJobFilter', () => {
-  it('open covers checked_in, diagnosing and in_repair only', () => {
+  it('open covers every unfinished status, including awaiting review', () => {
+    expect(matchesJobFilter({ status: 'awaiting_review' }, 'open')).toBe(true);
     expect(matchesJobFilter({ status: 'checked_in' }, 'open')).toBe(true);
     expect(matchesJobFilter({ status: 'in_repair' }, 'open')).toBe(true);
     expect(matchesJobFilter({ status: 'completed' }, 'open')).toBe(false);
@@ -51,6 +54,10 @@ describe('matchesJobFilter', () => {
     expect(matchesJobFilter({ status: 'completed' }, 'completed')).toBe(true);
     expect(matchesJobFilter({ status: 'in_repair' }, 'completed')).toBe(false);
     expect(matchesJobFilter({ status: 'cancelled' }, 'all')).toBe(true);
+  });
+  it('review matches jobs awaiting review only', () => {
+    expect(matchesJobFilter({ status: 'awaiting_review' }, 'review')).toBe(true);
+    expect(matchesJobFilter({ status: 'in_repair' }, 'review')).toBe(false);
   });
 });
 
@@ -186,20 +193,57 @@ describe('jobStatusOptions', () => {
       'checked_in',
       'diagnosing',
       'in_repair',
+      'awaiting_review',
       'completed',
       'cancelled',
     ]);
   });
-  it('never offers staff "cancelled"', () => {
-    expect(jobStatusOptions('in_repair', false)).toEqual([
-      'checked_in',
-      'diagnosing',
-      'in_repair',
-      'completed',
-    ]);
+  it('offers staff the working statuses only — no review, completed or cancelled', () => {
+    expect(jobStatusOptions('in_repair', false)).toEqual(['checked_in', 'diagnosing', 'in_repair']);
   });
-  it('locks a cancelled job for staff', () => {
+  it('locks a job for staff once it is awaiting review, completed or cancelled', () => {
+    expect(jobStatusOptions('awaiting_review', false)).toEqual(['awaiting_review']);
+    expect(jobStatusOptions('completed', false)).toEqual(['completed']);
     expect(jobStatusOptions('cancelled', false)).toEqual(['cancelled']);
+  });
+});
+
+describe('splitMyJobs', () => {
+  it('puts jobs assigned to me or checked in by me first, keeping order', () => {
+    const jobs = [
+      { id: 'a', created_by: 'other' },
+      { id: 'b', created_by: 'me' },
+      { id: 'c', created_by: null },
+      { id: 'd', created_by: 'other' },
+    ];
+    const { mine, others } = splitMyJobs(jobs, new Set(['d']), 'me');
+    expect(mine.map((j) => j.id)).toEqual(['b', 'd']);
+    expect(others.map((j) => j.id)).toEqual(['a', 'c']);
+  });
+});
+
+describe('reviewSummary', () => {
+  it('counts problems by outcome, parts and after photos', () => {
+    expect(
+      reviewSummary(
+        [
+          { outcome: 'fixed' },
+          { outcome: 'fixed' },
+          { outcome: 'deferred' },
+          { outcome: 'pending' },
+        ],
+        [{}, {}, {}],
+        [{ stage: 'repair' }, { stage: 'diagnosis' }, { stage: 'repair' }],
+      ),
+    ).toEqual({
+      problems: 4,
+      fixed: 2,
+      deferred: 1,
+      notFixed: 0,
+      pending: 1,
+      parts: 3,
+      afterPhotos: 2,
+    });
   });
 });
 
