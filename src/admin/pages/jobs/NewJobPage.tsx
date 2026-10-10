@@ -14,11 +14,18 @@ import { clients, services, vehicles } from '../../lib/resources';
 import { useRequest } from '../../lib/requests';
 import { useCreateJob, useJobByRequest } from '../../lib/jobData';
 import { jobPrefillFromRequest, vehicleLabel } from '../../lib/jobs';
+import { useRole } from '../../auth/authContext';
+import { WalkInForm } from './WalkInForm';
 
 const NEW_VEHICLE = 'new';
 
-/** Start a job — a walk-in, or from a request (`?request=<id>`) with fields prefilled. */
+/** Owner: any job (client walk-in, or from a request). Staff: walk-in check-in only (D5). */
 export function NewJobPage() {
+  return useRole() === 'owner' ? <OwnerNewJobPage /> : <WalkInForm />;
+}
+
+/** Start a job — a walk-in, or from a request (`?request=<id>`) with fields prefilled. */
+function OwnerNewJobPage() {
   const [params] = useSearchParams();
   const requestId = params.get('request') ?? undefined;
   const request = useRequest(requestId);
