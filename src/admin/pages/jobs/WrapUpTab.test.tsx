@@ -27,6 +27,13 @@ vi.mock('../../lib/jobData', () => {
     useDeleteJob: mutation,
   };
 });
+vi.mock('./PublishCard', () => ({ PublishCard: () => null }));
+const published = vi.hoisted(() => ({
+  current: null as null | { id: string; is_published: boolean },
+}));
+vi.mock('../../lib/publishJob', () => ({
+  usePublishedProject: () => ({ data: published.current, isLoading: false }),
+}));
 vi.mock('./usePhotoActions', () => ({
   usePhotoActions: () => ({
     upload: vi.fn(),
@@ -84,6 +91,7 @@ describe('<WrapUpTab />', () => {
   beforeEach(() => {
     saveLabour.mockReset();
     updateJob.mockReset();
+    published.current = null;
   });
 
   it('staff: labour hours and completion only — no costs, cancel or delete', async () => {
@@ -147,5 +155,12 @@ describe('<WrapUpTab />', () => {
       status: 'in_repair',
       review_note: 'Torque the wheel nuts',
     });
+  });
+
+  it('owner: a job on the website can’t be deleted until it is unpublished', () => {
+    published.current = { id: 'p1', is_published: true };
+    renderAs('owner', { ...job, status: 'completed' });
+    expect(screen.queryByRole('button', { name: 'Delete job' })).not.toBeInTheDocument();
+    expect(screen.getByText(/Unpublish it in the Website card/)).toBeInTheDocument();
   });
 });

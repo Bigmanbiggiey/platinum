@@ -95,6 +95,11 @@ describe.skipIf(!anon)('RLS — anon role', () => {
     expect(error?.code).toBe('42501');
   });
 
+  it('CAN read published jobs only through job_public (J2)', async () => {
+    const { error } = await db.from('job_public').select('job_id, findings').limit(5);
+    expect(error).toBeNull();
+  });
+
   it('CANNOT read job assignments (R-D)', async () => {
     for (const table of ['job_assignee', 'job_assignee_named']) {
       const { error } = await db.from(table).select('*').limit(1);

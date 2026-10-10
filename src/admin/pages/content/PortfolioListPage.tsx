@@ -67,6 +67,7 @@ export function PortfolioListPage() {
                 {p.is_published ? 'live' : 'draft'}
               </Badge>
               <span className="font-semibold text-[color:var(--color-ink)]">{p.title}</span>
+              {p.job_id && <Badge tone="neutral">Documented job</Badge>}
               <span className="font-mono text-[11px] text-steel">/{p.slug}</span>
               <span className="ml-auto font-mono text-[10px] text-steel">#{p.display_order}</span>
             </Link>

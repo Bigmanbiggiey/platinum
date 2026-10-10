@@ -60,6 +60,8 @@ export interface PortfolioProjectRow {
   cover_media_id: string | null;
   is_published: boolean;
   display_order: number;
+  /** Set when the entry is a published job (J2) — the page renders its timeline. */
+  job_id: string | null;
 }
 
 export interface TestimonialPublicRow {

@@ -68,6 +68,29 @@ export function serviceJsonLd(service: ServiceRow, settings: SiteSettingsPublicR
   };
 }
 
+/**
+ * A documented job (J2): the work as a Service on a vehicle. Built only from public
+ * fields — never client data, the plate or costs.
+ */
+export function documentedJobJsonLd(job: {
+  slug: string;
+  title: string;
+  summary: string;
+  vehicleLabel: string;
+  serviceTitle: string | null;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: job.serviceTitle ?? job.title,
+    description: `${job.summary} — ${job.vehicleLabel}`,
+    serviceType: 'Automotive repair',
+    provider: { '@type': 'AutoRepair', name: BUSINESS.name, telephone: BUSINESS.phoneE164 },
+    areaServed: 'Kenya',
+    url: canonical(`/portfolio/${job.slug}`),
+  };
+}
+
 export function breadcrumbJsonLd(trail: { name: string; path: string }[]) {
   return {
     '@context': 'https://schema.org',

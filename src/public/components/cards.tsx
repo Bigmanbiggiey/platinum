@@ -50,9 +50,16 @@ export function ProjectCard({ project }: { project: ProjectWithMedia }) {
         </div>
         <h3 className="mt-2 text-lg font-bold text-[color:var(--color-ink)]">{project.title}</h3>
         <p className="mt-2 text-sm text-[color:var(--color-muted)]">{project.summary}</p>
-        <p className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-[color:var(--color-ink)]">
-          <span className="h-1.5 w-1.5 rounded-full bg-signal" aria-hidden="true" />
-          Completed
+        <p className="mt-3 flex items-center gap-3 text-xs font-semibold text-[color:var(--color-ink)]">
+          <span className="flex items-center gap-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-signal" aria-hidden="true" />
+            Completed
+          </span>
+          {project.job_id && (
+            <span className="rounded-full border border-[color:var(--color-line)] px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-muted)]">
+              Documented job
+            </span>
+          )}
         </p>
       </div>
     </Link>

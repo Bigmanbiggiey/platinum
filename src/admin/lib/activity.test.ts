@@ -31,6 +31,8 @@ describe('describeActivity', () => {
     expect(d('consent_changed', { to: false })).toBe('withdrew consent to publish');
     expect(d('assigned', { name: 'Kevin' })).toBe('assigned Kevin to the job');
     expect(d('unassigned', { name: 'Kevin' })).toBe('took Kevin off the job');
+    expect(d('published', { slug: 'x' })).toBe('published the job to the website');
+    expect(d('unpublished', { slug: 'x' })).toBe('took the job off the website');
     expect(d('status_changed', { from: 'in_repair', to: 'awaiting_review' })).toBe(
       'submitted the job for review',
     );
