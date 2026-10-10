@@ -10,7 +10,7 @@ const part: JobPart = {
   finding_id: 'f1',
   name: 'Oil filter',
   quantity: 1,
-  cost_kes: 800,
+  job_part_cost: { cost_kes: 800 },
   created_at: '2026-09-30T08:00:00Z',
 };
 
@@ -66,5 +66,17 @@ describe('<PartsEditor />', () => {
 
     await user.click(screen.getByRole('button', { name: 'Add part' }));
     await waitFor(() => expect(screen.getByLabelText('Part name')).toHaveValue(''));
+  });
+
+  it('staff mode (showCost=false): no cost field, no cost column, null cost sent', async () => {
+    const user = userEvent.setup();
+    const onAdd = vi.fn();
+    render(<PartsEditor parts={[part]} onAdd={onAdd} onRemove={vi.fn()} showCost={false} />);
+    expect(screen.queryByLabelText('Cost (KES)')).not.toBeInTheDocument();
+    expect(screen.queryByText('KES 800')).not.toBeInTheDocument();
+    expect(screen.getByText('×1')).toBeInTheDocument();
+    await user.type(screen.getByLabelText('Part name'), 'Wiper');
+    await user.click(screen.getByRole('button', { name: 'Add part' }));
+    expect(onAdd).toHaveBeenCalledWith({ name: 'Wiper', quantity: 1, cost_kes: null });
   });
 });
