@@ -15,3 +15,13 @@ export const AuthContext = createContext<AuthState>({
 });
 
 export const useAuth = () => useContext(AuthContext);
+
+export type AdminRole = 'owner' | 'staff';
+
+/** The admin role of a profile, or null when there is no ACTIVE profile. */
+export function roleOf(profile: AdminProfile | null): AdminRole | null {
+  return profile?.is_active ? profile.role : null;
+}
+
+/** The signed-in person's role (RBAC spec §5). The database enforces it; this mirrors it. */
+export const useRole = (): AdminRole | null => roleOf(useAuth().profile);

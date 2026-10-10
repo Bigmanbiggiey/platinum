@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './auth/authContext';
 import { signOut } from '../shared/supabase/auth';
@@ -24,7 +24,15 @@ export function RequireAuth() {
  * Signed in, but not an active admin. The login page bounces signed-in users back
  * here, so signing out is the only way to switch accounts — always offer it.
  */
-function NoAccess({ email }: { email: string | null }) {
+export function NoAccess({
+  email,
+  message = 'This account doesn’t have admin access. Ask the owner to add you to the team.',
+  action,
+}: {
+  email: string | null;
+  message?: string;
+  action?: ReactNode;
+}) {
   const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
 
@@ -40,7 +48,8 @@ function NoAccess({ email }: { email: string | null }) {
   return (
     <div className="grid min-h-dvh place-items-center px-6 text-center text-sm text-platinum">
       <div className="space-y-4">
-        <p>This account doesn&rsquo;t have admin access. Ask the owner to add you to the team.</p>
+        <p>{message}</p>
+        {action}
         {email && (
           <p className="text-xs text-steel">
             Signed in as <span className="font-mono text-platinum">{email}</span>

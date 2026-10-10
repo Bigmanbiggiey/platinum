@@ -14,6 +14,8 @@ import {
 import { getDb, prettyType, type ServiceRequest } from '../lib/db';
 import { useUpdateRequest } from '../lib/requests';
 import { useNotifyCustomer } from '../lib/customerEmail';
+import { useRole } from '../auth/authContext';
+import { JobAgendaSection } from './jobs/JobAgenda';
 
 function useScheduleItems() {
   return useQuery({
@@ -105,22 +107,35 @@ function ScheduleRow({ r }: { r: ServiceRequest }) {
   );
 }
 
+/** Owner: booking requests to confirm + the job agenda. Staff: the job agenda only (D6). */
 export function SchedulePage() {
-  const q = useScheduleItems();
+  const isOwner = useRole() === 'owner';
   return (
-    <section className="space-y-4">
+    <section className="space-y-8">
       <PageTitle>Schedule</PageTitle>
-      {q.isLoading ? (
-        <Spinner />
-      ) : (q.data ?? []).length === 0 ? (
-        <EmptyState>No bookings to confirm.</EmptyState>
-      ) : (
+      {isOwner && (
         <div className="space-y-3">
-          {q.data!.map((r) => (
-            <ScheduleRow key={r.id} r={r} />
-          ))}
+          <h2 className="font-semibold text-[color:var(--color-ink)]">Bookings to confirm</h2>
+          <BookingSchedule />
         </div>
       )}
+      <div className="space-y-3">
+        <h2 className="font-semibold text-[color:var(--color-ink)]">Booked jobs</h2>
+        <JobAgendaSection />
+      </div>
     </section>
+  );
+}
+
+function BookingSchedule() {
+  const q = useScheduleItems();
+  if (q.isLoading) return <Spinner />;
+  if ((q.data ?? []).length === 0) return <EmptyState>No bookings to confirm.</EmptyState>;
+  return (
+    <div className="space-y-3">
+      {q.data!.map((r) => (
+        <ScheduleRow key={r.id} r={r} />
+      ))}
+    </div>
   );
 }

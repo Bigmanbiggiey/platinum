@@ -23,8 +23,9 @@ Deno.serve(async (req) => {
   if (req.method !== 'POST') return json({ ok: false, error: 'method-not-allowed' }, 405);
 
   const url = Deno.env.get('SUPABASE_URL')!;
+  // Booking requests are owner-only (RBAC spec §3, D6).
   const me = await getCaller(req);
-  if (!me?.isActive) return json({ ok: false, error: 'forbidden' }, 403);
+  if (!me?.isActive || me.role !== 'owner') return json({ ok: false, error: 'forbidden' }, 403);
 
   const { requestId, kind } = (await req.json().catch(() => ({}))) as {
     requestId?: string;

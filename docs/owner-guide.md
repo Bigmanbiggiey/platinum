@@ -28,6 +28,13 @@ The side menu:
 - **Settings** — your business details, hours, and how you're notified.
 - **Team** — (owner only) add or remove staff logins.
 
+**What staff can do:** staff see only **Jobs** and **Schedule** (booked jobs). They can
+check in a walk-in from the vehicle details, record diagnosis, repairs, photos, parts
+(no prices), labour hours, and complete or re-open a job. They never see clients,
+phone numbers, requests, costs, website content or settings, and they can't cancel or
+delete a job. A walk-in they check in shows **"Walk-in — no client yet"** on the job —
+pick the client there and tap **Link**.
+
 ## Handling an enquiry
 
 1. Open it from **Notifications** or **Requests**.
@@ -104,7 +111,7 @@ switched on yet, ask the developer to add the deploy hook.)
 ## Adding a staff member (owner only)
 
 1. **Team → Invite someone** → enter their **email** and **name** (the name is what the
-   job activity shows), pick **Staff** (or **Owner**) → **Create invite**.
+   job activity shows), pick **Staff** (jobs & schedule only) or **Owner** (everything) → **Create invite**.
 2. Send the link with **Share on WhatsApp**, **Email** (opens your own email app) or
    **Copy link**. They open it, choose a password and are straight in — the invite is
    your approval.

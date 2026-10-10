@@ -36,7 +36,6 @@ export interface Job {
   public_consent: boolean;
   consent_recorded_at: string | null;
   labour_hours: number | null;
-  labour_cost_kes: number | null;
   internal_notes: string | null;
   created_at: string;
   updated_at: string;
@@ -44,8 +43,11 @@ export interface Job {
 
 /** A job with the bits of its client + vehicle the admin lists need. */
 export interface JobWithRefs extends Job {
+  /** Null for staff — `client` is owner-only (RLS). */
   client: { name: string } | null;
   vehicle: { registration: string | null } | null;
+  /** Owner-only table; null for staff or when no cost is recorded. */
+  job_cost: { labour_cost_kes: number | null } | null;
 }
 
 export interface JobFinding {
@@ -79,8 +81,8 @@ export interface JobPart {
   name: string;
   /** Private — never shown publicly. */
   quantity: number;
-  /** Private — the cost of this line, not a unit price. */
-  cost_kes: number | null;
+  /** Owner-only embed (job_part_cost); null for staff. Cost of the line, not a unit price. */
+  job_part_cost: { cost_kes: number | null } | null;
   created_at: string;
 }
 
@@ -155,9 +157,16 @@ export function photoAlt(vehicle: string, stage: PhotoStage, findingTitle?: stri
   return [vehicle, stageLabel[stage], findingTitle].filter(Boolean).join(' — ');
 }
 
-export function jobCostSummary(labourCostKes: number | null, parts: Pick<JobPart, 'cost_kes'>[]) {
+export function partCost(p: Pick<JobPart, 'job_part_cost'>): number | null {
+  return p.job_part_cost?.cost_kes ?? null;
+}
+
+export function jobCostSummary(
+  labourCostKes: number | null,
+  parts: Pick<JobPart, 'job_part_cost'>[],
+) {
   const labour = labourCostKes ?? 0;
-  const partsTotal = parts.reduce((sum, p) => sum + (p.cost_kes ?? 0), 0);
+  const partsTotal = parts.reduce((sum, p) => sum + (partCost(p) ?? 0), 0);
   return { labour, parts: partsTotal, total: labour + partsTotal };
 }
 
@@ -212,4 +221,41 @@ export function groupJobsByVehicle<T extends Pick<Job, 'vehicle_id' | 'vehicle_l
     groups.set(key, group);
   }
   return [...groups.values()];
+}
+
+/** Status choices in the job header. Only the owner cancels or restores a job (D5). */
+export function jobStatusOptions(current: JobStatus, isOwner: boolean): JobStatus[] {
+  if (isOwner) return [...JOB_STATUSES];
+  if (current === 'cancelled') return ['cancelled'];
+  return JOB_STATUSES.filter((s) => s !== 'cancelled');
+}
+
+export type AgendaJob = Pick<Job, 'id' | 'job_number' | 'vehicle_label' | 'status' | 'booked_at'>;
+
+export interface AgendaDay<T> {
+  day: string;
+  jobs: T[];
+}
+
+/** Job schedule (D6): booked jobs grouped by Kenyan calendar day, soonest first. */
+export function groupAgendaByDay<T extends Pick<Job, 'booked_at'>>(jobs: T[]): AgendaDay<T>[] {
+  const sorted = jobs
+    .filter((j) => j.booked_at)
+    .sort((a, b) => new Date(a.booked_at!).getTime() - new Date(b.booked_at!).getTime());
+  const days = new Map<string, T[]>();
+  for (const job of sorted) {
+    const day = toDateInput(job.booked_at);
+    days.set(day, [...(days.get(day) ?? []), job]);
+  }
+  return [...days].map(([day, dayJobs]) => ({ day, jobs: dayJobs }));
+}
+
+/** `2026-10-01` → "Thu, 1 Oct" (Kenyan time). */
+export function agendaDayLabel(day: string): string {
+  return new Date(`${day}T12:00:00+03:00`).toLocaleDateString('en-KE', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    timeZone: 'Africa/Nairobi',
+  });
 }

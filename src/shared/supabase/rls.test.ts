@@ -19,6 +19,9 @@ const anon = url && key ? createClient(url, key, { auth: { persistSession: false
 // Node test runner, never bundled.
 const adminEmail = process.env.TEST_ADMIN_EMAIL;
 const adminPassword = process.env.TEST_ADMIN_PASSWORD;
+// An active STAFF account (RBAC R-B). TEST_ADMIN_* must be an OWNER account.
+const staffEmail = process.env.TEST_STAFF_EMAIL;
+const staffPassword = process.env.TEST_STAFF_PASSWORD;
 
 describe.skipIf(!anon)('RLS — anon role', () => {
   const db = anon!;
@@ -79,6 +82,13 @@ describe.skipIf(!anon)('RLS — anon role', () => {
       expect(error?.code, `${table} must be sealed from anon`).toBe('42501');
     }
   });
+
+  it('CANNOT read the job cost tables (RBAC)', async () => {
+    for (const table of ['job_cost', 'job_part_cost']) {
+      const { error } = await db.from(table).select('*').limit(1);
+      expect(error?.code, `${table} must be sealed from anon`).toBe('42501');
+    }
+  });
 });
 
 describe.skipIf(!anon || !adminEmail || !adminPassword)('RLS — authenticated admin', () => {
@@ -120,6 +130,13 @@ describe.skipIf(!anon || !adminEmail || !adminPassword)('RLS — authenticated a
     expect(counter.error?.code).toBe('42501');
   });
 
+  it('owner can read the job cost tables (RBAC)', async () => {
+    for (const table of ['job_cost', 'job_part_cost']) {
+      const { error } = await admin.from(table).select('*').limit(1);
+      expect(error, `${table} should be readable by the owner`).toBeNull();
+    }
+  });
+
   it('can create + delete a client (full CRUD)', async () => {
     const ins = await admin
       .from('client')
@@ -145,5 +162,61 @@ describe.skipIf(!anon || !adminEmail || !adminPassword)('RLS — authenticated a
       .update({ value_md: restore })
       .eq('key', cb.data!.key);
     expect(upd.error).toBeNull();
+  });
+});
+
+describe.skipIf(!anon || !staffEmail || !staffPassword)('RLS — authenticated staff (RBAC)', () => {
+  let staff: SupabaseClient;
+
+  beforeAll(async () => {
+    staff = createClient(url!, key!, { auth: { persistSession: false } });
+    const { error } = await staff.auth.signInWithPassword({
+      email: staffEmail!,
+      password: staffPassword!,
+    });
+    if (error) throw new Error(`staff sign-in failed: ${error.message}`);
+  });
+
+  afterAll(async () => {
+    await staff?.auth.signOut();
+  });
+
+  it('sees no rows in owner-only tables', async () => {
+    for (const table of [
+      'client',
+      'service_request',
+      'notification',
+      'site_settings',
+      'testimonial',
+      'job_cost',
+      'job_part_cost',
+    ]) {
+      const { data, error } = await staff.from(table).select('*').limit(5);
+      expect(error, `${table} query`).toBeNull();
+      expect(data, `${table} must be empty for staff`).toEqual([]);
+    }
+  });
+
+  it('reads jobs and only its own profile', async () => {
+    const jobs = await staff.from('job').select('id').limit(1);
+    expect(jobs.error).toBeNull();
+    const profiles = await staff.from('profile').select('user_id');
+    expect(profiles.error).toBeNull();
+    expect(profiles.data).toHaveLength(1);
+  });
+
+  it('never gets a client name through a job', async () => {
+    const { data, error } = await staff
+      .from('job')
+      .select('client_id, client(name)')
+      .not('client_id', 'is', null)
+      .limit(5);
+    expect(error).toBeNull();
+    for (const row of data ?? []) expect(row.client).toBeNull();
+  });
+
+  it('cannot create a client', async () => {
+    const { error } = await staff.from('client').insert({ name: 'RLS staff probe' });
+    expect(error?.code).toBe('42501');
   });
 });

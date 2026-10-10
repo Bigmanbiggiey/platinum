@@ -20,9 +20,9 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
   if (req.method !== 'POST') return json({ ok: false, error: 'method-not-allowed' }, 405);
 
-  // Caller must be an active admin (their own profile — see _shared/caller.ts).
+  // Caller must be the active owner (website publishing is owner-only — RBAC spec §3).
   const me = await getCaller(req);
-  if (!me?.isActive) return json({ ok: false, error: 'forbidden' }, 403);
+  if (!me?.isActive || me.role !== 'owner') return json({ ok: false, error: 'forbidden' }, 403);
 
   const hook = Deno.env.get('VERCEL_DEPLOY_HOOK_URL');
   if (!hook) return json({ ok: true, configured: false });

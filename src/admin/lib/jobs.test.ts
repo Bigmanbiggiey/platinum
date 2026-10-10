@@ -1,13 +1,17 @@
 import { describe, it, expect } from 'vitest';
 import {
+  agendaDayLabel,
   formatKes,
   fromDateInput,
+  groupAgendaByDay,
   groupJobsByVehicle,
   jobCostSummary,
   jobPrefillFromRequest,
+  jobStatusOptions,
   jobStatusTone,
   matchesJobFilter,
   matchesJobSearch,
+  partCost,
   pendingFindingsCount,
   photoAlt,
   toDateInput,
@@ -86,7 +90,12 @@ describe('photoAlt', () => {
 describe('costs', () => {
   it('sums labour and line costs, treating blanks as zero', () => {
     expect(
-      jobCostSummary(4000, [{ cost_kes: 3500 }, { cost_kes: null }, { cost_kes: 800 }]),
+      jobCostSummary(4000, [
+        { job_part_cost: { cost_kes: 3500 } },
+        { job_part_cost: null },
+        { job_part_cost: { cost_kes: null } },
+        { job_part_cost: { cost_kes: 800 } },
+      ]),
     ).toEqual({
       labour: 4000,
       parts: 4300,
@@ -160,5 +169,58 @@ describe('groupJobsByVehicle', () => {
       ['Mazda Demio', ['b']],
       ['Vehicle removed', ['d']],
     ]);
+  });
+});
+
+describe('partCost', () => {
+  it('reads the owner-only cost embed; null when hidden or unset', () => {
+    expect(partCost({ job_part_cost: { cost_kes: 800 } })).toBe(800);
+    expect(partCost({ job_part_cost: { cost_kes: null } })).toBeNull();
+    expect(partCost({ job_part_cost: null })).toBeNull();
+  });
+});
+
+describe('jobStatusOptions', () => {
+  it('lets the owner pick any status', () => {
+    expect(jobStatusOptions('in_repair', true)).toEqual([
+      'checked_in',
+      'diagnosing',
+      'in_repair',
+      'completed',
+      'cancelled',
+    ]);
+  });
+  it('never offers staff "cancelled"', () => {
+    expect(jobStatusOptions('in_repair', false)).toEqual([
+      'checked_in',
+      'diagnosing',
+      'in_repair',
+      'completed',
+    ]);
+  });
+  it('locks a cancelled job for staff', () => {
+    expect(jobStatusOptions('cancelled', false)).toEqual(['cancelled']);
+  });
+});
+
+describe('groupAgendaByDay', () => {
+  it('groups by the Kenyan calendar day, soonest first, skipping unbooked jobs', () => {
+    const jobs = [
+      { id: 'b', booked_at: '2026-10-02T06:00:00+00:00' },
+      { id: 'a', booked_at: '2026-09-30T22:30:00+00:00' }, // 01:30 on 1 Oct in Nairobi
+      { id: 'c', booked_at: '2026-10-01T09:00:00+00:00' },
+      { id: 'x', booked_at: null },
+    ];
+    expect(groupAgendaByDay(jobs)).toEqual([
+      { day: '2026-10-01', jobs: [jobs[1], jobs[2]] },
+      { day: '2026-10-02', jobs: [jobs[0]] },
+    ]);
+  });
+});
+
+describe('agendaDayLabel', () => {
+  it('names the day', () => {
+    expect(agendaDayLabel('2026-10-01')).toMatch(/1/);
+    expect(agendaDayLabel('2026-10-01')).toMatch(/Oct/);
   });
 });
