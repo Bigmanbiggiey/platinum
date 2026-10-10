@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button, Card, EmptyState, Label, Labeled, Select, Textarea } from '../../components/ui';
-import { findings, parts, photos } from '../../lib/jobData';
+import { useRole } from '../../auth/authContext';
+import { findings, parts, photos, useAddPart } from '../../lib/jobData';
 import {
   FINDING_OUTCOMES,
   outcomeLabel,
@@ -21,6 +22,7 @@ export function RepairTab({ job }: { job: JobWithRefs }) {
   const allPhotos = photos.useList(job.id);
   const allParts = parts.useList(job.id);
   const actions = usePhotoActions(job);
+  const isOwner = useRole() === 'owner';
   const rows = list.data ?? [];
 
   if (!list.isLoading && rows.length === 0) {
@@ -39,6 +41,7 @@ export function RepairTab({ job }: { job: JobWithRefs }) {
           )}
           parts={(allParts.data ?? []).filter((p) => p.finding_id === fd.id)}
           actions={actions}
+          showCost={isOwner}
         />
       ))}
       {actions.error && <p className="text-xs text-signal">{actions.error}</p>}
@@ -52,15 +55,17 @@ function RepairCard({
   photos: afterPhotos,
   parts: findingParts,
   actions,
+  showCost,
 }: {
   jobId: string;
   finding: JobFinding;
   photos: JobPhoto[];
   parts: JobPart[];
   actions: PhotoActions;
+  showCost: boolean;
 }) {
   const update = findings.useUpdate(jobId);
-  const addPart = parts.useCreate(jobId);
+  const addPart = useAddPart(jobId);
   const removePart = parts.useRemove(jobId);
   const [fix, setFix] = useState(finding.fix ?? '');
   const [outcome, setOutcome] = useState<FindingOutcome>(finding.outcome);
@@ -112,6 +117,7 @@ function RepairCard({
       <PartsEditor
         parts={findingParts}
         busy={addPart.isPending}
+        showCost={showCost}
         onAdd={(p) => addPart.mutateAsync({ ...p, finding_id: finding.id })}
         onRemove={(id) => removePart.mutate(id)}
       />

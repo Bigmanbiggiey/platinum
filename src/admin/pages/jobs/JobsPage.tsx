@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useRole } from '../../auth/authContext';
 import {
   Badge,
   Button,
@@ -24,6 +25,7 @@ export function JobsPage() {
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
   const q = useJobs();
+  const isOwner = useRole() === 'owner';
   const rows = (q.data ?? []).filter(
     (j) => matchesJobFilter(j, filter) && matchesJobSearch(j, search),
   );
@@ -42,7 +44,11 @@ export function JobsPage() {
 
       <div className="mb-4 grid gap-2 sm:grid-cols-[1fr_auto]">
         <Input
-          placeholder="Search job number, client or registration…"
+          placeholder={
+            isOwner
+              ? 'Search job number, client or registration…'
+              : 'Search job number or registration…'
+          }
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -83,9 +89,11 @@ export function JobsPage() {
                   {j.vehicle.registration}
                 </span>
               )}
-              <span className="text-sm text-[color:var(--color-muted)]">
-                {j.client?.name ?? 'No client'}
-              </span>
+              {isOwner && (
+                <span className="text-sm text-[color:var(--color-muted)]">
+                  {j.client?.name ?? 'No client'}
+                </span>
+              )}
               <span className="ml-auto flex items-center gap-2">
                 <span className="font-mono text-[10px] text-steel">
                   {new Date(j.checked_in_at).toLocaleDateString('en-KE', { dateStyle: 'medium' })}

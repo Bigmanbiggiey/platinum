@@ -1,15 +1,9 @@
 import { Link, useParams, useSearchParams } from 'react-router-dom';
-import { Badge, Card, EmptyState, Labeled, PageTitle, Select, Spinner } from '../../components/ui';
-import { useJob, useUpdateJob } from '../../lib/jobData';
-import {
-  JOB_STATUSES,
-  jobStatusLabel,
-  jobStatusTone,
-  type JobStatus,
-  type JobWithRefs,
-} from '../../lib/jobs';
+import { EmptyState, PageTitle, Spinner } from '../../components/ui';
+import { useJob } from '../../lib/jobData';
 import { CheckInTab } from './CheckInTab';
 import { DiagnosisTab } from './DiagnosisTab';
+import { JobHeader } from './JobHeader';
 import { RepairTab } from './RepairTab';
 import { WrapUpTab } from './WrapUpTab';
 
@@ -79,57 +73,5 @@ export function JobDetailPage() {
         {tab === 'wrap-up' && <WrapUpTab job={job} />}
       </div>
     </section>
-  );
-}
-
-function JobHeader({ job }: { job: JobWithRefs }) {
-  const update = useUpdateJob(job.id);
-  return (
-    <Card className="grid gap-4 sm:grid-cols-[1fr_1fr_14rem]">
-      <div>
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[color:var(--color-muted)]">
-          Client
-        </span>
-        <p className="text-[color:var(--color-ink)]">
-          {job.client_id ? (
-            <Link
-              to={`/admin/clients/${job.client_id}`}
-              className="underline-offset-2 hover:underline"
-            >
-              {job.client?.name ?? 'Client'}
-            </Link>
-          ) : (
-            'No client on file'
-          )}
-        </p>
-      </div>
-      <div>
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[color:var(--color-muted)]">
-          Registration
-        </span>
-        <p className="font-mono text-[color:var(--color-ink)]">
-          {job.vehicle?.registration ?? '—'}
-        </p>
-      </div>
-      <Labeled label="Status">
-        <div className="flex items-center gap-2">
-          <Select
-            value={job.status}
-            disabled={update.isPending}
-            onChange={(e) => update.mutate({ status: e.target.value as JobStatus })}
-          >
-            {JOB_STATUSES.map((s) => (
-              <option key={s} value={s}>
-                {jobStatusLabel[s]}
-              </option>
-            ))}
-          </Select>
-          <Badge tone={jobStatusTone(job.status)}>{jobStatusLabel[job.status]}</Badge>
-        </div>
-        {update.isError && (
-          <p className="mt-1 text-xs text-signal">{(update.error as Error).message}</p>
-        )}
-      </Labeled>
-    </Card>
   );
 }
