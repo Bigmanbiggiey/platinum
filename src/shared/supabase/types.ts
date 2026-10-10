@@ -42,6 +42,8 @@ export interface MediaRow {
   caption: string | null;
   width: number | null;
   height: number | null;
+  /** Widths of the smaller stored copies (`-w480` etc.); empty for older uploads. */
+  variants?: number[] | null;
 }
 
 export interface PortfolioProjectRow {

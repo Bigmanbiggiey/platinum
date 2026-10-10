@@ -16,13 +16,18 @@ import { MarkdownField } from '../../components/MarkdownField';
 import { media, projects } from '../../lib/resources';
 import { usePublish } from '../../lib/rebuild';
 import { getDb } from '../../lib/db';
-import { publicImageUrl } from '../../../shared/content/media';
+import { mediaUrl } from '../../../shared/content/media';
 import type { PortfolioProjectRow } from '../../../shared/supabase/types';
 
 interface GalleryRow {
   media_id: string;
   display_order: number;
-  media: { storage_path: string; alt_text: string } | null;
+  media: {
+    storage_path: string;
+    alt_text: string;
+    width?: number | null;
+    variants?: number[] | null;
+  } | null;
 }
 
 function useGallery(projectId: string) {
@@ -32,7 +37,7 @@ function useGallery(projectId: string) {
     queryFn: async (): Promise<GalleryRow[]> => {
       const { data, error } = await getDb()
         .from('portfolio_media')
-        .select('media_id, display_order, media(storage_path, alt_text)')
+        .select('media_id, display_order, media(storage_path, alt_text, width, variants)')
         .eq('project_id', projectId)
         .order('display_order');
       if (error) throw error;
@@ -217,7 +222,7 @@ export function PortfolioEditPage() {
           {(gallery.list.data ?? []).map((g) => (
             <div key={g.media_id} className="relative">
               <img
-                src={publicImageUrl(g.media?.storage_path ?? '', { width: 300 }) ?? undefined}
+                src={(g.media && mediaUrl(g.media, 480)) ?? undefined}
                 alt={g.media?.alt_text ?? ''}
                 className="aspect-[4/3] w-full rounded object-cover"
               />

@@ -1,4 +1,4 @@
-import { publicImageUrl } from '../../../shared/content/media';
+import { mediaSrcSet, mediaUrl } from '../../../shared/content/media';
 import type { MediaRow } from '../../../shared/supabase/types';
 
 /**
@@ -29,15 +29,14 @@ export function Img({
       </div>
     );
   }
-  const src = publicImageUrl(media.storage_path, { width: 800 }) ?? undefined;
-  const srcSet = [400, 800, 1200]
-    .map((w) => `${publicImageUrl(media.storage_path, { width: w })} ${w}w`)
-    .join(', ');
+  // Stored copies, not on-the-fly transforms — see shared/content/media.ts.
+  const src = mediaUrl(media, 960) ?? undefined;
+  const srcSet = mediaSrcSet(media);
   return (
     <img
       src={src}
       srcSet={srcSet}
-      sizes={sizes}
+      sizes={srcSet ? sizes : undefined}
       alt={media.alt_text}
       width={media.width ?? undefined}
       height={media.height ?? undefined}
