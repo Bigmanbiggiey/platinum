@@ -159,8 +159,8 @@ begin
   exception when insufficient_privilege then null;
   end;
 
-  -- 10. Staff completing a job moves its (owner-only) request to completed
-  update public.job set status = 'completed' where id = j_owner;
+  -- 10. Staff submit the job for review (R-D: only the owner completes it)
+  update public.job set status = 'awaiting_review' where id = j_owner;
 
   -- ---------------------------------------------------------------- as OWNER
   perform set_config('request.jwt.claims',
@@ -174,7 +174,9 @@ begin
   select count(*) into cnt from public.media where id = m_owner;
   if cnt <> 1 then raise exception 'FAIL owner cannot read media'; end if;
 
-  -- The owner links the walk-in later, cancels and deletes.
+  -- The owner approves the reviewed job (completes its request), then links the walk-in
+  -- later, cancels and deletes.
+  update public.job set status = 'completed' where id = j_owner;
   update public.vehicle set client_id = c where id = v_walkin;
   update public.job set client_id = c where id = j_staff;
   insert into public.job_cost (job_id, labour_cost_kes) values (j_staff, 1000);
@@ -185,7 +187,7 @@ begin
   perform set_config('role', 'postgres', true);
 
   select status::text into s from public.service_request where id = r;
-  if s <> 'completed' then raise exception 'FAIL request not completed by staff completion: %', s; end if;
+  if s <> 'completed' then raise exception 'FAIL request not completed by the owner approving: %', s; end if;
   select count(*) into cnt from public.job where id = j_owner and labour_hours = 2.5;
   if cnt <> 1 then raise exception 'FAIL staff labour hours not saved'; end if;
   select count(*) into cnt from public.job where id = j_staff;
