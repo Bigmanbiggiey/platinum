@@ -20,6 +20,9 @@ import {
 } from '../../lib/jobs';
 import { JobPhotos } from './JobPhotos';
 import { PartsEditor } from './PartsEditor';
+import { PublishCard } from './PublishCard';
+import { usePublishedProject } from '../../lib/publishJob';
+import { getDb } from '../../lib/db';
 import { usePhotoActions } from './usePhotoActions';
 
 /**
@@ -40,6 +43,7 @@ export function WrapUpTab({ job }: { job: JobWithRefs }) {
       ) : (
         <StatusCard job={job} isOwner={isOwner} />
       )}
+      {isOwner && <PublishCard job={job} />}
       {isOwner && <DeleteCard job={job} />}
     </div>
   );
@@ -315,13 +319,22 @@ function StatusCard({ job, isOwner }: { job: JobWithRefs; isOwner: boolean }) {
 
 function DeleteCard({ job }: { job: JobWithRefs }) {
   const del = useDeleteJob();
+  const project = usePublishedProject(job.id);
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
+  // A job on the website can't be deleted (J2: on delete restrict) — unpublish first.
+  if (project.data?.is_published) {
+    return (
+      <p className="text-xs text-[color:var(--color-muted)]">
+        This job is on the website. Unpublish it in the Website card before deleting it.
+      </p>
+    );
+  }
   return (
     <div className="space-y-2">
       <Button
         variant="danger"
-        disabled={del.isPending}
+        disabled={del.isPending || project.isLoading}
         onClick={async () => {
           if (
             confirm(
@@ -330,6 +343,14 @@ function DeleteCard({ job }: { job: JobWithRefs }) {
           ) {
             setError(null);
             try {
+              // An unpublished entry is kept for a stable web address; remove it with the job.
+              if (project.data) {
+                const { error: pErr } = await getDb()
+                  .from('portfolio_project')
+                  .delete()
+                  .eq('id', project.data.id);
+                if (pErr) throw pErr;
+              }
               await del.mutateAsync(job.id);
             } catch (e) {
               setError((e as Error).message);
