@@ -5,7 +5,7 @@
   "outputDirectory": "dist",
   "cleanUrls": true,
   "trailingSlash": false,
-  "rewrites": [{ "source": "/admin/:path*", "destination": "/admin.html" }],
+  "rewrites": [{ "source": "/admin/:path*", "destination": "/admin" }],
   "headers": [
     {
       "source": "/(.*)",
