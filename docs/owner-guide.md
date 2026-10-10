@@ -92,7 +92,22 @@ home. Location data is removed from every photo automatically when you upload it
 Private — never on the website: the client's name and phone, number plate, odometer,
 labour, part quantities and costs, and internal notes.
 
-Jobs don't appear on the website yet — publishing is the next update.
+**Publishing a job to the website:** once a job is **completed** and the client ticked
+consent at check-in, the **Website (portfolio)** card on **Wrap-up** lets you publish it.
+Check the title and summary, tap **Preview** to see the page exactly as visitors will,
+then **Publish to website**. It appears under **Work** as a step-by-step story — what the
+customer reported, what you found (before photos), what you did (after photos and part
+names) and when it was finished. Problems the client chose not to fix read
+*"Recommended — not done at client's request"*.
+
+- Only photos you haven't hidden are shown. Never shown: the client, number plate,
+  odometer, labour, costs or part quantities.
+- After later changes (photos, wording), tap **Update website**. **Unpublish** takes it
+  off; publishing again keeps the same web address.
+- Unticking consent or re-opening the job takes it off the website automatically.
+- A job on the website can't be deleted — unpublish it first.
+- The page goes live after the site rebuilds (about 1–2 minutes when auto-publish is set
+  up; otherwise on the next deploy).
 
 **Who did what:** every job has an **Activity** tab listing each check-in, status
 change, problem, photo, part, labour and consent change with the name of the person

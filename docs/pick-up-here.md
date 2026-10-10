@@ -15,7 +15,7 @@
 | **2 — Public website MVP** | 🟢 Built; **live on private staging**; DB schema + RLS + `submit` function applied. Left: formal Lighthouse/axe pass + **Go-Live (WP14 Part C)**. |
 | **3 — Admin MVP** | 🟢 **Functionally complete (WP1–WP13).** Auth+roles+Team, Dashboard+Notifications, Requests+convert, Schedule, full CMS, Media, Business Settings, publish→rebuild + emails (functions deployed; switch on with secrets). Left: WP14 owner acceptance run; `gen types` cleanup. |
 | **Jobs (ADR-0014)** | 🟢 **J1 (admin work orders) merged** (PR #4). Next: owner acceptance on staging, then J2 (publish to portfolio) and J3 (review links) — each planned separately. Spec: `docs/superpowers/specs/2026-09-30-jobs-work-orders-design.md`. |
-| **RBAC (owner/staff)** | 🟡 **R-A (shareable staff invites)** ✅ live (PRs #9, #11, #12). **R-B (permissions)** ✅ live (PR #13). **R-C (attribution)** ✅ live (PR #14). **R-D (review, assignment, walk-in clients)** on `feature/rd-review-assignment` — design `docs/superpowers/specs/2026-10-10-job-review-assignment-design.md`; two migrations (`20261010090000` enum value first, then `20261010090100`). Then J2 (publish to portfolio). Spec: `docs/superpowers/specs/2026-09-30-rbac-and-invites-design.md`. |
+| **RBAC (owner/staff)** | 🟡 **R-A (shareable staff invites)** ✅ live (PRs #9, #11, #12). **R-B (permissions)** ✅ live (PR #13). **R-C (attribution)** ✅ live (PR #14). **R-D (review, assignment, walk-in clients)** ✅ live (PR #15). **J2 (publish jobs to the portfolio)** on `feature/jobs-j2-publish` — plan `docs/superpowers/plans/2026-10-10-jobs-j2-publish.md`, migration `20261010120000`. Then J3 (review links). Spec: `docs/superpowers/specs/2026-09-30-rbac-and-invites-design.md`. |
 
 ## What's live / where
 
@@ -71,6 +71,8 @@ Left:
   (migration 20261001100000) and shown on the Dashboard and each job's Activity tab.
   Staff submit jobs for review (`awaiting_review`); only the owner completes or sends back.
   Assignments live in `job_assignee` (names for staff via the `job_assignee_named` view).
+  Published jobs: `portfolio_project.job_id` + the `job_public` view (the only public window onto
+  job data); pages are prerendered, so a publish shows after a rebuild — set `VERCEL_DEPLOY_HOOK_URL`.
 - **Carried cleanup:** swap `src/shared/supabase/types.ts` for
   `npx supabase gen types typescript --linked`. (The `/admin` hydration error —
   React #418 on any hard load of an admin URL — is fixed: the admin has its own
