@@ -129,6 +129,9 @@ function UnlinkedCard({ job, isOwner }: { job: JobWithRefs; isOwner: boolean }) 
         />
       )}
       {actions.error && <p className="text-xs text-signal">{actions.error}</p>}
+      {actions.notice && (
+        <p className="text-xs text-[color:var(--color-muted)]">{actions.notice}</p>
+      )}
       <PartsEditor
         parts={looseParts}
         busy={addPart.isPending}

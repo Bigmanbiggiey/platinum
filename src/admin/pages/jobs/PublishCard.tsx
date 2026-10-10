@@ -64,7 +64,7 @@ export function PublishCard({ job }: { job: JobWithRefs }) {
           ? { make: vehicle.data.make, model: vehicle.data.model, year: vehicle.data.year }
           : null,
       },
-      { onSuccess: () => rebuild.trigger() },
+      { onSuccess: () => rebuild.triggerNow() },
     );
 
   return (
@@ -130,7 +130,7 @@ export function PublishCard({ job }: { job: JobWithRefs }) {
                 disabled={unpublishJob.isPending}
                 onClick={() => {
                   if (confirm('Take this job off the website?')) {
-                    unpublishJob.mutate(p!.id, { onSuccess: () => rebuild.trigger() });
+                    unpublishJob.mutate(p!.id, { onSuccess: () => rebuild.triggerNow() });
                   }
                 }}
               >
