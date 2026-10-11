@@ -4,6 +4,7 @@ import { photos, useUpdateJob } from '../../lib/jobData';
 import { fromDateInput, toDateInput, type JobWithRefs } from '../../lib/jobs';
 import { JobPhotos } from './JobPhotos';
 import { usePhotoActions } from './usePhotoActions';
+import { usePublish } from '../../lib/rebuild';
 
 export function CheckInTab({ job }: { job: JobWithRefs }) {
   // Remount the form when the saved values change, so it never shows stale data.
@@ -26,6 +27,8 @@ export function CheckInTab({ job }: { job: JobWithRefs }) {
 
 function ConsentCard({ job }: { job: JobWithRefs }) {
   const update = useUpdateJob(job.id);
+  // Withdrawing consent on a published job rebuilds the site (useUpdateJob); say so here.
+  const { message } = usePublish();
   return (
     <Card>
       <label className="flex items-start gap-3">
@@ -49,6 +52,9 @@ function ConsentCard({ job }: { job: JobWithRefs }) {
       </label>
       {update.isError && (
         <p className="mt-2 text-xs text-signal">{(update.error as Error).message}</p>
+      )}
+      {message && message !== 'Saved.' && (
+        <p className="mt-2 text-xs text-[color:var(--color-muted)]">{message}</p>
       )}
     </Card>
   );
