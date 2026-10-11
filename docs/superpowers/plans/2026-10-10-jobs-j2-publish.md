@@ -275,7 +275,7 @@ Tests: blockers, defaults, publish payload, unpublish, preview hides private pho
 ## Task 7 — STOP: deploy hook, apply live, verify
 
 1. Ask the owner to create the Vercel Deploy Hook and run
-   `npx supabase secrets set VERCEL_DEPLOY_HOOK_URL=<hook>` (or accept manual redeploys).
+   `npx supabase secrets set VERCEL_DEPLOY_HOOK_URL=https://api.vercel.com/v1/integrations/deploy/... (no < > around it)` (or accept manual redeploys).
 2. Ask for OK → `npx supabase db push`; run all six SQL suites live; live RLS suite.
 3. Owner merges the PR (additive migration: no ordering risk).
 4. Acceptance on staging: complete a consented job with before/after photos (one hidden)
