@@ -31,7 +31,7 @@ async function fire(keepalive = false): Promise<void> {
       keepalive,
       headers: { apikey: env.anonKey, Authorization: `Bearer ${token ?? env.anonKey}` },
     });
-    // Website publishing is owner-only: staff edits simply don't rebuild.
+    // Signed out or deactivated: nothing to announce.
     if (res.status === 403) return;
     const body = (await res.json().catch(() => ({}))) as { ok?: boolean; configured?: boolean };
     if (body.ok && body.configured) {

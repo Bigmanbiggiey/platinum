@@ -20,9 +20,11 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: cors });
   if (req.method !== 'POST') return json({ ok: false, error: 'method-not-allowed' }, 405);
 
-  // Caller must be the active owner (website publishing is owner-only — RBAC spec §3).
+  // Any active team member may trigger a rebuild. A rebuild only regenerates what the
+  // database already exposes publicly; publishing itself stays owner-only in the DB
+  // (RBAC spec §3). Staff need this so a consent withdrawal reaches the live site.
   const me = await getCaller(req);
-  if (!me?.isActive || me.role !== 'owner') return json({ ok: false, error: 'forbidden' }, 403);
+  if (!me?.isActive) return json({ ok: false, error: 'forbidden' }, 403);
 
   // Tolerate a secret pasted with the docs placeholder brackets, quotes or spaces.
   const hook = (Deno.env.get('VERCEL_DEPLOY_HOOK_URL') ?? '').trim().replace(/^[<"']+|[>"']+$/g, '');
