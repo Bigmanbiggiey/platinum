@@ -19,6 +19,9 @@ export const ACTIVITY_ACTIONS = [
   'unassigned',
   'published',
   'unpublished',
+  'review_link_created',
+  'review_received',
+  'testimonial_added',
 ] as const;
 export type ActivityAction = (typeof ACTIVITY_ACTIONS)[number];
 
@@ -110,12 +113,23 @@ export function describeActivity(a: Pick<JobActivity, 'action' | 'detail'>): str
       return 'published the job to the website';
     case 'unpublished':
       return 'took the job off the website';
+    case 'review_link_created':
+      return 'made a review link for the client';
+    case 'review_received':
+      return 'left a review (waiting for approval)';
+    case 'testimonial_added':
+      return 'added a testimonial on the client’s behalf';
   }
 }
 
-/** "Kevin · staff"; "System" for entries written with nobody signed in. */
-export function actorLabel(a: Pick<JobActivity, 'actor_name' | 'actor_role'>): string {
-  if (!a.actor_name) return 'System';
+/**
+ * "Kevin · staff"; "Client" for a review left through a review link; "System" for other
+ * entries written with nobody signed in.
+ */
+export function actorLabel(
+  a: Pick<JobActivity, 'actor_name' | 'actor_role'> & { action?: ActivityAction },
+): string {
+  if (!a.actor_name) return a.action === 'review_received' ? 'Client' : 'System';
   return a.actor_role ? `${a.actor_name} · ${a.actor_role}` : a.actor_name;
 }
 

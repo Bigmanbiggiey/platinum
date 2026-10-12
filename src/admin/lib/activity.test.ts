@@ -51,6 +51,21 @@ describe('actorLabel', () => {
     expect(actorLabel({ actor_name: 'Paul', actor_role: null })).toBe('Paul');
     expect(actorLabel({ actor_name: null, actor_role: null })).toBe('System');
   });
+  it('names the client for a review left through a link', () => {
+    expect(actorLabel({ actor_name: null, actor_role: null, action: 'review_received' })).toBe(
+      'Client',
+    );
+  });
+});
+
+describe('review activity wording (J3)', () => {
+  it.each([
+    ['review_link_created', 'made a review link for the client'],
+    ['review_received', 'left a review (waiting for approval)'],
+    ['testimonial_added', 'added a testimonial on the client’s behalf'],
+  ] as const)('%s', (action, text) => {
+    expect(describeActivity({ action, detail: {} })).toBe(text);
+  });
 });
 
 describe('timeAgo', () => {

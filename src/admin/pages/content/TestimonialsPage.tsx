@@ -1,6 +1,16 @@
+import { Link } from 'react-router-dom';
 import { Badge, Button, Card, EmptyState, PageTitle, Spinner } from '../../components/ui';
-import { testimonials } from '../../lib/resources';
+import { testimonials, type AdminTestimonial } from '../../lib/resources';
 import { usePublish } from '../../lib/rebuild';
+import { isOnWebsite } from '../../lib/publishJob';
+
+/** Where a testimonial came from (J3). */
+const SOURCE_LABEL: Record<string, string> = {
+  review_link: 'Review link',
+  owner_entered: 'Added by owner',
+  public_form: 'Website form',
+  seed: 'Starter content',
+};
 import { ContentBackLink } from './ContentBackLink';
 
 export function TestimonialsPage() {
@@ -13,9 +23,21 @@ export function TestimonialsPage() {
 
   if (list.isLoading) return <Spinner />;
 
-  const act = async (id: string, patch: Parameters<typeof update.mutateAsync>[0]['patch']) => {
-    await update.mutateAsync({ id, patch });
-    publish.trigger();
+  /** A review on a job that is on the website goes live at once; the rest batch up. */
+  const republish = async (t: AdminTestimonial) => {
+    if (t.job_id && (await isOnWebsite(t.job_id))) {
+      publish.triggerNow();
+    } else {
+      publish.trigger();
+    }
+  };
+
+  const act = async (
+    t: AdminTestimonial,
+    patch: Parameters<typeof update.mutateAsync>[0]['patch'],
+  ) => {
+    await update.mutateAsync({ id: t.id, patch });
+    await republish(t);
   };
 
   return (
@@ -36,6 +58,15 @@ export function TestimonialsPage() {
                 {t.status}
               </Badge>
               {t.is_featured && <Badge tone="neutral">featured</Badge>}
+              {SOURCE_LABEL[t.source] && <Badge tone="muted">{SOURCE_LABEL[t.source]}</Badge>}
+              {t.job_id && t.job && (
+                <Link
+                  to={`/admin/jobs/${t.job_id}?tab=wrap-up`}
+                  className="font-mono text-xs underline"
+                >
+                  {t.job.job_number}
+                </Link>
+              )}
               <span className="font-semibold text-[color:var(--color-ink)]">{t.first_name}</span>
               <span className="text-sm text-[color:var(--color-muted)]">· {t.vehicle_label}</span>
               {t.rating && <span className="text-signal">{'★'.repeat(t.rating)}</span>}
@@ -46,14 +77,14 @@ export function TestimonialsPage() {
             <blockquote className="mt-2 text-[color:var(--color-ink)]">“{t.comment}”</blockquote>
             <div className="mt-3 flex flex-wrap gap-2">
               {t.status !== 'approved' && (
-                <Button variant="accent" onClick={() => act(t.id, { status: 'approved' })}>
+                <Button variant="accent" onClick={() => act(t, { status: 'approved' })}>
                   Approve
                 </Button>
               )}
               {t.status !== 'rejected' && (
-                <Button onClick={() => act(t.id, { status: 'rejected' })}>Reject</Button>
+                <Button onClick={() => act(t, { status: 'rejected' })}>Reject</Button>
               )}
-              <Button onClick={() => act(t.id, { is_featured: !t.is_featured })}>
+              <Button onClick={() => act(t, { is_featured: !t.is_featured })}>
                 {t.is_featured ? 'Unfeature' : 'Feature'}
               </Button>
               <Button
@@ -61,7 +92,7 @@ export function TestimonialsPage() {
                 onClick={async () => {
                   if (confirm('Delete this testimonial?')) {
                     await remove.mutateAsync(t.id);
-                    publish.trigger();
+                    await republish(t);
                   }
                 }}
               >
