@@ -168,7 +168,7 @@ export function ClientDetailPage() {
                       to={`/admin/jobs/${j.id}`}
                       className="flex items-center gap-3 px-4 py-2 hover:bg-[color:var(--color-ground)]"
                     >
-                      <span className="font-mono text-[10px] text-steel">
+                      <span className="font-mono text-[10px] text-[color:var(--color-muted)]">
                         {new Date(j.checked_in_at).toLocaleDateString('en-KE')}
                       </span>
                       <span className="font-mono text-xs">{j.job_number}</span>
@@ -198,7 +198,7 @@ export function ClientDetailPage() {
                 to={`/admin/requests/${r.id}`}
                 className="flex items-center gap-3 px-4 py-2 hover:bg-[color:var(--color-ground)]"
               >
-                <span className="font-mono text-[10px] text-steel">
+                <span className="font-mono text-[10px] text-[color:var(--color-muted)]">
                   {new Date(r.created_at).toLocaleDateString('en-KE')}
                 </span>
                 <span className="text-sm">{r.request_type.replace(/_/g, ' ')}</span>

@@ -35,7 +35,9 @@ export function JobAgendaList({
                 to={`/admin/jobs/${j.id}`}
                 className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 hover:bg-[color:var(--color-ground)]"
               >
-                <span className="font-mono text-xs text-steel">{j.job_number}</span>
+                <span className="font-mono text-xs text-[color:var(--color-muted)]">
+                  {j.job_number}
+                </span>
                 <span className="font-semibold text-[color:var(--color-ink)]">
                   {j.vehicle_label}
                 </span>
@@ -58,7 +60,10 @@ export function JobAgendaSection() {
   const userId = useAuth().profile?.user_id ?? null;
   const mine = useMyAssignedJobIds(isOwner ? null : userId);
   if (q.isLoading) return <Spinner />;
-  if (q.isError) return <p className="text-sm text-signal">{(q.error as Error).message}</p>;
+  if (q.isError)
+    return (
+      <p className="text-sm text-[color:var(--color-accent-text)]">{(q.error as Error).message}</p>
+    );
   if ((q.data ?? []).length === 0) {
     return <EmptyState>No open jobs with a booked date.</EmptyState>;
   }

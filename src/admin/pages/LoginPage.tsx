@@ -28,16 +28,13 @@ export function LoginPage() {
   };
 
   return (
-    <div
-      className="grid min-h-dvh place-items-center bg-graphite px-6 text-paper"
-      data-theme="dark"
-    >
+    <div className="grid min-h-dvh place-items-center bg-[color:var(--color-ground)] px-6 text-[color:var(--color-ink)]">
       <form onSubmit={onSubmit} className="w-full max-w-sm space-y-5">
-        <div className="flex items-center gap-3 text-paper">
+        <div className="flex items-center gap-3 text-[color:var(--color-ink)]">
           <DatumMark className="h-10 w-10" />
           <div className="leading-none">
             <span className="block text-lg font-bold tracking-tight">Platinum Point</span>
-            <span className="mt-1 block font-mono text-[9px] uppercase tracking-[0.3em] text-platinum">
+            <span className="mt-1 block font-mono text-[9px] uppercase tracking-[0.3em] text-[color:var(--color-muted)]">
               Automotive Engineering · Admin
             </span>
           </div>
@@ -51,7 +48,7 @@ export function LoginPage() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 w-full rounded-md border border-slate bg-slate/40 px-3 py-2 outline-none focus:border-signal"
+            className="mt-1 w-full rounded-md border border-[color:var(--color-line)] bg-[color:var(--color-raised)]/40 px-3 py-2 outline-none focus:border-signal"
           />
         </label>
         <label className="block text-sm font-semibold">
@@ -65,15 +62,15 @@ export function LoginPage() {
             />
           </div>
         </label>
-        {error && <p className="text-sm text-signal">{error}</p>}
+        {error && <p className="text-sm text-[color:var(--color-accent-text)]">{error}</p>}
         <button
           type="submit"
           disabled={busy}
-          className="w-full rounded-md bg-signal px-4 py-2.5 text-sm font-semibold text-paper disabled:opacity-50"
+          className="w-full rounded-md bg-signal px-4 py-2.5 text-sm font-semibold text-graphite disabled:opacity-50"
         >
           {busy ? 'Signing in…' : 'Sign in'}
         </button>
-        <p className="text-sm text-platinum">
+        <p className="text-sm text-[color:var(--color-muted)]">
           <Link to="/admin/forgot" className="underline">
             Forgot password?
           </Link>

@@ -22,7 +22,7 @@ export function MarkdownField({
         <button
           type="button"
           onClick={() => setPreview((p) => !p)}
-          className="font-mono text-[10px] uppercase tracking-widest text-platinum hover:text-paper"
+          className="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]"
         >
           {preview ? 'Edit' : 'Preview'}
         </button>

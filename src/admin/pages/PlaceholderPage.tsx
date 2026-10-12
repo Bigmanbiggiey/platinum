@@ -3,7 +3,7 @@ export function PlaceholderPage({ title, wp }: { title: string; wp: string }) {
   return (
     <section>
       <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
-      <p className="mt-3 text-sm text-platinum">
+      <p className="mt-3 text-sm text-[color:var(--color-muted)]">
         Coming in Phase 3 · {wp}. See <code>docs/phase-3-plan.md</code>.
       </p>
     </section>

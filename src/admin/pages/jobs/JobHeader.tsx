@@ -73,7 +73,9 @@ export function JobHeader({ job }: { job: JobWithRefs }) {
           <Badge tone={jobStatusTone(job.status)}>{jobStatusLabel[job.status]}</Badge>
         </div>
         {update.isError && (
-          <p className="mt-1 text-xs text-signal">{(update.error as Error).message}</p>
+          <p className="mt-1 text-xs text-[color:var(--color-accent-text)]">
+            {(update.error as Error).message}
+          </p>
         )}
       </Labeled>
       <Assignees job={job} isOwner={isOwner} />
@@ -115,7 +117,7 @@ function Assignees({ job, isOwner }: { job: JobWithRefs; isOwner: boolean }) {
                   aria-label={`Remove ${name}`}
                   disabled={unassign.isPending}
                   onClick={() => unassign.mutate(a.user_id)}
-                  className="text-signal"
+                  className="text-[color:var(--color-accent-text)]"
                 >
                   ×
                 </button>
@@ -151,7 +153,11 @@ function Assignees({ job, isOwner }: { job: JobWithRefs; isOwner: boolean }) {
           </span>
         )}
       </div>
-      {error && <p className="mt-1 text-xs text-signal">{(error as Error).message}</p>}
+      {error && (
+        <p className="mt-1 text-xs text-[color:var(--color-accent-text)]">
+          {(error as Error).message}
+        </p>
+      )}
     </div>
   );
 }
@@ -210,7 +216,11 @@ function LinkExisting({ job }: { job: JobWithRefs }) {
           Link
         </Button>
       </div>
-      {link.isError && <p className="text-xs text-signal">{(link.error as Error).message}</p>}
+      {link.isError && (
+        <p className="text-xs text-[color:var(--color-accent-text)]">
+          {(link.error as Error).message}
+        </p>
+      )}
     </>
   );
 }
@@ -261,7 +271,11 @@ function NewClient({ job }: { job: JobWithRefs }) {
       >
         Create client
       </Button>
-      {create.isError && <p className="text-xs text-signal">{(create.error as Error).message}</p>}
+      {create.isError && (
+        <p className="text-xs text-[color:var(--color-accent-text)]">
+          {(create.error as Error).message}
+        </p>
+      )}
     </div>
   );
 }

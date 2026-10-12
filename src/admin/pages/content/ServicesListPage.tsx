@@ -68,11 +68,15 @@ export function ServicesListPage() {
                 {s.is_published ? 'live' : 'draft'}
               </Badge>
               <span className="font-semibold text-[color:var(--color-ink)]">{s.title}</span>
-              <span className="font-mono text-[11px] text-steel">/{s.slug}</span>
+              <span className="font-mono text-[11px] text-[color:var(--color-muted)]">
+                /{s.slug}
+              </span>
               {s.category && (
                 <span className="text-sm text-[color:var(--color-muted)]">{s.category}</span>
               )}
-              <span className="ml-auto font-mono text-[10px] text-steel">#{s.display_order}</span>
+              <span className="ml-auto font-mono text-[10px] text-[color:var(--color-muted)]">
+                #{s.display_order}
+              </span>
             </Link>
           ))}
         </Card>

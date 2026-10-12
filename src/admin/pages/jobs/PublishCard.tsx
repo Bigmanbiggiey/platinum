@@ -98,7 +98,7 @@ export function PublishCard({ job }: { job: JobWithRefs }) {
             )}
           </p>
           {shownPhotos === 0 && (
-            <p className="text-xs text-signal">
+            <p className="text-xs text-[color:var(--color-accent-text)]">
               No photos are set to show on the website — the page will have no pictures.
             </p>
           )}
@@ -143,10 +143,14 @@ export function PublishCard({ job }: { job: JobWithRefs }) {
           {rebuild.message && (
             <p className="text-xs text-[color:var(--color-muted)]">{rebuild.message}</p>
           )}
-          {error && <p className="text-xs text-signal">{(error as Error).message}</p>}
+          {error && (
+            <p className="text-xs text-[color:var(--color-accent-text)]">
+              {(error as Error).message}
+            </p>
+          )}
           {preview && (
             <div className="rounded border border-[color:var(--color-line)] p-4">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-steel">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-muted)]">
                 Preview — {titleValue}
               </p>
               <p className="mt-1 text-sm text-[color:var(--color-muted)]">{summaryValue}</p>

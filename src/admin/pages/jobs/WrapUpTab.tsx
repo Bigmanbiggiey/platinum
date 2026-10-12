@@ -98,7 +98,11 @@ function LabourCard({ job, isOwner }: { job: JobWithRefs; isOwner: boolean }) {
       >
         Save labour
       </Button>
-      {save.isError && <p className="text-xs text-signal">{(save.error as Error).message}</p>}
+      {save.isError && (
+        <p className="text-xs text-[color:var(--color-accent-text)]">
+          {(save.error as Error).message}
+        </p>
+      )}
     </Card>
   );
 }
@@ -130,7 +134,9 @@ function UnlinkedCard({ job, isOwner }: { job: JobWithRefs; isOwner: boolean }) 
           onDelete={actions.remove}
         />
       )}
-      {actions.error && <p className="text-xs text-signal">{actions.error}</p>}
+      {actions.error && (
+        <p className="text-xs text-[color:var(--color-accent-text)]">{actions.error}</p>
+      )}
       {actions.notice && (
         <p className="text-xs text-[color:var(--color-muted)]">{actions.notice}</p>
       )}
@@ -141,9 +147,15 @@ function UnlinkedCard({ job, isOwner }: { job: JobWithRefs; isOwner: boolean }) 
         onAdd={(p) => addPart.mutateAsync({ ...p, finding_id: null })}
         onRemove={(id) => removePart.mutate(id)}
       />
-      {addPart.isError && <p className="text-xs text-signal">{(addPart.error as Error).message}</p>}
+      {addPart.isError && (
+        <p className="text-xs text-[color:var(--color-accent-text)]">
+          {(addPart.error as Error).message}
+        </p>
+      )}
       {removePart.isError && (
-        <p className="text-xs text-signal">{(removePart.error as Error).message}</p>
+        <p className="text-xs text-[color:var(--color-accent-text)]">
+          {(removePart.error as Error).message}
+        </p>
       )}
     </Card>
   );
@@ -237,7 +249,11 @@ function ReviewCard({ job }: { job: JobWithRefs }) {
       >
         Send back
       </Button>
-      {update.isError && <p className="text-xs text-signal">{(update.error as Error).message}</p>}
+      {update.isError && (
+        <p className="text-xs text-[color:var(--color-accent-text)]">
+          {(update.error as Error).message}
+        </p>
+      )}
       {job.service_request_id && (
         <p className="text-xs text-[color:var(--color-muted)]">
           Approving also marks its request completed.
@@ -266,7 +282,9 @@ function StatusCard({ job, isOwner }: { job: JobWithRefs; isOwner: boolean }) {
       <Label>Job status</Label>
       {job.status === 'completed' ? (
         <>
-          <p className="text-sm text-teal">✓ Completed {when(job.completed_at)}.</p>
+          <p className="text-sm text-[color:var(--color-confirm-text)]">
+            ✓ Completed {when(job.completed_at)}.
+          </p>
           {isOwner && (
             <Button
               disabled={update.isPending}
@@ -312,7 +330,11 @@ function StatusCard({ job, isOwner }: { job: JobWithRefs; isOwner: boolean }) {
           )}
         </div>
       )}
-      {update.isError && <p className="text-xs text-signal">{(update.error as Error).message}</p>}
+      {update.isError && (
+        <p className="text-xs text-[color:var(--color-accent-text)]">
+          {(update.error as Error).message}
+        </p>
+      )}
       {isOwner && job.service_request_id && job.status !== 'completed' && (
         <p className="text-xs text-[color:var(--color-muted)]">
           Completing the job also marks its request completed.
@@ -367,7 +389,7 @@ function DeleteCard({ job }: { job: JobWithRefs }) {
       >
         Delete job
       </Button>
-      {error && <p className="text-xs text-signal">{error}</p>}
+      {error && <p className="text-xs text-[color:var(--color-accent-text)]">{error}</p>}
     </div>
   );
 }

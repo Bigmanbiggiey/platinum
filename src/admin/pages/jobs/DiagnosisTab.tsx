@@ -53,11 +53,17 @@ export function DiagnosisTab({ job }: { job: JobWithRefs }) {
           onDown={i < rows.length - 1 ? () => move(i, 1) : undefined}
         />
       ))}
-      {actions.error && <p className="text-xs text-signal">{actions.error}</p>}
+      {actions.error && (
+        <p className="text-xs text-[color:var(--color-accent-text)]">{actions.error}</p>
+      )}
       {actions.notice && (
         <p className="text-xs text-[color:var(--color-muted)]">{actions.notice}</p>
       )}
-      {update.isError && <p className="text-xs text-signal">{(update.error as Error).message}</p>}
+      {update.isError && (
+        <p className="text-xs text-[color:var(--color-accent-text)]">
+          {(update.error as Error).message}
+        </p>
+      )}
 
       <Card>
         <Labeled label="Add a problem found">
@@ -77,7 +83,9 @@ export function DiagnosisTab({ job }: { job: JobWithRefs }) {
           </div>
         </Labeled>
         {create.isError && (
-          <p className="mt-2 text-xs text-signal">{(create.error as Error).message}</p>
+          <p className="mt-2 text-xs text-[color:var(--color-accent-text)]">
+            {(create.error as Error).message}
+          </p>
         )}
       </Card>
     </div>
@@ -162,8 +170,16 @@ function FindingCard({
           Delete problem
         </Button>
       </div>
-      {update.isError && <p className="text-xs text-signal">{(update.error as Error).message}</p>}
-      {remove.isError && <p className="text-xs text-signal">{(remove.error as Error).message}</p>}
+      {update.isError && (
+        <p className="text-xs text-[color:var(--color-accent-text)]">
+          {(update.error as Error).message}
+        </p>
+      )}
+      {remove.isError && (
+        <p className="text-xs text-[color:var(--color-accent-text)]">
+          {(remove.error as Error).message}
+        </p>
+      )}
       <Label>Before photos</Label>
       <JobPhotos
         photos={findingPhotos}

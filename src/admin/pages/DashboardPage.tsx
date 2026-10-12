@@ -131,7 +131,9 @@ export function DashboardPage() {
         {activity.isLoading ? (
           <Spinner />
         ) : activity.isError ? (
-          <p className="text-sm text-signal">{(activity.error as Error).message}</p>
+          <p className="text-sm text-[color:var(--color-accent-text)]">
+            {(activity.error as Error).message}
+          </p>
         ) : (
           <Card className="p-0">
             <ActivityList items={activity.data ?? []} showJob />
@@ -153,7 +155,7 @@ export function DashboardPage() {
                 to={`/admin/requests/${r.id}`}
                 className="flex items-center gap-3 px-4 py-2.5 hover:bg-[color:var(--color-ground)]"
               >
-                <span className="font-mono text-[10px] text-steel">
+                <span className="font-mono text-[10px] text-[color:var(--color-muted)]">
                   {new Date(r.created_at).toLocaleDateString('en-KE', { dateStyle: 'medium' })}
                 </span>
                 <span className="font-semibold text-[color:var(--color-ink)]">

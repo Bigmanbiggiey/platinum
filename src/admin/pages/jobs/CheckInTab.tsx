@@ -51,7 +51,9 @@ function ConsentCard({ job }: { job: JobWithRefs }) {
         </span>
       </label>
       {update.isError && (
-        <p className="mt-2 text-xs text-signal">{(update.error as Error).message}</p>
+        <p className="mt-2 text-xs text-[color:var(--color-accent-text)]">
+          {(update.error as Error).message}
+        </p>
       )}
       {message && message !== 'Saved.' && (
         <p className="mt-2 text-xs text-[color:var(--color-muted)]">{message}</p>
@@ -118,7 +120,11 @@ function CheckInForm({ job }: { job: JobWithRefs }) {
       <Button variant="accent" disabled={update.isPending} onClick={save}>
         Save check-in
       </Button>
-      {update.isError && <p className="text-xs text-signal">{(update.error as Error).message}</p>}
+      {update.isError && (
+        <p className="text-xs text-[color:var(--color-accent-text)]">
+          {(update.error as Error).message}
+        </p>
+      )}
     </Card>
   );
 }
@@ -140,7 +146,9 @@ function CheckInPhotos({ job }: { job: JobWithRefs }) {
           onDelete={actions.remove}
         />
       </div>
-      {actions.error && <p className="mt-2 text-xs text-signal">{actions.error}</p>}
+      {actions.error && (
+        <p className="mt-2 text-xs text-[color:var(--color-accent-text)]">{actions.error}</p>
+      )}
       {actions.notice && (
         <p className="mt-2 text-xs text-[color:var(--color-muted)]">{actions.notice}</p>
       )}

@@ -67,7 +67,7 @@ export function RequestDetailPage() {
           <div className="mb-3 flex items-center gap-2">
             <Badge tone={statusTone(r.status)}>{r.status}</Badge>
             <Badge tone="neutral">{prettyType(r.request_type)}</Badge>
-            <span className="ml-auto font-mono text-[10px] text-steel">
+            <span className="ml-auto font-mono text-[10px] text-[color:var(--color-muted)]">
               {new Date(r.created_at).toLocaleString('en-KE')}
             </span>
           </div>
@@ -116,7 +116,9 @@ export function RequestDetailPage() {
           <Card>
             <Label>Customer</Label>
             {r.client_id ? (
-              <p className="mt-1 text-sm text-teal">✓ Linked to a client.</p>
+              <p className="mt-1 text-sm text-[color:var(--color-confirm-text)]">
+                ✓ Linked to a client.
+              </p>
             ) : (
               <div className="mt-2 space-y-2">
                 <p className="text-sm text-[color:var(--color-muted)]">Not yet a client on file.</p>
@@ -136,7 +138,9 @@ export function RequestDetailPage() {
                   </Button>
                 </div>
                 {convert.isError && (
-                  <p className="text-xs text-signal">{(convert.error as Error).message}</p>
+                  <p className="text-xs text-[color:var(--color-accent-text)]">
+                    {(convert.error as Error).message}
+                  </p>
                 )}
               </div>
             )}
@@ -148,7 +152,7 @@ export function RequestDetailPage() {
               <p className="mt-1 text-sm">
                 <Link
                   to={`/admin/jobs/${job.data.id}`}
-                  className="text-teal underline-offset-2 hover:underline"
+                  className="text-[color:var(--color-confirm-text)] underline-offset-2 hover:underline"
                 >
                   Open job {job.data.job_number} →
                 </Link>

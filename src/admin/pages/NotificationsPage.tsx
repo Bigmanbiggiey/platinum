@@ -52,7 +52,7 @@ export function NotificationsPage() {
                   <p className="truncate text-sm text-[color:var(--color-muted)]">{n.body}</p>
                 )}
               </Link>
-              <span className="font-mono text-[10px] text-steel">
+              <span className="font-mono text-[10px] text-[color:var(--color-muted)]">
                 {new Date(n.created_at).toLocaleString('en-KE', {
                   dateStyle: 'short',
                   timeStyle: 'short',
@@ -62,7 +62,7 @@ export function NotificationsPage() {
                 <button
                   type="button"
                   onClick={() => mark.one.mutate(n.id)}
-                  className="font-mono text-[10px] uppercase tracking-widest text-platinum hover:text-paper"
+                  className="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]"
                 >
                   Mark read
                 </button>

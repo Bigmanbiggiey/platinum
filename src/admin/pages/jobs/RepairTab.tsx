@@ -44,7 +44,9 @@ export function RepairTab({ job }: { job: JobWithRefs }) {
           showCost={isOwner}
         />
       ))}
-      {actions.error && <p className="text-xs text-signal">{actions.error}</p>}
+      {actions.error && (
+        <p className="text-xs text-[color:var(--color-accent-text)]">{actions.error}</p>
+      )}
       {actions.notice && (
         <p className="text-xs text-[color:var(--color-muted)]">{actions.notice}</p>
       )}
@@ -104,7 +106,11 @@ function RepairCard({
       >
         Save repair
       </Button>
-      {update.isError && <p className="text-xs text-signal">{(update.error as Error).message}</p>}
+      {update.isError && (
+        <p className="text-xs text-[color:var(--color-accent-text)]">
+          {(update.error as Error).message}
+        </p>
+      )}
 
       <Label>After photos</Label>
       <JobPhotos
@@ -124,9 +130,15 @@ function RepairCard({
         onAdd={(p) => addPart.mutateAsync({ ...p, finding_id: finding.id })}
         onRemove={(id) => removePart.mutate(id)}
       />
-      {addPart.isError && <p className="text-xs text-signal">{(addPart.error as Error).message}</p>}
+      {addPart.isError && (
+        <p className="text-xs text-[color:var(--color-accent-text)]">
+          {(addPart.error as Error).message}
+        </p>
+      )}
       {removePart.isError && (
-        <p className="text-xs text-signal">{(removePart.error as Error).message}</p>
+        <p className="text-xs text-[color:var(--color-accent-text)]">
+          {(removePart.error as Error).message}
+        </p>
       )}
     </Card>
   );

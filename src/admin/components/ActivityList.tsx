@@ -35,11 +35,11 @@ export function ActivityList({
             <span className="font-semibold text-[color:var(--color-ink)]">{actorLabel(a)}</span>
             <span className="text-[color:var(--color-muted)]">— {describeActivity(a)}</span>
             {showJob && a.job && (
-              <span className="font-mono text-xs text-steel">
+              <span className="font-mono text-xs text-[color:var(--color-muted)]">
                 · {a.job.job_number} · {a.job.vehicle_label}
               </span>
             )}
-            <span className="ml-auto font-mono text-[10px] text-steel">
+            <span className="ml-auto font-mono text-[10px] text-[color:var(--color-muted)]">
               {timeAgo(a.created_at, now)}
             </span>
           </>
