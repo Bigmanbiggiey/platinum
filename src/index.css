@@ -61,7 +61,13 @@
      active-state, kept distinct from --color-accent so amber stays reserved for
      calls to action. */
   --color-confirm: var(--color-teal);
+  /* Teal for TEXT (saved / completed / linked messages): 5.6:1 on Paper. */
+  --color-confirm-text: var(--color-teal);
+  /* A step off the ground: hover / active rows, input fills, inline code. */
+  --color-raised: var(--color-mist);
   color-scheme: light;
+  /* Native checkboxes, radios and range inputs pick up the brand orange. */
+  accent-color: var(--color-signal);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -74,6 +80,8 @@
     --color-accent: var(--color-signal);
     --color-accent-text: #e0954f;
     --color-confirm: var(--color-teal);
+    --color-confirm-text: #5bb8b1;
+    --color-raised: var(--color-slate);
     color-scheme: dark;
   }
 }
@@ -87,6 +95,8 @@
   --color-accent: var(--color-signal);
   --color-accent-text: #e0954f;
   --color-confirm: var(--color-teal);
+  --color-confirm-text: #5bb8b1;
+  --color-raised: var(--color-slate);
   color-scheme: dark;
 }
 

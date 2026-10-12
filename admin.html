@@ -4,6 +4,23 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Theme: follow the system unless the visitor picked one (src/shared/theme.ts).
+         This tiny script runs before first paint so there is no flash of the wrong theme. -->
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f7f7f5" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#14171a" media="(prefers-color-scheme: dark)" />
+    <script>
+      try {
+        var t = localStorage.getItem('color-scheme');
+        if (t === 'light' || t === 'dark') {
+          document.documentElement.dataset.theme = t;
+          document.querySelector('meta[name="color-scheme"]').content = t;
+          document.querySelectorAll('meta[name="theme-color"]').forEach(function (m) {
+            m.content = t === 'dark' ? '#14171a' : '#f7f7f5';
+          });
+        }
+      } catch (e) {}
+    </script>
     <meta name="robots" content="noindex,nofollow" />
     <title>Admin — Platinum Point Automotive Engineering</title>
   </head>
