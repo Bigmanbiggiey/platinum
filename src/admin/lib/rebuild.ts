@@ -41,8 +41,10 @@ async function fire(keepalive = false): Promise<void> {
       } catch {
         /* ignore */
       }
-    } else {
+    } else if (body.configured === false) {
       announce('Saved. (Auto-publish to the live site is not switched on yet.)');
+    } else {
+      announce('Saved, but the website could not be updated. Try again, or redeploy in Vercel.');
     }
   } catch {
     announce('Saved. (Could not reach the publish service.)');

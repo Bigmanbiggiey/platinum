@@ -85,4 +85,28 @@ describe('rebuild', () => {
     });
     expect(result.current.message).toBe('Saved.');
   });
+
+  it('says so when the rebuild fails, instead of "not switched on"', async () => {
+    fetchMock.mockResolvedValue(
+      new Response(JSON.stringify({ ok: false, configured: true, error: 'TypeError' }), {
+        status: 502,
+      }),
+    );
+    const { result } = renderHook(() => usePublish());
+    await act(async () => {
+      result.current.triggerNow();
+      await vi.advanceTimersByTimeAsync(0);
+    });
+    expect(result.current.message).toMatch(/could not be updated/);
+  });
+
+  it('still says "not switched on" when there is no hook', async () => {
+    fetchMock.mockResolvedValue(new Response(JSON.stringify({ ok: true, configured: false })));
+    const { result } = renderHook(() => usePublish());
+    await act(async () => {
+      result.current.triggerNow();
+      await vi.advanceTimersByTimeAsync(0);
+    });
+    expect(result.current.message).toMatch(/not switched on/);
+  });
 });

@@ -59,7 +59,7 @@ Left:
   service → Save (watch for the "live in ~1–2 min" message) → open an enquiry →
   Convert to client → set a status → confirm a booking. Report anything rough.
 - **Switch on the two integrations** by setting Supabase secrets:
-  - `npx supabase secrets set VERCEL_DEPLOY_HOOK_URL=<hook>` — auto-publish. Create the
+  - `npx supabase secrets set VERCEL_DEPLOY_HOOK_URL=https://api.vercel.com/v1/integrations/deploy/... (no < > around it)` — auto-publish. Create the
     hook in **Vercel → Project Settings → Git → Deploy Hooks** (branch `main`).
   - `npx supabase secrets set RESEND_API_KEY=<key> RESEND_FROM=<verified sender> NOTIFY_EMAIL=gatama98p@gmail.com`
     — customer booking emails + owner enquiry emails.

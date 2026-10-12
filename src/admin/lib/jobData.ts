@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getDb } from './db';
 import { uploadMedia } from './storage';
+import { isOnWebsite, projectKey } from './publishJob';
+import { rebuildNow, scheduleRebuild } from './rebuild';
 import {
   OPEN_STATUSES,
   type AgendaJob,
@@ -113,9 +115,22 @@ export function useCreateJob() {
   });
 }
 
+/** Job fields the public page shows (job_public). */
+const PUBLIC_JOB_FIELDS: (keyof Job)[] = [
+  'vehicle_label',
+  'service_id',
+  'booked_at',
+  'checked_in_at',
+  'completed_at',
+  'complaint',
+];
+
 export function useUpdateJob(id: string) {
   const invalidate = useInvalidateJobs();
+  const qc = useQueryClient();
   return useMutation({
+    // Asked BEFORE saving: withdrawing consent or re-opening unpublishes in the database.
+    onMutate: async () => ({ live: await isOnWebsite(id) }),
     mutationFn: async (patch: Partial<Job>) => {
       const { error } = await getDb()
         .from('job')
@@ -123,8 +138,20 @@ export function useUpdateJob(id: string) {
         .eq('id', id);
       if (error) throw error;
     },
-    onSuccess: () => invalidate(id),
+    onSuccess: (_data, patch, ctx) => {
+      invalidate(id);
+      void qc.invalidateQueries({ queryKey: projectKey(id) });
+      if (!ctx?.live) return;
+      // Consent withdrawn / job re-opened takes it off the website: rebuild at once.
+      if ('public_consent' in patch || 'status' in patch) void rebuildNow();
+      else if (PUBLIC_JOB_FIELDS.some((k) => k in patch)) scheduleRebuild();
+    },
   });
+}
+
+/** After a change to a job's findings or parts: rebuild if the job is on the website. */
+async function rebuildIfLive(jobId: string) {
+  if (await isOnWebsite(jobId)) scheduleRebuild();
 }
 
 export function useDeleteJob() {
@@ -143,7 +170,17 @@ export function useDeleteJob() {
 export const jobChildKey = (table: string, jobId: string) =>
   ['job-children', table, jobId] as const;
 
-function makeJobChild<T extends { id: string }>(table: string, select: string, orderBy: string) {
+/** `shownPublicly`: the table feeds the public page, so changes rebuild a published job. */
+function makeJobChild<T extends { id: string }>(
+  table: string,
+  select: string,
+  orderBy: string,
+  shownPublicly = false,
+) {
+  const afterChange = (jobId: string) => {
+    if (shownPublicly) void rebuildIfLive(jobId);
+  };
+
   const useList = (jobId: string) =>
     useQuery({
       queryKey: jobChildKey(table, jobId),
@@ -173,7 +210,10 @@ function makeJobChild<T extends { id: string }>(table: string, select: string, o
           .insert({ ...row, job_id: jobId } as never);
         if (error) throw error;
       },
-      onSuccess: invalidate,
+      onSuccess: () => {
+        void invalidate();
+        afterChange(jobId);
+      },
     });
   };
 
@@ -187,11 +227,14 @@ function makeJobChild<T extends { id: string }>(table: string, select: string, o
           .eq('id', id);
         if (error) throw error;
       },
-      onSuccess: invalidate,
+      onSuccess: () => {
+        void invalidate();
+        afterChange(jobId);
+      },
     });
   };
 
-  const useRemove = (_jobId: string) => {
+  const useRemove = (jobId: string) => {
     const qc = useQueryClient();
     return useMutation({
       mutationFn: async (id: string) => {
@@ -199,21 +242,29 @@ function makeJobChild<T extends { id: string }>(table: string, select: string, o
         if (error) throw error;
       },
       // Deleting a finding unlinks its photos/parts (DB `on delete set null`) — refresh all.
-      onSuccess: () => qc.invalidateQueries({ queryKey: ['job-children'] }),
+      onSuccess: () => {
+        void qc.invalidateQueries({ queryKey: ['job-children'] });
+        afterChange(jobId);
+      },
     });
   };
 
   return { useList, useCreate, useUpdate, useRemove };
 }
 
-export const findings = makeJobChild<JobFinding>('job_finding', '*', 'display_order');
+export const findings = makeJobChild<JobFinding>('job_finding', '*', 'display_order', true);
 export const photos = makeJobChild<JobPhoto>(
   'job_photo',
   '*, media(storage_path, alt_text, width, height, variants)',
   'display_order',
 );
 // job_part_cost is owner-only: null for staff.
-export const parts = makeJobChild<JobPart>('job_part', '*, job_part_cost(cost_kes)', 'created_at');
+export const parts = makeJobChild<JobPart>(
+  'job_part',
+  '*, job_part_cost(cost_kes)',
+  'created_at',
+  true,
+);
 
 /** Upload an image (EXIF stripped) and attach it to the job. */
 export function useAddPhoto(jobId: string) {
@@ -266,7 +317,10 @@ export function useAddPart(jobId: string) {
       }
     },
     // Settled, not success: a part saved without its cost must still show up.
-    onSettled: () => qc.invalidateQueries({ queryKey: jobChildKey('job_part', jobId) }),
+    onSettled: () => {
+      void qc.invalidateQueries({ queryKey: jobChildKey('job_part', jobId) });
+      void rebuildIfLive(jobId);
+    },
   });
 }
 

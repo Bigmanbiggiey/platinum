@@ -15,7 +15,20 @@ export interface JobProject {
   is_published: boolean;
 }
 
-const projectKey = (jobId: string) => ['portfolio-by-job', jobId] as const;
+export const projectKey = (jobId: string) => ['portfolio-by-job', jobId] as const;
+
+/**
+ * Is the job on the website right now? Asks `job_public` — the view the site itself is
+ * built from — so the answer matches the live page.
+ */
+export async function isOnWebsite(jobId: string): Promise<boolean> {
+  const { data, error } = await getDb()
+    .from('job_public')
+    .select('job_id')
+    .eq('job_id', jobId)
+    .maybeSingle();
+  return !error && data !== null;
+}
 
 /** The job's portfolio entry, if it was ever published (kept on unpublish: stable slug). */
 export function usePublishedProject(jobId: string, enabled = true) {

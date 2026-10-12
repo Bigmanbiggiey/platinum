@@ -24,13 +24,15 @@ Deno.serve(async (req) => {
   const me = await getCaller(req);
   if (!me?.isActive || me.role !== 'owner') return json({ ok: false, error: 'forbidden' }, 403);
 
-  const hook = Deno.env.get('VERCEL_DEPLOY_HOOK_URL');
+  // Tolerate a secret pasted with the docs placeholder brackets, quotes or spaces.
+  const hook = (Deno.env.get('VERCEL_DEPLOY_HOOK_URL') ?? '').trim().replace(/^[<"']+|[>"']+$/g, '');
   if (!hook) return json({ ok: true, configured: false });
 
   try {
     const r = await fetch(hook, { method: 'POST' });
     return json({ ok: r.ok, configured: true, status: r.status });
   } catch (err) {
-    return json({ ok: false, configured: true, error: String(err) }, 502);
+    // Never echo the hook URL: it is a secret.
+    return json({ ok: false, configured: true, error: (err as Error).name || 'fetch-failed' }, 502);
   }
 });
