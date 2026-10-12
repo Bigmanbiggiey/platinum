@@ -76,7 +76,7 @@ describe('rebuild', () => {
     expect(result.current.message).toMatch(/live on the website/);
   });
 
-  it('stays quiet for staff (website publishing is owner-only)', async () => {
+  it('stays quiet when the caller is not an active team member', async () => {
     fetchMock.mockResolvedValue(new Response('{"ok":false}', { status: 403 }));
     const { result } = renderHook(() => usePublish());
     await act(async () => {
