@@ -126,6 +126,10 @@
   line-height: 1.7;
   color: var(--color-ink);
 }
+/* Intro copy rendered from Markdown keeps the muted intro colour. */
+.prose.prose-muted {
+  color: var(--color-muted);
+}
 .prose > * + * {
   margin-top: 1em;
 }
