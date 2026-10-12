@@ -1,5 +1,9 @@
-/* Fonts — Rev 01 type stack (all SIL OFL 1.1). See docs/product-definition.md §10.2 */
-@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap');
+/* Fonts — Rev 01 type stack (all SIL OFL 1.1). See docs/product-definition.md §10.2
+   Self-hosted (WP11): bundled with the site, so no render-blocking round trip to Google.
+   Newsreader isn't loaded — nothing renders the monogram in type yet. */
+@import '@fontsource-variable/archivo/wght.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
 
 @import 'tailwindcss';
 
@@ -14,6 +18,8 @@
   --color-graphite: #14171a;
   --color-slate: #2a2f34;
   --color-signal: #c8752a;
+  /* Accent-button hover: a lighter Signal, so the graphite label gains contrast (6.3:1). */
+  --color-signal-hover: #d4864a;
   --color-teal: #1e6e6a;
   --color-steel: #6b7580;
   --color-platinum: #c6cbd0;
@@ -22,8 +28,8 @@
 
   /* Type stack */
   --font-sans:
-    'Archivo', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
-    sans-serif;
+    'Archivo Variable', 'Archivo', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    Helvetica, Arial, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', 'Roboto Mono', Menlo, monospace;
   /* Newsreader is for the monogram ONLY — never body, headings or the wordmark. */
   --font-serif: 'Newsreader', ui-serif, Georgia, serif;
@@ -44,9 +50,13 @@
   --color-ground: var(--color-paper);
   --color-surface: #ffffff;
   --color-ink: var(--color-graphite);
-  --color-muted: var(--color-steel);
+  /* A shade darker than Steel so small muted text on Paper/Mist passes WCAG AA (4.5:1). */
+  --color-muted: #646e79;
   --color-line: var(--color-platinum);
   --color-accent: var(--color-signal);
+  /* Orange for TEXT (links, errors, required marks). --color-accent is for fills,
+     borders and marks; as text on Paper/Mist/white it is only ~3.3:1, this is 4.8:1+. */
+  --color-accent-text: #9c5819;
   /* Second functional accent (design-refresh-plan.md §4): status / confirmed /
      active-state, kept distinct from --color-accent so amber stays reserved for
      calls to action. */
@@ -62,6 +72,7 @@
     --color-muted: var(--color-platinum);
     --color-line: #3a4046;
     --color-accent: var(--color-signal);
+    --color-accent-text: #e0954f;
     --color-confirm: var(--color-teal);
     color-scheme: dark;
   }
@@ -74,6 +85,7 @@
   --color-muted: var(--color-platinum);
   --color-line: #3a4046;
   --color-accent: var(--color-signal);
+  --color-accent-text: #e0954f;
   --color-confirm: var(--color-teal);
   color-scheme: dark;
 }
@@ -91,7 +103,7 @@
   }
 
   a {
-    color: var(--color-accent);
+    color: var(--color-accent-text);
     text-decoration: none;
   }
   a:hover {
