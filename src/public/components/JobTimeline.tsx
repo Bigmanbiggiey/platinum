@@ -4,6 +4,7 @@ import { publicImageUrl } from '../../shared/content/media';
 import { DATUM_TEXT_CLASS } from './ui/TitleStrip';
 import {
   DEFERRED_LABEL,
+  OWNER_ENTERED_LABEL,
   type JobPublic,
   type PublicFinding,
   type PublicPhoto,
@@ -85,7 +86,7 @@ function Photos({ photos, label }: { photos: PublicPhoto[]; label: string }) {
 
 /**
  * A documented job, step by step (jobs spec §6.2): checked in → diagnosis → repair →
- * completed. Renders only what `job_public` exposes — never client data, the plate,
+ * completed → client review. Renders only what `job_public` exposes — never client data, the plate,
  * odometer, labour, costs or part quantities.
  */
 export function JobTimeline({ job }: { job: JobPublic }) {
@@ -152,6 +153,27 @@ export function JobTimeline({ job }: { job: JobPublic }) {
       )}
 
       <Step label="Completed" when={date(job.completed_at)} done />
+
+      {job.testimonial && (
+        <Step label="Client review">
+          <figure>
+            {job.testimonial.rating && (
+              <p className="text-signal" aria-label={`${job.testimonial.rating} out of 5 stars`}>
+                {'★'.repeat(job.testimonial.rating)}
+              </p>
+            )}
+            <blockquote className="mt-2 text-lg text-[color:var(--color-ink)]">
+              “{job.testimonial.comment}”
+            </blockquote>
+            <figcaption className="mt-2 text-sm text-[color:var(--color-muted)]">
+              — {job.testimonial.first_name}, {job.testimonial.vehicle_label}
+              {job.testimonial.source === 'owner_entered' && (
+                <span className="block">{OWNER_ENTERED_LABEL}</span>
+              )}
+            </figcaption>
+          </figure>
+        </Step>
+      )}
     </ol>
   );
 }

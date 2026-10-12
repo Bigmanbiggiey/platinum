@@ -23,6 +23,15 @@ export interface PublicFinding {
   after: PublicPhoto[];
 }
 
+/** The job's latest approved review (J3). Owner-entered ones are labelled publicly. */
+export interface PublicTestimonial {
+  first_name: string;
+  vehicle_label: string;
+  rating: number | null;
+  comment: string;
+  source: string;
+}
+
 /** One row of the `job_public` view. */
 export interface JobPublic {
   job_id: string;
@@ -37,7 +46,11 @@ export interface JobPublic {
   complaint: string | null;
   findings: PublicFinding[];
   general_photos: PublicPhoto[];
+  testimonial?: PublicTestimonial | null;
 }
+
+/** How an owner-entered review reads publicly (jobs spec §6.2 step 5). */
+export const OWNER_ENTERED_LABEL = 'Shared with us by the client';
 
 /** Spec §6.2 (owner open item 2): how a deferred problem reads publicly. */
 export const DEFERRED_LABEL = 'Recommended — not done at client’s request';
@@ -104,7 +117,11 @@ export function toPublicTimeline(
   findings: SourceFinding[],
   parts: SourcePart[],
   photos: SourcePhoto[],
-  opts: { serviceTitle?: string | null; slug?: string | null } = {},
+  opts: {
+    serviceTitle?: string | null;
+    slug?: string | null;
+    testimonial?: PublicTestimonial | null;
+  } = {},
 ): JobPublic {
   const shown = photos.filter((p) => p.is_public && p.media).sort(byOrder);
   const photosFor = (findingId: string, stage: SourcePhoto['stage']) =>
@@ -135,6 +152,7 @@ export function toPublicTimeline(
     general_photos: shown
       .filter((p) => p.stage === 'check_in' || p.finding_id === null)
       .map(toPhoto),
+    testimonial: opts.testimonial ?? null,
   };
 }
 

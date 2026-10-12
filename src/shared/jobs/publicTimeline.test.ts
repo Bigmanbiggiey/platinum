@@ -82,6 +82,20 @@ describe('toPublicTimeline', () => {
     expect(text).not.toContain('quantity');
     expect(tl.findings[0].parts).toEqual(['Brake pads']);
   });
+
+  it('carries the review it is given, else none', () => {
+    expect(tl.testimonial).toBeNull();
+    const review = {
+      first_name: 'Amina',
+      vehicle_label: '2014 Toyota Fielder',
+      rating: 5,
+      comment: 'Great',
+      source: 'review_link',
+    };
+    expect(
+      toPublicTimeline(job, findings, parts, photos, { testimonial: review }).testimonial,
+    ).toEqual(review);
+  });
 });
 
 describe('jobSlug', () => {
