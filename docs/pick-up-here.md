@@ -84,7 +84,7 @@ Left:
 
 ### B. Phase 2 — to close it out
 
-- **WP11 perf/a11y:** run **PageSpeed Insights** on `platinum-point.vercel.app` (3 pages) + an `axe` scan; fix findings.
+- **WP11 perf/a11y:** fixes on `feature/wp11-perf-a11y` — locally all three pages score Performance ≥ 94 and Accessibility 100 (details in `phase-2-plan.md`). After merge: re-run Lighthouse on staging; real-device check; later, resize images at upload and trim unused JS.
 - **WP14 Part C — Go-Live** (`wp14-staging-plan.md` §6), needs owner decisions/inputs:
   - Domain + DNS (host/domain to be revisited — currently Vercel; note Vercel Hobby is non-commercial-use → decide Vercel Pro vs Cloudflare Pages).
   - Remove `VITE_SITE_NOINDEX`; point `VITE_SITE_ORIGIN` at the real domain; redeploy.

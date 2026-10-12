@@ -48,7 +48,10 @@ export function ServiceDetailPage() {
       <section className="border-b border-[color:var(--color-line)] py-14">
         <Container narrow>
           <p className={DATUM_TEXT_CLASS}>
-            <Link to="/services">Services</Link> / {service.category ?? 'Service'}
+            <Link to="/services" className="underline underline-offset-2">
+              Services
+            </Link>{' '}
+            / {service.category ?? 'Service'}
           </p>
           <h1 className="mt-3 text-3xl font-bold tracking-tight text-[color:var(--color-ink)] sm:text-4xl">
             {service.title}

@@ -17,7 +17,7 @@ export function MobileContactBar() {
         target="_blank"
         rel="noopener noreferrer"
         onClick={() => trackCta('whatsapp_click', { context: 'mobile-bar' })}
-        className="bg-signal py-3 text-center text-sm font-semibold text-paper"
+        className="bg-signal py-3 text-center text-sm font-semibold text-graphite"
       >
         WhatsApp
       </a>

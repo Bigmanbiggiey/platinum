@@ -231,7 +231,7 @@ Effort: **S** ≈ half-day, **M** ≈ 1–2 days, **L** ≈ 3–5 days (rough, s
 | WP8 SEO | ✅ `gen-sitemap.mjs` (20 URLs), `robots.txt`, JSON-LD (AutoRepair/Service/Breadcrumb), canonical + OG per page, admin excluded. |
 | WP9 analytics | ✅ CF Web Analytics snippet (env-gated — Cloudflare deferred by owner) + `trackCta` on all CTAs. Search Console → WP14. |
 | WP10 seed | ✅ **Applied** (`db push --include-seed`). site_settings, 9 services, 5 areas, TECHBIGGIEY partner, 11 content blocks, DRAFT privacy, 1 pending placeholder testimonial. Confirmed facts live; draft copy for owner to edit later. |
-| WP11 perf/a11y | ⏳ Site now runs with real content locally; full Lighthouse/axe pass belongs to WP14 (needs a deploy). |
+| WP11 perf/a11y | 🟢 Lighthouse mobile, local production build (2026-10-12): Home / Service / Contact — Performance 94–95 / 95 / 95 (was 64–87 / 80 / 85), Accessibility 100 / 100 / 100 (axe rules; was 95 / 91 / 96), Best Practices 100. SEO is 100 locally; staging shows ~66 only because of `VITE_SITE_NOINDEX`. Fixes: self-hosted fonts (`@fontsource`, no Google round trip; Newsreader dropped), muted text `#646e79`, `--color-accent-text` for orange text, graphite labels on orange buttons, logo link named by its visible text, underlined breadcrumb link. Left: re-run on staging after merge; real mid-range Android check (owner); resize images at upload (Supabase serves originals, 1 h cache) and trim unused JS (~110 KB). |
 | WP12 tests | ✅ **18 passing** (RLS matrix ×6 live, seo ×4, EnquiryForm ×3, Prose ×2, Wordmark, business/env). |
 | WP13 local acceptance | ✅ `build` green (21 pages), all routes serve, real content flows, dark-theme contrast fixed. |
 | WP14 staging | ⛔ Not started (separate approval). |

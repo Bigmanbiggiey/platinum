@@ -158,7 +158,10 @@ export function JobTimeline({ job }: { job: JobPublic }) {
         <Step label="Client review">
           <figure>
             {job.testimonial.rating && (
-              <p className="text-signal" aria-label={`${job.testimonial.rating} out of 5 stars`}>
+              <p
+                className="text-[color:var(--color-accent-text)]"
+                aria-label={`${job.testimonial.rating} out of 5 stars`}
+              >
                 {'★'.repeat(job.testimonial.rating)}
               </p>
             )}

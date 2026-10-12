@@ -92,11 +92,13 @@ export function TestimonialForm() {
         />
         <span>
           I agree Platinum Point may publish my first name, vehicle and comment.{' '}
-          {errors.consent && <span className="text-signal">— {errors.consent}</span>}
+          {errors.consent && (
+            <span className="text-[color:var(--color-accent-text)]">— {errors.consent}</span>
+          )}
         </span>
       </label>
       <Turnstile onToken={setToken} />
-      {error && <p className="text-sm text-signal">{error}</p>}
+      {error && <p className="text-sm text-[color:var(--color-accent-text)]">{error}</p>}
       <Button type="submit" variant="accent" disabled={status === 'submitting'}>
         {status === 'submitting' ? 'Sending…' : 'Submit testimonial'}
       </Button>
