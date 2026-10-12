@@ -30,12 +30,12 @@ export function Field({
         className="block text-sm font-semibold text-[color:var(--color-ink)]"
       >
         {label}
-        {required && <span className="text-signal"> *</span>}
+        {required && <span className="text-[color:var(--color-accent-text)]"> *</span>}
       </label>
       {hint && <p className="mt-0.5 text-xs text-[color:var(--color-muted)]">{hint}</p>}
       {children}
       {error && (
-        <p className="mt-1 text-xs text-signal" role="alert">
+        <p className="mt-1 text-xs text-[color:var(--color-accent-text)]" role="alert">
           {error}
         </p>
       )}

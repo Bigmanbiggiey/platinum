@@ -9,7 +9,7 @@ const base =
 const variants: Record<Variant, string> = {
   // "inverted ground": dark-on-light in light theme, light-on-dark in dark theme
   primary: 'bg-[color:var(--color-ink)] text-[color:var(--color-ground)] hover:opacity-90',
-  accent: 'bg-signal text-paper hover:opacity-90',
+  accent: 'bg-signal text-graphite hover:bg-signal-hover',
   outline:
     'border border-[color:var(--color-line)] text-[color:var(--color-ink)] hover:border-signal',
 };

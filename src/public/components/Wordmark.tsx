@@ -8,19 +8,18 @@ import { DatumMark } from './DatumMark';
  */
 export function Wordmark() {
   return (
-    <Link
-      to="/"
-      className="group flex items-center gap-3"
-      aria-label="Platinum Point Automotive Engineering — home"
-    >
+    // Named by its visible text (plus a hidden "home") rather than an aria-label, so voice
+    // users can say what they see (WCAG 2.5.3, Label in Name).
+    <Link to="/" className="group flex items-center gap-3">
       <DatumMark size="sm" />
       <span className="leading-none">
         <span className="block text-lg font-bold tracking-tight text-[color:var(--color-ink)]">
           Platinum Point
-        </span>
+        </span>{' '}
         <span className="mt-0.5 block font-mono text-[10px] uppercase tracking-[0.28em] text-[color:var(--color-muted)]">
           Automotive Engineering
         </span>
+        <span className="sr-only"> — home</span>
       </span>
     </Link>
   );

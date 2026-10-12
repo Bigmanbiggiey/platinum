@@ -261,13 +261,15 @@ export function EnquiryForm({ variant, timeWindows = [], confirmationNote }: Pro
         />
         <span>
           I agree that Platinum Point may use these details to respond to my enquiry.{' '}
-          {errors.consent && <span className="text-signal">— {errors.consent}</span>}
+          {errors.consent && (
+            <span className="text-[color:var(--color-accent-text)]">— {errors.consent}</span>
+          )}
         </span>
       </label>
 
       <Turnstile onToken={setToken} />
 
-      {error && <p className="text-sm text-signal">{error}</p>}
+      {error && <p className="text-sm text-[color:var(--color-accent-text)]">{error}</p>}
 
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" variant="accent" disabled={status === 'submitting'}>

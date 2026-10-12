@@ -17,7 +17,7 @@ export function ServiceCard({ service }: { service: ServiceRow }) {
           CATEGORY <span className="text-[color:var(--color-ink)]">{service.category}</span>
         </p>
       )}
-      <h3 className="mt-1 text-lg font-bold text-[color:var(--color-ink)] group-hover:text-signal">
+      <h3 className="mt-1 text-lg font-bold text-[color:var(--color-ink)] group-hover:text-[color:var(--color-accent-text)]">
         {service.title}
       </h3>
       <p className="flex-1 text-sm text-[color:var(--color-muted)]">{service.summary}</p>
@@ -78,7 +78,7 @@ export function TestimonialCard({ t }: { t: TestimonialPublicRow }) {
         </span>
         {t.rating && (
           <span aria-label={`${t.rating} out of 5`}>
-            <span className="text-signal">{'★'.repeat(t.rating)}</span>
+            <span className="text-[color:var(--color-accent-text)]">{'★'.repeat(t.rating)}</span>
             <span className="text-[color:var(--color-line)]">{'★'.repeat(5 - t.rating)}</span>
           </span>
         )}

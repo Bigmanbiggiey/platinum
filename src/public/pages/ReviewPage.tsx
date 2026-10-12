@@ -163,7 +163,7 @@ function ReviewForm({ code, summary }: { code: string; summary: Summary }) {
       </Field>
       <fieldset>
         <legend className="text-sm font-semibold text-[color:var(--color-ink)]">
-          Rating <span className="text-signal">*</span>
+          Rating <span className="text-[color:var(--color-accent-text)]">*</span>
         </legend>
         <div className="mt-1 flex gap-1" role="radiogroup" aria-label="Rating">
           {[1, 2, 3, 4, 5].map((n) => (
@@ -174,13 +174,15 @@ function ReviewForm({ code, summary }: { code: string; summary: Summary }) {
               aria-checked={rating === n}
               aria-label={`${n} star${n === 1 ? '' : 's'}`}
               onClick={() => setRating(n)}
-              className={`text-3xl leading-none ${n <= rating ? 'text-signal' : 'text-[color:var(--color-line)]'}`}
+              className={`text-3xl leading-none ${n <= rating ? 'text-[color:var(--color-accent-text)]' : 'text-[color:var(--color-line)]'}`}
             >
               ★
             </button>
           ))}
         </div>
-        {errors.rating && <p className="mt-1 text-sm text-signal">{errors.rating}</p>}
+        {errors.rating && (
+          <p className="mt-1 text-sm text-[color:var(--color-accent-text)]">{errors.rating}</p>
+        )}
       </fieldset>
       <Field label="Your comment" htmlFor="comment" required error={errors.comment}>
         <TextArea id="comment" value={comment} onChange={(e) => setComment(e.target.value)} />
@@ -194,11 +196,13 @@ function ReviewForm({ code, summary }: { code: string; summary: Summary }) {
         />
         <span>
           I agree Platinum Point may publish my first name, vehicle and comment.{' '}
-          {errors.consent && <span className="text-signal">— {errors.consent}</span>}
+          {errors.consent && (
+            <span className="text-[color:var(--color-accent-text)]">— {errors.consent}</span>
+          )}
         </span>
       </label>
       <Turnstile onToken={setToken} />
-      {error && <p className="text-sm text-signal">{error}</p>}
+      {error && <p className="text-sm text-[color:var(--color-accent-text)]">{error}</p>}
       <Button type="submit" variant="accent" disabled={status === 'submitting'}>
         {status === 'submitting' ? 'Sending…' : 'Send review'}
       </Button>

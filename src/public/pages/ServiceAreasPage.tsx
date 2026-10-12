@@ -31,7 +31,7 @@ export function ServiceAreasPage() {
             {primary.map((a) => (
               <li
                 key={a.id}
-                className="rounded-full bg-signal px-3 py-1 text-sm font-semibold text-paper"
+                className="rounded-full bg-signal px-3 py-1 text-sm font-semibold text-graphite"
               >
                 {a.name}
               </li>
@@ -41,7 +41,10 @@ export function ServiceAreasPage() {
         {others.length > 0 && (
           <ul className="mt-4 grid gap-3 sm:grid-cols-2">
             {others.map((a) => (
-              <li key={a.id} className="rounded-structural border border-[color:var(--color-line)] p-4">
+              <li
+                key={a.id}
+                className="rounded-structural border border-[color:var(--color-line)] p-4"
+              >
                 <p className="font-semibold text-[color:var(--color-ink)]">{a.name}</p>
                 {a.region && <p className="text-xs text-[color:var(--color-muted)]">{a.region}</p>}
                 {a.note && <p className="mt-1 text-sm text-[color:var(--color-muted)]">{a.note}</p>}
