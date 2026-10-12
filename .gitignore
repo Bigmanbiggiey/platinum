@@ -25,3 +25,4 @@ npm-debug.log*
 
 # Vercel CLI local link + pulled env (vercel.json IS committed)
 .vercel
+*.tsbuildinfo

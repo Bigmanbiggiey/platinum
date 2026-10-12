@@ -5,6 +5,7 @@
  * - When VITE_SITE_NOINDEX is set (staging / not-yet-public), robots.txt becomes a
  *   blanket `Disallow: /` and the sitemap line is omitted. The static
  *   public/robots.txt is a dev-only fallback; this file is authoritative for builds.
+ * - /review (one-time client review links) is noindex, not in the sitemap, and Disallowed.
  * - The admin is never prerendered; its client-only entry (admin.html) is skipped
  *   below, so it can't appear in the sitemap. It is also Disallowed in robots.
  */
@@ -30,6 +31,7 @@ function toRoute(file) {
   if (rel === 'index.html') return '/';
   if (rel === '404.html') return null;
   if (rel === 'admin.html') return null; // the admin's client-only entry, never public
+  if (rel === 'review.html' || rel === 'review/index.html') return null; // private review links
   if (rel.endsWith('/index.html')) return `/${rel.slice(0, -'/index.html'.length)}`;
   return `/${rel.slice(0, -'.html'.length)}`;
 }
@@ -49,7 +51,7 @@ await writeFile(join(DIST, 'sitemap.xml'), sitemap);
 
 const robots = NOINDEX
   ? `# Staging build (VITE_SITE_NOINDEX) — not for indexing\nUser-agent: *\nDisallow: /\n`
-  : `# Platinum Point Automotive Engineering\nUser-agent: *\nAllow: /\nDisallow: /admin\n\nSitemap: ${ORIGIN}/sitemap.xml\n`;
+  : `# Platinum Point Automotive Engineering\nUser-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /review\n\nSitemap: ${ORIGIN}/sitemap.xml\n`;
 await writeFile(join(DIST, 'robots.txt'), robots);
 
 console.log(

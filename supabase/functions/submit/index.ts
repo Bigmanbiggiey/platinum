@@ -1,6 +1,7 @@
 // Platinum Point Automotive Engineering — public form submission handler (ADR-0006, ADR-0008)
 //
-// The ONLY path that writes to `service_request` / `testimonial`. anon has no direct
+// The ONLY path that writes to `service_request` / `testimonial` (including reviews left
+// through a one-time review link, jobs spec §7.2). anon has no direct
 // insert. Runs on Supabase Edge Functions (Deno).
 //
 // Layers:
@@ -36,7 +37,10 @@ const json = (body: unknown, status = 200) =>
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   });
 
-type Kind = 'service_request' | 'testimonial';
+type Kind = 'service_request' | 'testimonial' | 'review';
+
+/** A review-link token: 32 random bytes, base64url, no padding. */
+const TOKEN_RE = /^[A-Za-z0-9_-]{43}$/;
 
 const REQUEST_TYPES = new Set([
   'booking',
@@ -79,7 +83,9 @@ async function notifyOwner(kind: Kind, row: Record<string, unknown>): Promise<vo
   if (!apiKey || !to) return;
   const from = Deno.env.get('RESEND_FROM') ?? 'onboarding@resend.dev';
   const subject =
-    kind === 'testimonial'
+    kind === 'review'
+      ? 'New review from a review link (pending) — Platinum Point'
+      : kind === 'testimonial'
       ? 'New testimonial (pending) — Platinum Point'
       : `New ${String(row.request_type)} request — Platinum Point`;
   const lines = Object.entries(row)
@@ -147,6 +153,29 @@ Deno.serve(async (req) => {
     });
     if (error) return json({ ok: false, error: 'insert-failed' }, 500);
     await notifyOwner('testimonial', { first_name, vehicle_label, rating, comment });
+    return json({ ok: true });
+  }
+
+  if (kind === 'review') {
+    const token = typeof p.token === 'string' && TOKEN_RE.test(p.token) ? p.token : null;
+    const first_name = str(p.first_name, 80);
+    const comment = str(p.comment, 2000);
+    const rating =
+      typeof p.rating === 'number' && p.rating >= 1 && p.rating <= 5 ? Math.round(p.rating) : null;
+    if (!token || !first_name || !comment || !rating || p.consent !== true) {
+      return json({ ok: false, error: 'validation' }, 422);
+    }
+    // Marks the link used and files the review in one statement (jobs spec §7.2).
+    // Unknown, expired and used links all get the same answer.
+    const { error } = await supabase.rpc('redeem_review_invite', {
+      token,
+      first_name,
+      rating,
+      comment,
+      consent: true,
+    });
+    if (error) return json({ ok: false, error: 'invalid-link' }, 410);
+    await notifyOwner('review', { first_name, rating, comment });
     return json({ ok: true });
   }
 

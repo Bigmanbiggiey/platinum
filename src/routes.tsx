@@ -21,6 +21,7 @@ import { BookPage, bookLoader } from './public/pages/BookPage';
 import { RequestServicePage } from './public/pages/RequestServicePage';
 import { RequestInspectionPage } from './public/pages/RequestInspectionPage';
 import { PrivacyPage, privacyLoader } from './public/pages/PrivacyPage';
+import { ReviewPage } from './public/pages/ReviewPage';
 import { NotFoundPage } from './public/pages/NotFoundPage';
 
 /**
@@ -56,6 +57,9 @@ export const routes: RouteRecord[] = [
       { path: 'request-service', element: <RequestServicePage /> },
       { path: 'request-inspection', element: <RequestInspectionPage /> },
       { path: 'privacy', loader: privacyLoader, element: <PrivacyPage /> },
+      // One prerendered shell; vercel.json rewrites /review/:code here (J3).
+      { path: 'review', element: <ReviewPage /> },
+      { path: 'review/:code', element: <ReviewPage /> },
       { path: '404', element: <NotFoundPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],

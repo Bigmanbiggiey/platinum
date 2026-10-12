@@ -65,6 +65,10 @@ vi.mock('../../lib/resources', () => ({
   services: { useOne: () => ({ data: { title: 'Brake overhaul' } }) },
   vehicles: { useOne: () => ({ data: { make: 'Toyota', model: 'Fielder', year: 2014 } }) },
 }));
+vi.mock('../../lib/reviews', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../../lib/reviews')>()),
+  useJobTestimonials: () => ({ data: [] }),
+}));
 vi.mock('../../lib/rebuild', () => ({
   usePublish: () => ({ trigger: vi.fn(), triggerNow: trigger, message: '' }),
 }));

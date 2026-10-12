@@ -109,7 +109,7 @@ begin
   -- 3. Exactly the public columns
   select string_agg(column_name, ',' order by column_name) into cols
     from information_schema.columns where table_schema = 'public' and table_name = 'job_public';
-  if cols <> 'booked_at,checked_in_at,complaint,completed_at,findings,general_photos,job_id,job_number,portfolio_slug,service_id,service_title,vehicle_label' then
+  if cols <> 'booked_at,checked_in_at,complaint,completed_at,findings,general_photos,job_id,job_number,portfolio_slug,service_id,service_title,testimonial,vehicle_label' then
     raise exception 'FAIL job_public columns: %', cols;
   end if;
 

@@ -21,6 +21,9 @@ export interface AdminTestimonial {
   status: 'pending' | 'approved' | 'rejected';
   is_featured: boolean;
   submitted_at: string;
+  /** Set for reviews of a job (J3): link-left or owner-entered. */
+  job_id: string | null;
+  job?: { job_number: string } | null;
 }
 
 export interface AdminSiteSettings {
@@ -76,6 +79,7 @@ export const projects = makeResource<PortfolioProjectRow>('portfolio_project', {
   orderBy: 'display_order',
 });
 export const testimonials = makeResource<AdminTestimonial>('testimonial', {
+  select: '*, job:job_id(job_number)',
   orderBy: 'submitted_at',
   ascending: false,
 });

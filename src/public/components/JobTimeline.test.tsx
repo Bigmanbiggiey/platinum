@@ -70,4 +70,49 @@ describe('<JobTimeline />', () => {
     expect(within(repair).getByAltText('before photo')).toBeInTheDocument();
     expect(within(repair).getByAltText('after photo')).toBeInTheDocument();
   });
+
+  it('shows no review step without an approved review', () => {
+    render(<JobTimeline job={job} />);
+    expect(screen.queryByRole('heading', { name: 'Client review' })).not.toBeInTheDocument();
+  });
+
+  it('shows the client review with stars, name and vehicle', () => {
+    render(
+      <JobTimeline
+        job={{
+          ...job,
+          testimonial: {
+            first_name: 'Amina',
+            vehicle_label: '2014 Toyota Fielder',
+            rating: 5,
+            comment: 'Brakes are silent now',
+            source: 'review_link',
+          },
+        }}
+      />,
+    );
+    const step = screen.getByRole('heading', { name: 'Client review' }).closest('li')!;
+    expect(within(step).getByLabelText('5 out of 5 stars')).toBeInTheDocument();
+    expect(within(step).getByText(/Brakes are silent now/)).toBeInTheDocument();
+    expect(within(step).getByText(/Amina, 2014 Toyota Fielder/)).toBeInTheDocument();
+    expect(within(step).queryByText('Shared with us by the client')).not.toBeInTheDocument();
+  });
+
+  it('labels a review the owner entered for the client', () => {
+    render(
+      <JobTimeline
+        job={{
+          ...job,
+          testimonial: {
+            first_name: 'Amina',
+            vehicle_label: '2014 Toyota Fielder',
+            rating: null,
+            comment: 'Told us in person',
+            source: 'owner_entered',
+          },
+        }}
+      />,
+    );
+    expect(screen.getByText('Shared with us by the client')).toBeInTheDocument();
+  });
 });

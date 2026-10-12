@@ -12,6 +12,7 @@ import {
   useUnpublishJob,
 } from '../../lib/publishJob';
 import { usePublish } from '../../lib/rebuild';
+import { publicReview, useJobTestimonials } from '../../lib/reviews';
 import { services, vehicles } from '../../lib/resources';
 import type { JobWithRefs } from '../../lib/jobs';
 import { jobSlug, toPublicTimeline } from '../../../shared/jobs/publicTimeline';
@@ -33,6 +34,7 @@ export function PublishCard({ job }: { job: JobWithRefs }) {
   const [title, setTitle] = useState<string | null>(null);
   const [summary, setSummary] = useState<string | null>(null);
   const [preview, setPreview] = useState(false);
+  const reviews = useJobTestimonials(job.id, preview);
 
   const blockers = publishBlockers(job);
   const p = project.data ?? null;
@@ -154,7 +156,7 @@ export function PublishCard({ job }: { job: JobWithRefs }) {
                   allFindings.data ?? [],
                   allParts.data ?? [],
                   allPhotos.data ?? [],
-                  { serviceTitle, slug },
+                  { serviceTitle, slug, testimonial: publicReview(reviews.data ?? []) },
                 )}
               />
             </div>

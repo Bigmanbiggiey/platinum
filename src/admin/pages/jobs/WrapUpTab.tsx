@@ -21,6 +21,7 @@ import {
 import { JobPhotos } from './JobPhotos';
 import { PartsEditor } from './PartsEditor';
 import { PublishCard } from './PublishCard';
+import { ClientReviewCard } from './ClientReviewCard';
 import { usePublishedProject } from '../../lib/publishJob';
 import { getDb } from '../../lib/db';
 import { usePhotoActions } from './usePhotoActions';
@@ -44,6 +45,7 @@ export function WrapUpTab({ job }: { job: JobWithRefs }) {
         <StatusCard job={job} isOwner={isOwner} />
       )}
       {isOwner && <PublishCard job={job} />}
+      {isOwner && job.status === 'completed' && <ClientReviewCard job={job} />}
       {isOwner && <DeleteCard job={job} />}
     </div>
   );
