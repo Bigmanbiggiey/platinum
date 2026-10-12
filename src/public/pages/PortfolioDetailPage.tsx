@@ -61,7 +61,9 @@ export function PortfolioDetailPage() {
       <section className="border-b border-[color:var(--color-line)] py-14">
         <Container narrow>
           <p className={DATUM_TEXT_CLASS}>
-            <Link to="/portfolio">Work</Link>
+            <Link to="/portfolio" className="underline underline-offset-2">
+              Work
+            </Link>
             {vehicle && ` / ${vehicle}`}
           </p>
           <h1 className="mt-3 text-3xl font-bold tracking-tight text-[color:var(--color-ink)] sm:text-4xl">

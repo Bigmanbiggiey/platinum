@@ -127,7 +127,9 @@ export function JobTimeline({ job }: { job: JobPublic }) {
               {OUTCOME[f.outcome] && (
                 <p
                   className={`mt-1 text-sm font-semibold ${
-                    f.outcome === 'fixed' ? 'text-teal' : 'text-[color:var(--color-muted)]'
+                    f.outcome === 'fixed'
+                      ? 'text-[color:var(--color-confirm-text)]'
+                      : 'text-[color:var(--color-muted)]'
                   }`}
                 >
                   {OUTCOME[f.outcome]}
