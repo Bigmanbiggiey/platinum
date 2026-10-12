@@ -27,7 +27,7 @@ export function InviteLinkPanel({ result }: { result: InviteResult }) {
           ? `${result.displayName} already had an account — this link lets them set a new password and sign in.`
           : `Invite for ${result.displayName} is ready. Send them this link — they choose their own password:`}
       </p>
-      <code className="block break-all rounded bg-slate px-2 py-1 font-mono text-[11px]">
+      <code className="block break-all rounded bg-[color:var(--color-raised)] px-2 py-1 font-mono text-[11px]">
         {result.inviteUrl}
       </code>
       <div className="flex flex-wrap gap-2">

@@ -52,7 +52,7 @@ export function JobPhotos({
                   type="button"
                   aria-label="Delete photo"
                   onClick={() => onDelete(p)}
-                  className="ml-auto text-signal"
+                  className="ml-auto text-[color:var(--color-accent-text)]"
                 >
                   delete
                 </button>

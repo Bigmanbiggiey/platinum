@@ -8,7 +8,8 @@ import type {
 
 /* -------------------------------------------------------------------------- */
 /*  Admin UI kit — Rev 01 brand tokens (docs/product-definition.md §10.2).    */
-/*  The admin runs data-theme="dark": --color-ink = Paper, ground = Graphite. */
+/*  Follows the visitor's light / dark / system theme: use the semantic roles  */
+/*  (--color-ink, --color-muted, --color-raised, ...), never palette text colours. */
 /*  IBM Plex Mono (`font-mono`) for labels / IDs / dates / phone numbers.     */
 /* -------------------------------------------------------------------------- */
 
@@ -46,10 +47,10 @@ const btnBase =
   'inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-semibold transition-opacity disabled:opacity-50 disabled:pointer-events-none';
 const btnVariants: Record<BtnVariant, string> = {
   primary: 'bg-[color:var(--color-ink)] text-[color:var(--color-ground)] hover:opacity-90',
-  accent: 'bg-signal text-paper hover:opacity-90',
+  accent: 'bg-signal text-graphite hover:bg-signal-hover',
   ghost:
     'border border-[color:var(--color-line)] text-[color:var(--color-ink)] hover:border-signal',
-  danger: 'border border-signal/50 text-signal hover:bg-signal/10',
+  danger: 'border border-signal/50 text-[color:var(--color-accent-text)] hover:bg-signal/10',
 };
 
 export function Button({
@@ -107,10 +108,10 @@ export function Badge({
   tone?: 'neutral' | 'attention' | 'pass' | 'muted';
 }) {
   const tones = {
-    neutral: 'bg-slate text-platinum',
-    attention: 'bg-signal/15 text-signal',
-    pass: 'bg-teal/15 text-teal',
-    muted: 'bg-slate/50 text-steel',
+    neutral: 'bg-[color:var(--color-raised)] text-[color:var(--color-muted)]',
+    attention: 'bg-signal/15 text-[color:var(--color-accent-text)]',
+    pass: 'bg-teal/15 text-[color:var(--color-confirm-text)]',
+    muted: 'bg-[color:var(--color-raised)]/50 text-[color:var(--color-muted)]',
   } as const;
   return (
     <span

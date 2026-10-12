@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { BUSINESS } from '../../shared/business';
+import { ThemeSwitcher } from '../../shared/ThemeSwitcher';
 
 /**
  * Footer NAP + links. Uses the `BUSINESS` constants, which mirror the `site_settings`
@@ -59,8 +60,11 @@ export function Footer() {
         </div>
       </div>
       <div className="border-t border-[color:var(--color-line)]">
-        <div className="mx-auto max-w-5xl px-5 py-5 text-xs text-[color:var(--color-muted)]">
-          Serving {BUSINESS.serviceAreaSummary}. © {year} {BUSINESS.name}.
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-5 py-5 text-xs text-[color:var(--color-muted)]">
+          <p>
+            Serving {BUSINESS.serviceAreaSummary}. © {year} {BUSINESS.name}.
+          </p>
+          <ThemeSwitcher />
         </div>
       </div>
     </footer>

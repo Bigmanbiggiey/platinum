@@ -28,14 +28,11 @@ export function ResetPasswordPage() {
   };
 
   return (
-    <div
-      className="grid min-h-dvh place-items-center bg-graphite px-6 text-paper"
-      data-theme="dark"
-    >
+    <div className="grid min-h-dvh place-items-center bg-[color:var(--color-ground)] px-6 text-[color:var(--color-ink)]">
       <form onSubmit={onSubmit} className="w-full max-w-sm space-y-4">
         <div className="flex items-center gap-3">
           <DatumMark className="h-9 w-9" />
-          <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-platinum">
+          <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[color:var(--color-muted)]">
             Platinum Point · Admin
           </span>
         </div>
@@ -51,11 +48,11 @@ export function ResetPasswordPage() {
             />
           </div>
         </label>
-        {error && <p className="text-sm text-signal">{error}</p>}
+        {error && <p className="text-sm text-[color:var(--color-accent-text)]">{error}</p>}
         <button
           type="submit"
           disabled={busy}
-          className="w-full rounded-md bg-signal px-4 py-2.5 text-sm font-semibold text-paper disabled:opacity-50"
+          className="w-full rounded-md bg-signal px-4 py-2.5 text-sm font-semibold text-graphite disabled:opacity-50"
         >
           {busy ? 'Saving…' : 'Save password'}
         </button>

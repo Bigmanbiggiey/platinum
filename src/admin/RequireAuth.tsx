@@ -9,7 +9,11 @@ export function RequireAuth() {
   const location = useLocation();
 
   if (loading) {
-    return <div className="grid min-h-dvh place-items-center text-sm text-platinum">Loading…</div>;
+    return (
+      <div className="grid min-h-dvh place-items-center text-sm text-[color:var(--color-muted)]">
+        Loading…
+      </div>
+    );
   }
   if (!session) {
     return <Navigate to="/admin/login" replace state={{ from: location.pathname }} />;
@@ -46,20 +50,20 @@ export function NoAccess({
   };
 
   return (
-    <div className="grid min-h-dvh place-items-center px-6 text-center text-sm text-platinum">
+    <div className="grid min-h-dvh place-items-center px-6 text-center text-sm text-[color:var(--color-muted)]">
       <div className="space-y-4">
         <p>{message}</p>
         {action}
         {email && (
-          <p className="text-xs text-steel">
-            Signed in as <span className="font-mono text-platinum">{email}</span>
+          <p className="text-xs text-[color:var(--color-muted)]">
+            Signed in as <span className="font-mono text-[color:var(--color-muted)]">{email}</span>
           </p>
         )}
         <button
           type="button"
           disabled={busy}
           onClick={() => void leave()}
-          className="rounded-md border border-slate px-3 py-1.5 font-semibold text-paper hover:border-signal disabled:opacity-50"
+          className="rounded-md border border-[color:var(--color-line)] px-3 py-1.5 font-semibold text-[color:var(--color-ink)] hover:border-signal disabled:opacity-50"
         >
           {busy ? 'Signing out…' : 'Sign out and use another account'}
         </button>

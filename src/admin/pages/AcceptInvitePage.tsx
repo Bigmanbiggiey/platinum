@@ -27,7 +27,7 @@ export function AcceptInvitePage() {
     return (
       <Shell>
         <h1 className="text-2xl font-bold tracking-tight">This link is incomplete</h1>
-        <p className="text-sm text-platinum">
+        <p className="text-sm text-[color:var(--color-muted)]">
           Open the full link from your invite message, or ask the owner for a new invite link.
         </p>
       </Shell>
@@ -38,10 +38,13 @@ export function AcceptInvitePage() {
     return (
       <Shell>
         <h1 className="text-2xl font-bold tracking-tight">This link has expired</h1>
-        <p className="text-sm text-platinum">
+        <p className="text-sm text-[color:var(--color-muted)]">
           It was already used or is too old. Ask the owner for a new invite link.
         </p>
-        <a href="/admin/login" className="text-sm font-semibold text-signal underline">
+        <a
+          href="/admin/login"
+          className="text-sm font-semibold text-[color:var(--color-accent-text)] underline"
+        >
           Go to sign in
         </a>
       </Shell>
@@ -85,7 +88,7 @@ export function AcceptInvitePage() {
             <h1 className="text-2xl font-bold tracking-tight">
               You&apos;ve been invited to the Platinum Point admin
             </h1>
-            <p className="text-sm text-platinum">
+            <p className="text-sm text-[color:var(--color-muted)]">
               Choose a password to finish setting up your account.
             </p>
           </>
@@ -106,11 +109,11 @@ export function AcceptInvitePage() {
             />
           </div>
         </div>
-        {error && <p className="text-sm text-signal">{error}</p>}
+        {error && <p className="text-sm text-[color:var(--color-accent-text)]">{error}</p>}
         <button
           type="submit"
           disabled={busy}
-          className="w-full rounded-md bg-signal px-4 py-2.5 text-sm font-semibold text-paper disabled:opacity-50"
+          className="w-full rounded-md bg-signal px-4 py-2.5 text-sm font-semibold text-graphite disabled:opacity-50"
         >
           {busy ? 'Saving…' : 'Set password and sign in'}
         </button>
@@ -121,14 +124,11 @@ export function AcceptInvitePage() {
 
 function Shell({ children }: { children: ReactNode }) {
   return (
-    <div
-      className="grid min-h-dvh place-items-center bg-graphite px-6 text-paper"
-      data-theme="dark"
-    >
+    <div className="grid min-h-dvh place-items-center bg-[color:var(--color-ground)] px-6 text-[color:var(--color-ink)]">
       <div className="w-full max-w-sm space-y-4">
         <div className="flex items-center gap-3">
           <DatumMark className="h-9 w-9" />
-          <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-platinum">
+          <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[color:var(--color-muted)]">
             Platinum Point · Admin
           </span>
         </div>

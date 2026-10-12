@@ -76,7 +76,9 @@ function ScheduleRow({ r }: { r: ServiceRequest }) {
         >
           {r.contact_name}
         </Link>
-        <span className="font-mono text-[11px] text-steel">{r.contact_phone}</span>
+        <span className="font-mono text-[11px] text-[color:var(--color-muted)]">
+          {r.contact_phone}
+        </span>
         {r.area && <span className="text-sm text-[color:var(--color-muted)]">· {r.area}</span>}
       </div>
 
@@ -102,7 +104,7 @@ function ScheduleRow({ r }: { r: ServiceRequest }) {
           Decline
         </Button>
       </div>
-      {emailNote && <p className="mt-2 text-xs text-steel">{emailNote}</p>}
+      {emailNote && <p className="mt-2 text-xs text-[color:var(--color-muted)]">{emailNote}</p>}
     </Card>
   );
 }

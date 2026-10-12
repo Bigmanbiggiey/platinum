@@ -1,6 +1,7 @@
 import { useLoaderData } from 'react-router-dom';
 import { SeoHead } from '../components/ui/SeoHead';
 import { Section } from '../components/ui/Section';
+import { Prose } from '../components/ui/Prose';
 import { EnquiryForm } from '../forms/EnquiryForm';
 import { getContentBlocks } from '../../shared/content/queries';
 
@@ -28,8 +29,14 @@ export function BookPage() {
         title="Request a booking"
         narrow
         intro={
-          note ||
-          'Choose a preferred date and time window. Bookings are requests — we confirm by call or WhatsApp, usually within a few hours.'
+          // booking.expectation is admin-edited Markdown (e.g. **requests**), so render it.
+          <Prose
+            className="prose-muted"
+            markdown={
+              note ||
+              'Choose a preferred date and time window. Bookings are requests — we confirm by call or WhatsApp, usually within a few hours.'
+            }
+          />
         }
       >
         <EnquiryForm

@@ -69,7 +69,7 @@ export function RequestsPage() {
                   key={r.id}
                   className="border-t border-[color:var(--color-line)] hover:bg-[color:var(--color-surface)]"
                 >
-                  <td className="px-3 py-2 font-mono text-[11px] text-steel">
+                  <td className="px-3 py-2 font-mono text-[11px] text-[color:var(--color-muted)]">
                     {new Date(r.created_at).toLocaleDateString('en-KE', { dateStyle: 'medium' })}
                   </td>
                   <td className="px-3 py-2">

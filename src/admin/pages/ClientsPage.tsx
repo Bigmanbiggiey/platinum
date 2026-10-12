@@ -111,7 +111,9 @@ export function ClientsPage() {
               />
             </Labeled>
             {create.isError && (
-              <p className="text-sm text-signal">{(create.error as Error).message}</p>
+              <p className="text-sm text-[color:var(--color-accent-text)]">
+                {(create.error as Error).message}
+              </p>
             )}
             <Button variant="accent" type="submit" disabled={!form.name.trim() || create.isPending}>
               {create.isPending ? 'Creating…' : 'Create client'}
@@ -143,7 +145,9 @@ export function ClientsPage() {
             >
               <span className="font-semibold text-[color:var(--color-ink)]">{c.name}</span>
               <Badge tone="neutral">{c.type}</Badge>
-              <span className="font-mono text-[11px] text-steel">{c.phone ?? '—'}</span>
+              <span className="font-mono text-[11px] text-[color:var(--color-muted)]">
+                {c.phone ?? '—'}
+              </span>
               {c.area && <span className="text-sm text-[color:var(--color-muted)]">{c.area}</span>}
             </Link>
           ))}

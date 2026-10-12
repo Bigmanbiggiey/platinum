@@ -66,7 +66,9 @@ export function ServiceEditPage() {
       >
         {f.title || 'Service'}
       </PageTitle>
-      {publish.message && <p className="text-sm text-teal">{publish.message}</p>}
+      {publish.message && (
+        <p className="text-sm text-[color:var(--color-confirm-text)]">{publish.message}</p>
+      )}
 
       <Card className="grid gap-4 sm:grid-cols-2">
         <Labeled label="Title">

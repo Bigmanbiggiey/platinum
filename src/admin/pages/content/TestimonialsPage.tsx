@@ -43,7 +43,9 @@ export function TestimonialsPage() {
   return (
     <section className="space-y-4">
       <PageTitle actions={<ContentBackLink />}>Testimonials</PageTitle>
-      {publish.message && <p className="text-sm text-teal">{publish.message}</p>}
+      {publish.message && (
+        <p className="text-sm text-[color:var(--color-confirm-text)]">{publish.message}</p>
+      )}
       {(list.data ?? []).length === 0 ? (
         <EmptyState>No testimonials submitted yet.</EmptyState>
       ) : (
@@ -69,8 +71,12 @@ export function TestimonialsPage() {
               )}
               <span className="font-semibold text-[color:var(--color-ink)]">{t.first_name}</span>
               <span className="text-sm text-[color:var(--color-muted)]">· {t.vehicle_label}</span>
-              {t.rating && <span className="text-signal">{'★'.repeat(t.rating)}</span>}
-              <span className="ml-auto font-mono text-[10px] text-steel">
+              {t.rating && (
+                <span className="text-[color:var(--color-accent-text)]">
+                  {'★'.repeat(t.rating)}
+                </span>
+              )}
+              <span className="ml-auto font-mono text-[10px] text-[color:var(--color-muted)]">
                 {new Date(t.submitted_at).toLocaleDateString('en-KE')}
               </span>
             </div>

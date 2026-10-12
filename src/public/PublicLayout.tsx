@@ -21,9 +21,10 @@ export function PublicLayout() {
         Skip to content
       </a>
 
-      <div className="flex min-h-dvh flex-col">
+      {/* Bottom padding clears the fixed mobile contact bar, footer included. */}
+      <div className="flex min-h-dvh flex-col pb-16 md:pb-0">
         <Nav />
-        <main id="main" className="flex-1 pb-16 md:pb-0">
+        <main id="main" className="flex-1">
           <Outlet />
         </main>
         <Footer />

@@ -89,7 +89,9 @@ export function TeamPage() {
           </Button>
         </form>
         {invite.isError && (
-          <p className="mt-2 text-sm text-signal">{(invite.error as Error).message}</p>
+          <p className="mt-2 text-sm text-[color:var(--color-accent-text)]">
+            {(invite.error as Error).message}
+          </p>
         )}
         {result && <InviteLinkPanel result={result} />}
       </Card>
@@ -119,7 +121,9 @@ export function TeamPage() {
                     </td>
                     <td className="px-3 py-2">
                       {isSelf || m.role === 'owner' ? (
-                        <span className="text-steel">{m.is_active ? 'yes' : 'no'}</span>
+                        <span className="text-[color:var(--color-muted)]">
+                          {m.is_active ? 'yes' : 'no'}
+                        </span>
                       ) : (
                         <button
                           type="button"
@@ -129,7 +133,7 @@ export function TeamPage() {
                               patch: { is_active: !m.is_active },
                             })
                           }
-                          className="font-mono text-[10px] uppercase tracking-widest text-platinum hover:text-paper"
+                          className="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]"
                         >
                           {m.is_active ? 'Deactivate' : 'Activate'}
                         </button>

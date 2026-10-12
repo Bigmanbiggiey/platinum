@@ -122,7 +122,9 @@ export function JobsPage() {
       {q.isLoading ? (
         <Spinner />
       ) : q.isError ? (
-        <p className="text-sm text-signal">{(q.error as Error).message}</p>
+        <p className="text-sm text-[color:var(--color-accent-text)]">
+          {(q.error as Error).message}
+        </p>
       ) : (
         body
       )}
@@ -136,7 +138,7 @@ function JobRow({ job: j, showClient }: { job: JobWithRefs; showClient: boolean 
       to={`/admin/jobs/${j.id}`}
       className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 hover:bg-[color:var(--color-ground)]"
     >
-      <span className="font-mono text-xs text-steel">{j.job_number}</span>
+      <span className="font-mono text-xs text-[color:var(--color-muted)]">{j.job_number}</span>
       <span className="font-semibold text-[color:var(--color-ink)]">{j.vehicle_label}</span>
       {j.vehicle?.registration && (
         <span className="font-mono text-xs text-[color:var(--color-muted)]">
@@ -149,7 +151,7 @@ function JobRow({ job: j, showClient }: { job: JobWithRefs; showClient: boolean 
         </span>
       )}
       <span className="ml-auto flex items-center gap-2">
-        <span className="font-mono text-[10px] text-steel">
+        <span className="font-mono text-[10px] text-[color:var(--color-muted)]">
           {new Date(j.checked_in_at).toLocaleDateString('en-KE', { dateStyle: 'medium' })}
         </span>
         <Badge tone={jobStatusTone(j.status)}>{jobStatusLabel[j.status]}</Badge>

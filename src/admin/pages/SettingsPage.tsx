@@ -44,7 +44,8 @@ export function SettingsPage() {
   }, [s]);
 
   if (q.isLoading) return <Spinner />;
-  if (!s) return <p className="text-sm text-signal">Settings row not found.</p>;
+  if (!s)
+    return <p className="text-sm text-[color:var(--color-accent-text)]">Settings row not found.</p>;
 
   const set = (k: string) => (e: { target: { value: string } }) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
@@ -88,7 +89,9 @@ export function SettingsPage() {
       >
         Business settings
       </PageTitle>
-      {saved && <p className="text-sm text-teal">Saved. {publish.message}</p>}
+      {saved && (
+        <p className="text-sm text-[color:var(--color-confirm-text)]">Saved. {publish.message}</p>
+      )}
 
       <Card className="grid gap-4 sm:grid-cols-2">
         <Labeled label="Business name">

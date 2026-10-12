@@ -134,7 +134,9 @@ export function PortfolioEditPage() {
       >
         {f.title || 'Project'}
       </PageTitle>
-      {publish.message && <p className="text-sm text-teal">{publish.message}</p>}
+      {publish.message && (
+        <p className="text-sm text-[color:var(--color-confirm-text)]">{publish.message}</p>
+      )}
 
       <Card className="grid gap-4 sm:grid-cols-2">
         <Labeled label="Title">
@@ -287,7 +289,7 @@ function JobEntryNotice({ project }: { project: PortfolioProjectRow }) {
           This is a <strong>documented job</strong> — its page is built from the job record, so it
           is edited, published and unpublished from the job.
         </p>
-        <p className="font-mono text-xs text-steel">
+        <p className="font-mono text-xs text-[color:var(--color-muted)]">
           /portfolio/{project.slug} · {project.is_published ? 'live' : 'not live'}
         </p>
         <Link

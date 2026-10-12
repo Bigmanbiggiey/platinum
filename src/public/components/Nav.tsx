@@ -19,7 +19,7 @@ export function Nav() {
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `border-b-2 pb-0.5 text-sm font-semibold transition-colors ${
       isActive
-        ? 'border-[color:var(--color-confirm)] text-[color:var(--color-confirm)]'
+        ? 'border-[color:var(--color-confirm)] text-[color:var(--color-confirm-text)]'
         : 'border-transparent text-[color:var(--color-muted)]'
     } hover:text-[color:var(--color-ink)]`;
 

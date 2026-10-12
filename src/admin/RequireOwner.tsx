@@ -15,7 +15,7 @@ export function RequireOwner() {
         action={
           <Link
             to="/admin/jobs"
-            className="inline-block font-semibold text-paper underline underline-offset-2"
+            className="inline-block font-semibold text-[color:var(--color-ink)] underline underline-offset-2"
           >
             Go to Jobs
           </Link>

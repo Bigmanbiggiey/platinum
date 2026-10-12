@@ -39,7 +39,9 @@ export function JobDetailPage() {
           </Link>
         }
       >
-        <span className="block font-mono text-xs font-normal text-steel">{job.job_number}</span>
+        <span className="block font-mono text-xs font-normal text-[color:var(--color-muted)]">
+          {job.job_number}
+        </span>
         {job.vehicle_label}
       </PageTitle>
 

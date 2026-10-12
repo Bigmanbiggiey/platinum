@@ -97,7 +97,7 @@ export function WalkInForm() {
         </Labeled>
       </Card>
 
-      {error && <p className="text-sm text-signal">{error}</p>}
+      {error && <p className="text-sm text-[color:var(--color-accent-text)]">{error}</p>}
       <Button variant="accent" disabled={!canCreate} onClick={submit}>
         {busy ? 'Creating…' : 'Check in vehicle'}
       </Button>

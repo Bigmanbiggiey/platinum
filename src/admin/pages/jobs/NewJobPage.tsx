@@ -235,7 +235,7 @@ function OwnerNewJobPage() {
       )}
 
       {error && (
-        <p className="text-sm text-signal">
+        <p className="text-sm text-[color:var(--color-accent-text)]">
           {error}
           {duplicateJobId && (
             <>

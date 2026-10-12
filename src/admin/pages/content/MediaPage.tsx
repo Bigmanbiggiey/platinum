@@ -48,7 +48,11 @@ export function MediaPage() {
         <Button variant="accent" onClick={onUpload} disabled={upload.isPending}>
           {upload.isPending ? 'Uploading…' : 'Upload'}
         </Button>
-        {upload.isError && <p className="text-sm text-signal">{(upload.error as Error).message}</p>}
+        {upload.isError && (
+          <p className="text-sm text-[color:var(--color-accent-text)]">
+            {(upload.error as Error).message}
+          </p>
+        )}
       </Card>
 
       {(list.data ?? []).length === 0 ? (
@@ -70,10 +74,12 @@ export function MediaPage() {
                 }
               />
               <div className="flex items-center justify-between">
-                <code className="truncate font-mono text-[10px] text-steel">{m.storage_path}</code>
+                <code className="truncate font-mono text-[10px] text-[color:var(--color-muted)]">
+                  {m.storage_path}
+                </code>
                 <button
                   type="button"
-                  className="font-mono text-[10px] uppercase tracking-widest text-signal"
+                  className="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-accent-text)]"
                   onClick={() => confirm('Delete this image?') && remove.mutate(m.id)}
                 >
                   Delete

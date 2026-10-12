@@ -97,7 +97,11 @@ export function ClientReviewCard({ job }: { job: JobWithRefs }) {
           {state.kind === 'none' ? 'Get review link' : 'New review link'}
         </Button>
       )}
-      {create.isError && <p className="text-xs text-signal">{(create.error as Error).message}</p>}
+      {create.isError && (
+        <p className="text-xs text-[color:var(--color-accent-text)]">
+          {(create.error as Error).message}
+        </p>
+      )}
 
       {(reviews.data ?? []).length > 0 && (
         <ul className="space-y-1 text-sm">
@@ -111,7 +115,11 @@ export function ClientReviewCard({ job }: { job: JobWithRefs }) {
                 {t.status}
               </Badge>
               <span className="text-[color:var(--color-ink)]">{t.first_name}</span>
-              {t.rating && <span className="text-signal">{'★'.repeat(t.rating)}</span>}
+              {t.rating && (
+                <span className="text-[color:var(--color-accent-text)]">
+                  {'★'.repeat(t.rating)}
+                </span>
+              )}
               <span className="truncate text-[color:var(--color-muted)]">“{t.comment}”</span>
             </li>
           ))}
@@ -205,7 +213,11 @@ function OwnerTestimonialForm({
         </Button>
         <Button onClick={onDone}>Cancel</Button>
       </div>
-      {add.isError && <p className="text-xs text-signal">{(add.error as Error).message}</p>}
+      {add.isError && (
+        <p className="text-xs text-[color:var(--color-accent-text)]">
+          {(add.error as Error).message}
+        </p>
+      )}
     </div>
   );
 }

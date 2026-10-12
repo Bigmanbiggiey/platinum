@@ -7,7 +7,10 @@ import type { JobWithRefs } from '../../lib/jobs';
 export function ActivityTab({ job }: { job: Pick<JobWithRefs, 'id'> }) {
   const q = useJobActivity(job.id);
   if (q.isLoading) return <Spinner />;
-  if (q.isError) return <p className="text-sm text-signal">{(q.error as Error).message}</p>;
+  if (q.isError)
+    return (
+      <p className="text-sm text-[color:var(--color-accent-text)]">{(q.error as Error).message}</p>
+    );
   return (
     <Card className="p-0">
       <ActivityList items={q.data ?? []} />

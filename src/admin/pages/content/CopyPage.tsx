@@ -22,13 +22,15 @@ export function CopyPage() {
   return (
     <section className="space-y-4">
       <PageTitle actions={<ContentBackLink />}>Page copy</PageTitle>
-      {publish.message && <p className="text-sm text-teal">{publish.message}</p>}
+      {publish.message && (
+        <p className="text-sm text-[color:var(--color-confirm-text)]">{publish.message}</p>
+      )}
       {(list.data ?? []).map((b) => {
         const dirty = drafts[b.id] !== b.value_md;
         return (
           <Card key={b.id}>
             <p className="mb-1 text-sm font-semibold text-[color:var(--color-ink)]">{b.label}</p>
-            <p className="mb-2 font-mono text-[10px] text-steel">{b.key}</p>
+            <p className="mb-2 font-mono text-[10px] text-[color:var(--color-muted)]">{b.key}</p>
             <MarkdownField
               label=""
               value={drafts[b.id] ?? ''}

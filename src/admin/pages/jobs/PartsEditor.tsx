@@ -54,9 +54,11 @@ export function PartsEditor({
             return (
               <li key={p.id} className="flex items-center gap-3 py-1.5">
                 <span className="flex-1 text-[color:var(--color-ink)]">{p.name}</span>
-                <span className="font-mono text-xs text-steel">×{p.quantity}</span>
+                <span className="font-mono text-xs text-[color:var(--color-muted)]">
+                  ×{p.quantity}
+                </span>
                 {showCost && (
-                  <span className="w-24 text-right font-mono text-xs text-steel">
+                  <span className="w-24 text-right font-mono text-xs text-[color:var(--color-muted)]">
                     {c != null ? formatKes(c) : '—'}
                   </span>
                 )}
@@ -64,7 +66,7 @@ export function PartsEditor({
                   type="button"
                   aria-label={`Remove ${p.name}`}
                   onClick={() => onRemove(p.id)}
-                  className="font-mono text-[10px] text-signal"
+                  className="font-mono text-[10px] text-[color:var(--color-accent-text)]"
                 >
                   remove
                 </button>

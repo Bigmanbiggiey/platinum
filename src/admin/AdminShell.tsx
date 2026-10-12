@@ -6,6 +6,7 @@ import { signOut } from '../shared/supabase/auth';
 import { AdminBrand } from './brand/AdminBrand';
 import { NavIcon } from './components/NavIcon';
 import { useUnreadCount } from './lib/notifications';
+import { ThemeSwitcher } from '../shared/ThemeSwitcher';
 
 const NAV_KEY = 'pp_admin_nav_expanded';
 
@@ -50,15 +51,12 @@ export function AdminShell() {
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `relative flex items-center gap-3 rounded-md px-3 py-2 text-sm font-semibold ${
       isActive
-        ? 'bg-slate text-[color:var(--color-ink)]'
-        : 'text-[color:var(--color-muted)] hover:bg-slate/40 hover:text-[color:var(--color-ink)]'
+        ? 'bg-[color:var(--color-raised)] text-[color:var(--color-ink)]'
+        : 'text-[color:var(--color-muted)] hover:bg-[color:var(--color-raised)]/40 hover:text-[color:var(--color-ink)]'
     }`;
 
   return (
-    <div
-      className="min-h-dvh bg-[color:var(--color-ground)] text-[color:var(--color-ink)]"
-      data-theme="dark"
-    >
+    <div className="min-h-dvh bg-[color:var(--color-ground)] text-[color:var(--color-ink)]">
       <header className="sticky top-0 z-40 h-16 border-b border-[color:var(--color-line)] bg-[color:var(--color-ground)]">
         <div className="flex h-full items-center gap-3 px-4">
           <button
@@ -80,7 +78,8 @@ export function AdminShell() {
             >
               View site ↗
             </a>
-            <span className="hidden font-mono text-xs text-steel sm:inline">
+            <ThemeSwitcher compact />
+            <span className="hidden font-mono text-xs text-[color:var(--color-muted)] sm:inline">
               {profile?.display_name ?? profile?.email} · {profile?.role}
             </span>
             <button
@@ -132,7 +131,7 @@ export function AdminShell() {
               <span className={expanded ? 'flex-1 truncate' : 'sr-only'}>{n.label}</span>
               {n.badge && (unread.data ?? 0) > 0 && (
                 <span
-                  className={`rounded-full bg-signal px-1.5 font-mono text-[10px] text-paper ${
+                  className={`rounded-full bg-signal px-1.5 font-mono text-[10px] text-graphite ${
                     expanded ? '' : 'absolute right-1 top-1'
                   }`}
                 >
