@@ -1,6 +1,6 @@
 # Pick up here — status & remaining work
 
-> Snapshot for resuming the build. Written 2026-09-07 EOD; status updated 2026-10-09.
+> Snapshot for resuming the build. Written 2026-09-07 EOD; status updated 2026-10-12.
 > Authoritative detail lives in `project-state.md` (change log), `phase-2-plan.md` §8,
 > `phase-3-plan.md` §6, and `wp14-staging-plan.md`. This file is the one-page summary.
 
@@ -14,8 +14,8 @@
 | **1 — Foundation** | ✅ Complete & approved. |
 | **2 — Public website MVP** | 🟢 Built; **live on private staging**; DB schema + RLS + `submit` function applied. Left: formal Lighthouse/axe pass + **Go-Live (WP14 Part C)**. |
 | **3 — Admin MVP** | 🟢 **Functionally complete (WP1–WP13).** Auth+roles+Team, Dashboard+Notifications, Requests+convert, Schedule, full CMS, Media, Business Settings, publish→rebuild + emails (functions deployed; switch on with secrets). Left: WP14 owner acceptance run; `gen types` cleanup. |
-| **Jobs (ADR-0014)** | 🟢 **J1 (admin work orders) merged** (PR #4). Next: owner acceptance on staging, then J2 (publish to portfolio) and J3 (review links) — each planned separately. Spec: `docs/superpowers/specs/2026-09-30-jobs-work-orders-design.md`. |
-| **RBAC (owner/staff)** | 🟡 **R-A (shareable staff invites)** ✅ live (PRs #9, #11, #12). **R-B (permissions)** ✅ live (PR #13). **R-C (attribution)** ✅ live (PR #14). **R-D (review, assignment, walk-in clients)** ✅ live (PR #15). **J2 (publish jobs to the portfolio)** on `feature/jobs-j2-publish` — plan `docs/superpowers/plans/2026-10-10-jobs-j2-publish.md`, migration `20261010120000`. Then J3 (review links). Spec: `docs/superpowers/specs/2026-09-30-rbac-and-invites-design.md`. |
+| **Jobs (ADR-0014)** | 🟢 **J1 (admin work orders)** merged (PR #4). **J2 (publish to portfolio)** ✅ live and accepted 2026-10-12 (PRs #16–#20). Next: **J3 (review links)** — to be planned. Spec: `docs/superpowers/specs/2026-09-30-jobs-work-orders-design.md`. |
+| **RBAC (owner/staff)** | 🟡 **R-A (shareable staff invites)** ✅ live (PRs #9, #11, #12). **R-B (permissions)** ✅ live (PR #13). **R-C (attribution)** ✅ live (PR #14). **R-D (review, assignment, walk-in clients)** ✅ live (PR #15). **J2 (publish jobs to the portfolio)** ✅ live (see Jobs row). Then J3 (review links). Spec: `docs/superpowers/specs/2026-09-30-rbac-and-invites-design.md`. |
 
 ## What's live / where
 
@@ -72,7 +72,11 @@ Left:
   Staff submit jobs for review (`awaiting_review`); only the owner completes or sends back.
   Assignments live in `job_assignee` (names for staff via the `job_assignee_named` view).
   Published jobs: `portfolio_project.job_id` + the `job_public` view (the only public window onto
-  job data); pages are prerendered, so a publish shows after a rebuild — set `VERCEL_DEPLOY_HOOK_URL`.
+  job data); pages are prerendered, so a change shows after a rebuild (~30 s–2 min). Publish/Update/
+  Unpublish, withdrawing consent and re-opening a job rebuild at once; photo and public-text
+  edits on a published job rebuild after 20 s. Any active team member can trigger a rebuild.
+  Photos: responsive copies (480/960/1600 px WebP) are made in the browser at upload and listed
+  in `media.variants` — Supabase image transforms are not on our plan, never use them.
 - **Carried cleanup:** swap `src/shared/supabase/types.ts` for
   `npx supabase gen types typescript --linked`. (The `/admin` hydration error —
   React #418 on any hard load of an admin URL — is fixed: the admin has its own
@@ -98,7 +102,6 @@ Left:
 
 | Needed for | Item |
 | --- | --- |
-| WP10 | A **Vercel Deploy Hook** URL. |
 | WP11 / WP14 C | A **Resend** API key + verified sender email. |
 | WP3b (staff account) | The **staff person's email** — then use the Team page's "Create invite". |
 | WP14 C | Domain choice + host decision; Turnstile keys; CF Analytics token; Search Console + GBP access; Privacy Policy source. |
@@ -108,8 +111,8 @@ Left:
 
 ## Suggested order to resume
 
-1. Owner: WP14 acceptance run on the admin; set the `VERCEL_DEPLOY_HOOK_URL` and
-   `RESEND_*` secrets to switch on auto-publish + emails.
+1. Owner: WP14 acceptance run on the admin; set the `RESEND_*` secrets to switch on
+   emails (`VERCEL_DEPLOY_HOOK_URL` is set and working).
 2. Owner: replace the DRAFT site content via the CMS (Services, About/Page copy,
    Testimonials), then let it auto-publish.
 3. Phase 2 **Part C — Go-Live** when ready to go public (domain, remove noindex,
