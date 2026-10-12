@@ -28,6 +28,7 @@ vi.mock('../../lib/jobData', () => {
   };
 });
 vi.mock('./PublishCard', () => ({ PublishCard: () => null }));
+vi.mock('./ClientReviewCard', () => ({ ClientReviewCard: () => null }));
 const published = vi.hoisted(() => ({
   current: null as null | { id: string; is_published: boolean },
 }));

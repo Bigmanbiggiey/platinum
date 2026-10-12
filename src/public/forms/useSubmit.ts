@@ -1,8 +1,9 @@
 import { useCallback, useState } from 'react';
 import { getSupabaseEnv } from '../../shared/env';
 
-export type SubmitStatus = 'idle' | 'submitting' | 'ok' | 'error';
-export type SubmitKind = 'service_request' | 'testimonial';
+/** `invalid-link`: a review link that is unknown, expired or already used (J3). */
+export type SubmitStatus = 'idle' | 'submitting' | 'ok' | 'error' | 'invalid-link';
+export type SubmitKind = 'service_request' | 'testimonial' | 'review';
 
 function submitUrl(): string | null {
   const override = import.meta.env.VITE_SUBMIT_URL;
@@ -49,10 +50,14 @@ export function useSubmit() {
             turnstileToken: extras.turnstileToken,
           }),
         });
-        const body = (await res.json().catch(() => ({}))) as { ok?: boolean };
+        const body = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
         if (res.ok && body.ok) {
           setStatus('ok');
           return true;
+        }
+        if (body.error === 'invalid-link') {
+          setStatus('invalid-link');
+          return false;
         }
         setStatus('error');
         setError('Something went wrong sending that. Please call or WhatsApp us.');
