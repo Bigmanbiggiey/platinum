@@ -19,7 +19,7 @@ export function CallWhatsApp({
   className?: string;
 }) {
   const waText = encodeURIComponent(
-    `Hi Platinum Point, I found you online (${context}) and would like to ask about a vehicle.`,
+    `Hi Platinum Motor Services, I found you online (${context}) and would like to ask about a vehicle.`,
   );
   const pad = size === 'sm' ? 'px-3 py-2 text-sm' : '';
   return (

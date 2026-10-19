@@ -12,12 +12,12 @@ const LINK = 'https://platinum-point.vercel.app/admin/accept-invite?token_hash=a
 describe('inviteMessage', () => {
   it('greets by first name and includes the link', () => {
     expect(inviteMessage('Kevin Otieno', LINK)).toBe(
-      `Hi Kevin, you've been invited to the Platinum Point admin. Open this link to set your password: ${LINK}`,
+      `Hi Kevin, you've been invited to the Platinum Motor Services admin. Open this link to set your password: ${LINK}`,
     );
   });
   it('words a re-invite of an existing account as a password reset', () => {
     expect(inviteMessage('Ann', LINK, true)).toBe(
-      `Hi Ann, here is your link to set a new password for the Platinum Point admin: ${LINK}`,
+      `Hi Ann, here is your link to set a new password for the Platinum Motor Services admin: ${LINK}`,
     );
   });
 });

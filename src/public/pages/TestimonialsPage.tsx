@@ -15,8 +15,8 @@ export function TestimonialsPage() {
   return (
     <>
       <SeoHead
-        title="Testimonials — Platinum Point Automotive Engineering"
-        description="What Platinum Point customers say about our mobile mechanic and engineering work."
+        title="Testimonials — Platinum Motor Services"
+        description="What Platinum Motor Services customers say about our mobile mechanic and engineering work."
         path="/testimonials"
       />
       <Section title="What customers say">

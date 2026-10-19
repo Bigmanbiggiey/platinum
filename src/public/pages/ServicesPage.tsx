@@ -15,7 +15,7 @@ export function ServicesPage() {
   return (
     <>
       <SeoHead
-        title="Services — Platinum Point Automotive Engineering"
+        title="Services — Platinum Motor Services"
         description="Mobile repairs, diagnostics, pre-purchase and mechanical inspections, preventive maintenance, road tests, and press & lathe engineering."
         path="/services"
         jsonLd={breadcrumbJsonLd([

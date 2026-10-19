@@ -1,4 +1,4 @@
-# Platinum Point Automotive Engineering — Architecture Decisions
+# Platinum Motor Services — Architecture Decisions
 
 > Architecture Decision Records (ADRs). Each records a decision, its context, options
 > considered, and consequences.

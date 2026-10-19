@@ -1,4 +1,4 @@
-// Platinum Point Automotive Engineering — public form submission handler (ADR-0006, ADR-0008)
+// Platinum Motor Services — public form submission handler (ADR-0006, ADR-0008)
 //
 // The ONLY path that writes to `service_request` / `testimonial` (including reviews left
 // through a one-time review link, jobs spec §7.2). anon has no direct
@@ -84,10 +84,10 @@ async function notifyOwner(kind: Kind, row: Record<string, unknown>): Promise<vo
   const from = Deno.env.get('RESEND_FROM') ?? 'onboarding@resend.dev';
   const subject =
     kind === 'review'
-      ? 'New review from a review link (pending) — Platinum Point'
+      ? 'New review from a review link (pending) — Platinum Motor Services'
       : kind === 'testimonial'
-      ? 'New testimonial (pending) — Platinum Point'
-      : `New ${String(row.request_type)} request — Platinum Point`;
+      ? 'New testimonial (pending) — Platinum Motor Services'
+      : `New ${String(row.request_type)} request — Platinum Motor Services`;
   const lines = Object.entries(row)
     .filter(([, v]) => v !== null && v !== undefined && v !== '')
     .map(([k, v]) => `${k}: ${String(v)}`)

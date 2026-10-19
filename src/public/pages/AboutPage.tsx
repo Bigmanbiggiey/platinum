@@ -17,7 +17,7 @@ export function AboutPage() {
   return (
     <>
       <SeoHead
-        title="About — Platinum Point Automotive Engineering"
+        title="About — Platinum Motor Services"
         description="A former DT Dobie engineer running a mobile automotive workshop from Kitengela, with in-house press and lathe engineering."
         path="/about"
       />
@@ -32,7 +32,7 @@ export function AboutPage() {
       {partners.length > 0 && (
         <Section title="Who we work with" tint narrow>
           <p className="mb-4 text-[color:var(--color-muted)]">
-            Bodywork and specialist jobs are handled through trusted partners, with Platinum Point
+            Bodywork and specialist jobs are handled through trusted partners, with Platinum Motor Services
             as your single point of contact.
           </p>
           <ul className="grid gap-3 sm:grid-cols-2">

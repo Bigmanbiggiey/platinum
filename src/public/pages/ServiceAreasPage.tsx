@@ -18,7 +18,7 @@ export function ServiceAreasPage() {
   return (
     <>
       <SeoHead
-        title="Service areas — Platinum Point Automotive Engineering"
+        title="Service areas — Platinum Motor Services"
         description={`Based in ${BUSINESS.baseArea}. Serving ${BUSINESS.serviceAreaSummary}.`}
         path="/service-areas"
       />

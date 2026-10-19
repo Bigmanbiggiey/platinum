@@ -1,4 +1,4 @@
-# Platinum Point Automotive Engineering — Project State
+# Platinum Motor Services — Project State
 
 > **Purpose:** the single source of truth for *where this project actually is* right
 > now — what exists, what has been decided, what phase we are in, and what happens
@@ -21,7 +21,7 @@
 | **Deferred by owner** | Cloudflare Turnstile (forms = honeypot-only for now); Resend email key (no public soft-launch until set — enquiries visible in Phase 3 admin); site content stays DRAFT (owner edits later). |
 | **Remaining for Phase 2** | **WP14 Parts A + B done** (`docs/wp14-staging-plan.md` — staging live on Vercel). Left: formal **Lighthouse/axe** run + **WP14 Part C — Go-Live** (separate approval). Full checklist tracked in memory `phase-2-remaining.md`. Three E2E test rows to clean from the DB. |
 | **Phase 3** | **FUNCTIONALLY COMPLETE (WP1–WP13)** — `docs/phase-3-plan.md` §6. Auth + roles + Team; Dashboard + Notifications; Requests (filter/detail/status/**convert-to-client**) + Schedule (confirm/decline + customer email); **full CMS** (Services, Portfolio + gallery, Testimonials moderation, Media library, Page copy, Areas, Partners); **Business Settings**. publish→rebuild + customer/owner email functions deployed but **no-op until the owner sets `VERCEL_DEPLOY_HOOK_URL` / `RESEND_API_KEY` Supabase secrets**. Rev 01 branding across the admin; password toggle; `<Prose>` sanitised. 24 tests. **WP14:** owner to do the real end-to-end acceptance run. |
-| **Trading name** | **Platinum Point Automotive Engineering** (kickoff codename "Platinum Motor Services" retired). Repo folder stays `PLATINUM`. |
+| **Trading name** | **Platinum Motor Services** (renamed 2026-10-19 from "Platinum Point Automotive Engineering"). Repo folder stays `PLATINUM`; staging URL, Vercel/Supabase project slugs and `ppae-*` asset names unchanged. |
 
 Phase-gate workflow in use:
 `Discovery → Documentation → Review → Approval → Implementation → Testing → Verification → Next Phase`
@@ -127,7 +127,7 @@ Tracked in `product-definition.md` §14. **Most answered by the owner on 2026-09
 
 | Topic | Answer |
 | --- | --- |
-| Business name | Platinum Point Automotive Engineering |
+| Business name | Platinum Motor Services |
 | Phone | +254 722 322870 (Paul) |
 | Email | gatama98p@gmail.com |
 | Location | Near Shell Kitengela Service Station, Yukos |

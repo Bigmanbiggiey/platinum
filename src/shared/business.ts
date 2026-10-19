@@ -5,7 +5,7 @@
  * owner can edit it without a developer. Keep it in one place until then.
  */
 export const BUSINESS = {
-  name: 'Platinum Point Automotive Engineering',
+  name: 'Platinum Motor Services',
   owner: 'Paul Ndirangu Gatama',
   /** Dialable form for tel: links. */
   phoneE164: '+254722322870',

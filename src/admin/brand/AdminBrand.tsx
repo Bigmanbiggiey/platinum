@@ -19,16 +19,16 @@ export function DatumMark({ className = 'h-8 w-8' }: { className?: string }) {
 /** Admin wordmark lockup — links to the admin home. */
 export function AdminBrand({ to = '/admin' }: { to?: string }) {
   return (
-    <Link to={to} className="flex items-center gap-3" aria-label="Platinum Point — admin home">
+    <Link to={to} className="flex items-center gap-3" aria-label="Platinum Motor Services — admin home">
       <span className="text-[color:var(--color-ink)]">
         <DatumMark className="h-8 w-8" />
       </span>
       <span className="leading-none">
         <span className="block text-base font-bold tracking-tight text-[color:var(--color-ink)]">
-          Platinum Point
+          Platinum
         </span>
         <span className="mt-0.5 block font-mono text-[9px] uppercase tracking-[0.3em] text-[color:var(--color-muted)]">
-          Automotive Engineering · Admin
+          Motor Services · Admin
         </span>
       </span>
     </Link>

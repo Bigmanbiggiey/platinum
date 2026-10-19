@@ -1,5 +1,5 @@
 /**
- * The crosshair + amber-node datum mark — Platinum Point's recurring motif (a fixed
+ * The crosshair + amber-node datum mark — Platinum Motor Services' recurring motif (a fixed
  * point of competence that comes to wherever the vehicle is). Shared by `Wordmark`
  * (small, static) and the Home hero (large, optionally animated) so the mark's paths
  * live in exactly one place. See docs/design-refresh-plan.md §2, §6.

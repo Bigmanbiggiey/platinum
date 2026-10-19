@@ -1,4 +1,4 @@
-# Platinum Point Automotive Engineering — Product Definition
+# Platinum Motor Services — Product Definition
 
 > **Status:** Phase 0 (Discovery) — DRAFT for review
 > **Last updated:** 2026-09-07 (rev. 2 — incorporates owner's answers to §14)
@@ -22,7 +22,8 @@ We do not invent answers.
 > **Naming note:** the project was kicked off internally as *"Platinum Motor
 > Services"*. The owner has since confirmed the real trading name is **Platinum Point
 > Automotive Engineering**. All public-facing and documentation references now use the
-> real name. The working directory / repo folder remains `PLATINUM` (harmless
+> real name. **Update 2026-10-19:** the owner renamed the business to **Platinum Motor
+> Services**; code and current docs now use that name. The working directory / repo folder remains `PLATINUM` (harmless
 > codename) unless you ask to rename it. Whether a registered limited company
 > ("… Engineering Limited") exists is still open — see §14.
 
@@ -30,7 +31,7 @@ We do not invent answers.
 
 | Fact | Value |
 | --- | --- |
-| Trading name | **Platinum Point Automotive Engineering** |
+| Trading name | **Platinum Motor Services** |
 | Owner | **Mr. Paul Ndirangu Gatama** (may be featured publicly on the About page) |
 | Primary phone | **+254 722 322870** (Paul) — *WhatsApp on the same number assumed; to confirm* |
 | Public email | **gatama98p@gmail.com** — *personal Gmail; a branded address (e.g. `info@`domain) recommended later* |
@@ -844,7 +845,7 @@ on 2026-09-07** (rev. 2), and what is **still open**.
 
 | Was | Answer (summarised — see §0.1) |
 | --- | --- |
-| Business name | **Platinum Point Automotive Engineering**. |
+| Business name | **Platinum Motor Services**. |
 | Primary phone | **+254 722 322870** (Paul). |
 | Public email | **gatama98p@gmail.com**. |
 | Location | Operates near **Shell Kitengela Service Station**, Yukos ("JAJEMELO YUKOS"). |

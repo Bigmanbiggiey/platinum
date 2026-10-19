@@ -15,8 +15,8 @@ export function PrivacyPage() {
   return (
     <>
       <SeoHead
-        title="Privacy policy — Platinum Point Automotive Engineering"
-        description="How Platinum Point handles the details you submit through this website."
+        title="Privacy policy — Platinum Motor Services"
+        description="How Platinum Motor Services handles the details you submit through this website."
         path="/privacy"
         noindex
       />

@@ -33,9 +33,9 @@ export function LoginPage() {
         <div className="flex items-center gap-3 text-[color:var(--color-ink)]">
           <DatumMark className="h-10 w-10" />
           <div className="leading-none">
-            <span className="block text-lg font-bold tracking-tight">Platinum Point</span>
+            <span className="block text-lg font-bold tracking-tight">Platinum</span>
             <span className="mt-1 block font-mono text-[9px] uppercase tracking-[0.3em] text-[color:var(--color-muted)]">
-              Automotive Engineering · Admin
+              Motor Services · Admin
             </span>
           </div>
         </div>

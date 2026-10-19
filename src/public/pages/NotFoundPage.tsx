@@ -6,7 +6,7 @@ export function NotFoundPage() {
   return (
     <>
       <SeoHead
-        title="Page not found — Platinum Point Automotive Engineering"
+        title="Page not found — Platinum Motor Services"
         description="That page could not be found."
         path="/404"
         noindex

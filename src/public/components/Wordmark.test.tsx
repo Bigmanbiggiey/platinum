@@ -10,8 +10,8 @@ describe('<Wordmark />', () => {
         <Wordmark />
       </MemoryRouter>,
     );
-    expect(screen.getByText('Platinum Point')).toBeInTheDocument();
-    expect(screen.getByText('Automotive Engineering')).toBeInTheDocument();
+    expect(screen.getByText('Platinum')).toBeInTheDocument();
+    expect(screen.getByText('Motor Services')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /home/i })).toHaveAttribute('href', '/');
   });
 });

@@ -18,8 +18,8 @@ export function ContactPage() {
   return (
     <>
       <SeoHead
-        title="Contact — Platinum Point Automotive Engineering"
-        description="Call or WhatsApp Platinum Point, or send a message. Kitengela, Kenya."
+        title="Contact — Platinum Motor Services"
+        description="Call or WhatsApp Platinum Motor Services, or send a message. Kitengela, Kenya."
         path="/contact"
         jsonLd={localBusinessJsonLd(settings)}
       />

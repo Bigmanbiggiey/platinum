@@ -1,4 +1,4 @@
-// Platinum Point — owner-only staff invite (spec: docs/superpowers/specs/2026-09-30-rbac-and-invites-design.md §6).
+// Platinum Motor Services — owner-only staff invite (spec: docs/superpowers/specs/2026-09-30-rbac-and-invites-design.md §6).
 //
 // Creating an auth user needs the service-role key, which must never reach the
 // browser. This function:

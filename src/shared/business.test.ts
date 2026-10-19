@@ -4,7 +4,7 @@ import { getSupabaseEnv, isSupabaseConfigured } from './env';
 
 describe('business constants', () => {
   it('exposes the confirmed name and dialable phone', () => {
-    expect(BUSINESS.name).toBe('Platinum Point Automotive Engineering');
+    expect(BUSINESS.name).toBe('Platinum Motor Services');
     expect(BUSINESS.phoneE164).toMatch(/^\+254\d{9}$/);
   });
 });

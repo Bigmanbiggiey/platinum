@@ -3,15 +3,15 @@
 export function inviteMessage(name: string, link: string, existed = false): string {
   const first = name.trim().split(/\s+/)[0] || 'there';
   return existed
-    ? `Hi ${first}, here is your link to set a new password for the Platinum Point admin: ${link}`
-    : `Hi ${first}, you've been invited to the Platinum Point admin. Open this link to set your password: ${link}`;
+    ? `Hi ${first}, here is your link to set a new password for the Platinum Motor Services admin: ${link}`
+    : `Hi ${first}, you've been invited to the Platinum Motor Services admin. Open this link to set your password: ${link}`;
 }
 
 export function whatsappShareUrl(message: string): string {
   return `https://wa.me/?text=${encodeURIComponent(message)}`;
 }
 
-export const INVITE_EMAIL_SUBJECT = 'Your Platinum Point admin invite';
+export const INVITE_EMAIL_SUBJECT = 'Your Platinum Motor Services admin invite';
 
 /** Opens the owner's email app with the message pre-filled. No server email. */
 export function inviteEmailUrl(email: string, message: string): string {

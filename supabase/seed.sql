@@ -1,4 +1,4 @@
--- Platinum Point Automotive Engineering — Phase 2 seed content (docs/phase-2-plan.md WP10)
+-- Platinum Motor Services — Phase 2 seed content (docs/phase-2-plan.md WP10)
 --
 -- Idempotent (re-runnable). All content below is owner-approved (2026-09-15) except
 -- privacy.body, which still needs a separate legal review against the Kenya Data
@@ -14,7 +14,7 @@ insert into public.site_settings (
   geo, social_links, gbp_url, default_seo, notification_channel, notification_email
 ) values (
   true,
-  'Platinum Point Automotive Engineering',
+  'Platinum Motor Services',
   null, -- legal name TBC (§14.2 Q3)
   'The expert who comes to you.',
   '+254722322870',
@@ -26,7 +26,7 @@ insert into public.site_settings (
   null,
   '{}'::jsonb,
   null, -- GBP URL to be added once management access is granted (§14.2 Q14)
-  '{"title":"Platinum Point Automotive Engineering","description":"Mobile mechanic, diagnostics, pre-purchase inspections, preventive maintenance and engineering (press & lathe). Kitengela and across Kenya by arrangement."}'::jsonb,
+  '{"title":"Platinum Motor Services","description":"Mobile mechanic, diagnostics, pre-purchase inspections, preventive maintenance and engineering (press & lathe). Kitengela and across Kenya by arrangement."}'::jsonb,
   'email',
   'gatama98p@gmail.com'
 )
@@ -66,19 +66,19 @@ insert into public.service (slug, title, category, summary, description_md, disp
   ('mobile-mechanic-general-repairs', 'Mobile Mechanic & General Repairs', 'Repairs',
    'General mechanical repairs carried out wherever your vehicle is — home, office or roadside.',
    E'We diagnose and repair engines, transmissions, brakes, suspension, cooling, electrical and more, across a wide range of makes. Work is done at your location; parts are sourced from trusted suppliers.',
-   10, true, 'Mobile Mechanic in Kitengela | Platinum Point Automotive Engineering',
+   10, true, 'Mobile Mechanic in Kitengela | Platinum Motor Services',
    'A DT Dobie–trained mechanic who comes to you for general repairs in Kitengela and across Kenya by arrangement.'),
 
   ('vehicle-diagnostics', 'Vehicle Diagnostics', 'Diagnostics',
    'Computer and hands-on diagnosis to find the real cause of a fault before you spend on parts.',
    E'Fault-code scanning, live data, and physical inspection to pinpoint the problem accurately. You get a plain-language explanation and a recommended fix.',
-   20, true, 'Car Diagnostics in Kitengela & Nairobi | Platinum Point',
+   20, true, 'Car Diagnostics in Kitengela & Nairobi | Platinum Motor Services',
    'Accurate computer and mechanical diagnostics for your vehicle — mobile, in Kitengela and Nairobi by arrangement.'),
 
   ('pre-purchase-inspection', 'Pre-Purchase Vehicle Inspection', 'Inspections',
    'An independent check of a used car before you buy — done wherever the vehicle is.',
    E'A thorough inspection covering engine, transmission, suspension, brakes, body and chassis, electricals, plus a road test and a diagnostics scan. You get a clear verdict to inform your decision.',
-   30, true, 'Pre-Purchase Car Inspection Nairobi & Kitengela | Platinum Point',
+   30, true, 'Pre-Purchase Car Inspection Nairobi & Kitengela | Platinum Motor Services',
    'Independent pre-purchase and mechanical inspections before you buy a used car. Mobile — we come to the vehicle.'),
 
   ('mechanical-inspection', 'Mechanical Inspection', 'Inspections',
@@ -104,7 +104,7 @@ insert into public.service (slug, title, category, summary, description_md, disp
   ('engineering-press-lathe', 'Engineering — Press & Lathe', 'Engineering',
    'In-house press and lathe work: bushes, bearings, brake skimming, shafts and more.',
    E'Hydraulic press work for suspension bushes and bearings, lathe work for brake discs and drums, and general machining. Often the quickest route into a proper suspension or brake repair.',
-   80, true, 'Press & Lathe Engineering in Kitengela | Platinum Point',
+   80, true, 'Press & Lathe Engineering in Kitengela | Platinum Motor Services',
    'Hydraulic press and lathe services in Kitengela — bushes, bearings, brake skimming and machining.'),
 
   ('bodywork-via-partners', 'Bodywork (via trusted partners)', 'Bodywork',
@@ -127,7 +127,7 @@ insert into public.content_block (key, label, "group", value_md) values
   ('home.why_points', 'Home — why choose us (list)', 'home',
    E'- Former **DT Dobie** engineer with experience across many makes\n- We come to you — home, office or roadside\n- In-house **press & lathe** for suspension, bearing and brake work\n- Honest diagnosis before you spend on parts\n- Bodywork handled through trusted partners'),
   ('about.body', 'About — main body', 'about',
-   E'Platinum Point Automotive Engineering is run by **Paul Ndirangu Gatama**, a former DT Dobie engineer. After years in a franchise workshop he now operates as a mobile mechanic, bringing dealer-level diagnosis and repair to wherever your vehicle is — backed by an in-house press and lathe for engineering work.'),
+   E'Platinum Motor Services is run by **Paul Ndirangu Gatama**, a former DT Dobie engineer. After years in a franchise workshop he now operates as a mobile mechanic, bringing dealer-level diagnosis and repair to wherever your vehicle is — backed by an in-house press and lathe for engineering work.'),
   ('areas.intro', 'Service areas — intro', 'areas',
    'Our home base is Kitengela. We regularly work across Kajiado, Athi River and Nairobi, and can travel anywhere in Kenya by arrangement where transport is facilitated.'),
   ('pricing.explainer', 'Pricing — explainer', 'pricing',
@@ -144,7 +144,7 @@ insert into public.content_block (key, label, "group", value_md) values
   ('home.closing_cta_body', 'Home — closing CTA body', 'home',
    'Call, WhatsApp, or send a request and we''ll come back to you — usually within a few hours.'),
   ('privacy.body', 'Privacy Policy — body', 'legal',
-   E'**DRAFT — legal review required (§14.2 Q10).**\n\nPlatinum Point Automotive Engineering collects the contact and vehicle details you submit through this website solely to respond to your enquiry, booking or inspection request, and to provide the services you ask for. We do not sell your data. We retain enquiry records for as long as needed to serve you and for our business records. To ask what we hold about you, or to have it deleted, contact us on the details on the Contact page.\n\nThis draft must be reviewed against the Kenya Data Protection Act, 2019 before launch.')
+   E'**DRAFT — legal review required (§14.2 Q10).**\n\nPlatinum Motor Services collects the contact and vehicle details you submit through this website solely to respond to your enquiry, booking or inspection request, and to provide the services you ask for. We do not sell your data. We retain enquiry records for as long as needed to serve you and for our business records. To ask what we hold about you, or to have it deleted, contact us on the details on the Contact page.\n\nThis draft must be reviewed against the Kenya Data Protection Act, 2019 before launch.')
 on conflict (key) do update set
   label = excluded.label, "group" = excluded."group", value_md = excluded.value_md;
 

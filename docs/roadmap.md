@@ -1,4 +1,4 @@
-# Platinum Point Automotive Engineering — Roadmap
+# Platinum Motor Services — Roadmap
 
 > Phase-gated delivery plan. Each phase has a **goal**, **scope**, **deliverables**,
 > and **exit criteria**. **A phase does not start until it is explicitly approved.**

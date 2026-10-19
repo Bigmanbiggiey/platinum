@@ -1,4 +1,4 @@
-// Platinum Point — publish → rebuild trigger (Phase 3 WP10, ADR-0003).
+// Platinum Motor Services — publish → rebuild trigger (Phase 3 WP10, ADR-0003).
 //
 // Admin calls this after publishing content; it POSTs the Vercel Deploy Hook so the
 // SSG site regenerates. The hook URL is a server-side secret, never in the client.

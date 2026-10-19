@@ -260,7 +260,7 @@ export function EnquiryForm({ variant, timeWindows = [], confirmationNote }: Pro
           onChange={(e) => setConsent(e.target.checked)}
         />
         <span>
-          I agree that Platinum Point may use these details to respond to my enquiry.{' '}
+          I agree that Platinum Motor Services may use these details to respond to my enquiry.{' '}
           {errors.consent && (
             <span className="text-[color:var(--color-accent-text)]">— {errors.consent}</span>
           )}

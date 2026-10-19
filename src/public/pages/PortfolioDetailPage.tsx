@@ -35,7 +35,7 @@ export function PortfolioDetailPage() {
   return (
     <>
       <SeoHead
-        title={`${project.title} — Platinum Point`}
+        title={`${project.title} — Platinum Motor Services`}
         description={project.summary}
         path={`/portfolio/${project.slug}`}
         jsonLd={[

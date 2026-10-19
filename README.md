@@ -1,6 +1,6 @@
-# Platinum Point Automotive Engineering
+# Platinum Motor Services
 
-Public website + admin platform for **Platinum Point Automotive Engineering** — a
+Public website + admin platform for **Platinum Motor Services** — a
 mobile automotive workshop in Kitengela, Kenya, run by Paul Ndirangu Gatama (former DT
 Dobie engineer). Also a TECHBIGGIEY case-study project.
 

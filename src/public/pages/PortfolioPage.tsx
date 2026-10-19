@@ -15,8 +15,8 @@ export function PortfolioPage() {
   return (
     <>
       <SeoHead
-        title="Our work — Platinum Point Automotive Engineering"
-        description="A selection of repairs, diagnostics and engineering jobs completed by Platinum Point."
+        title="Our work — Platinum Motor Services"
+        description="A selection of repairs, diagnostics and engineering jobs completed by Platinum Motor Services."
         path="/portfolio"
         jsonLd={breadcrumbJsonLd([
           { name: 'Home', path: '/' },

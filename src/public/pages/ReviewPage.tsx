@@ -64,7 +64,7 @@ export function ReviewPage() {
   return (
     <>
       <SeoHead
-        title="Leave a review — Platinum Point Automotive Engineering"
+        title="Leave a review — Platinum Motor Services"
         description="Tell us how we did."
         path="/review"
         noindex
@@ -195,7 +195,7 @@ function ReviewForm({ code, summary }: { code: string; summary: Summary }) {
           onChange={(e) => setConsent(e.target.checked)}
         />
         <span>
-          I agree Platinum Point may publish my first name, vehicle and comment.{' '}
+          I agree Platinum Motor Services may publish my first name, vehicle and comment.{' '}
           {errors.consent && (
             <span className="text-[color:var(--color-accent-text)]">— {errors.consent}</span>
           )}
