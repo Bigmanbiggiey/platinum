@@ -1,4 +1,4 @@
-// Platinum Point — pure helpers for the admin-invite Edge Function (spec §6).
+// Platinum Motor Services — pure helpers for the admin-invite Edge Function (spec §6).
 //
 // No Deno globals and no jsr: imports here: this file is also imported by the Vitest
 // suite (src/admin/lib/inviteServer.test.ts).

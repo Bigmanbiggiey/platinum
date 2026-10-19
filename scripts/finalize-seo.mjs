@@ -51,7 +51,7 @@ await writeFile(join(DIST, 'sitemap.xml'), sitemap);
 
 const robots = NOINDEX
   ? `# Staging build (VITE_SITE_NOINDEX) — not for indexing\nUser-agent: *\nDisallow: /\n`
-  : `# Platinum Point Automotive Engineering\nUser-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /review\n\nSitemap: ${ORIGIN}/sitemap.xml\n`;
+  : `# Platinum Motor Services\nUser-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /review\n\nSitemap: ${ORIGIN}/sitemap.xml\n`;
 await writeFile(join(DIST, 'robots.txt'), robots);
 
 console.log(

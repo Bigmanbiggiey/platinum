@@ -86,7 +86,7 @@ export function AcceptInvitePage() {
         {type === 'invite' ? (
           <>
             <h1 className="text-2xl font-bold tracking-tight">
-              You&apos;ve been invited to the Platinum Point admin
+              You&apos;ve been invited to the Platinum Motor Services admin
             </h1>
             <p className="text-sm text-[color:var(--color-muted)]">
               Choose a password to finish setting up your account.
@@ -129,7 +129,7 @@ function Shell({ children }: { children: ReactNode }) {
         <div className="flex items-center gap-3">
           <DatumMark className="h-9 w-9" />
           <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[color:var(--color-muted)]">
-            Platinum Point · Admin
+            Platinum Motor Services · Admin
           </span>
         </div>
         {children}

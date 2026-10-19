@@ -7,7 +7,7 @@ export function RequestInspectionPage() {
   return (
     <>
       <SeoHead
-        title="Request a pre-purchase inspection — Platinum Point"
+        title="Request a pre-purchase inspection — Platinum Motor Services"
         description="Buying a used car? Request an independent pre-purchase or mechanical inspection, done wherever the vehicle is."
         path="/request-inspection"
         jsonLd={breadcrumbJsonLd([

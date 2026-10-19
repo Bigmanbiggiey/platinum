@@ -33,7 +33,7 @@ export function ResetPasswordPage() {
         <div className="flex items-center gap-3">
           <DatumMark className="h-9 w-9" />
           <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-[color:var(--color-muted)]">
-            Platinum Point · Admin
+            Platinum Motor Services · Admin
           </span>
         </div>
         <h1 className="text-2xl font-bold tracking-tight">Set a new password</h1>

@@ -66,7 +66,7 @@ export function HomePage() {
   return (
     <>
       <SeoHead
-        title="Platinum Point Automotive Engineering — mobile mechanic in Kitengela"
+        title="Platinum Motor Services — mobile mechanic in Kitengela"
         description={
           settings?.default_seo?.description ??
           'Mobile mechanic, diagnostics, pre-purchase inspections, preventive maintenance and press & lathe engineering. Kitengela and across Kenya by arrangement.'

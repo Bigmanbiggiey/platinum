@@ -6,7 +6,7 @@ export function RequestServicePage() {
   return (
     <>
       <SeoHead
-        title="Request a service — Platinum Point Automotive Engineering"
+        title="Request a service — Platinum Motor Services"
         description="Tell us what your vehicle needs — repair, diagnostics, maintenance or engineering — and we'll come back with a quote."
         path="/request-service"
       />

@@ -91,7 +91,7 @@ export function TestimonialForm() {
           onChange={(e) => setConsent(e.target.checked)}
         />
         <span>
-          I agree Platinum Point may publish my first name, vehicle and comment.{' '}
+          I agree Platinum Motor Services may publish my first name, vehicle and comment.{' '}
           {errors.consent && (
             <span className="text-[color:var(--color-accent-text)]">— {errors.consent}</span>
           )}

@@ -153,7 +153,7 @@ export function waNumber(raw: string | null | undefined): string | null {
 
 export function reviewMessage(clientName: string, vehicle: string, url: string): string {
   const first = clientName.trim().split(/\s+/)[0] || 'there';
-  return `Hi ${first}, thanks for choosing Platinum Point. How did we do on your ${vehicle}? Leave a quick review here: ${url}`;
+  return `Hi ${first}, thanks for choosing Platinum Motor Services. How did we do on your ${vehicle}? Leave a quick review here: ${url}`;
 }
 
 export function whatsappTo(number: string, message: string): string {

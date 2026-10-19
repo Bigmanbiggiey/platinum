@@ -14,10 +14,10 @@ export function Wordmark() {
       <DatumMark size="sm" />
       <span className="leading-none">
         <span className="block text-lg font-bold tracking-tight text-[color:var(--color-ink)]">
-          Platinum Point
+          Platinum
         </span>{' '}
         <span className="mt-0.5 block font-mono text-[10px] uppercase tracking-[0.28em] text-[color:var(--color-muted)]">
-          Automotive Engineering
+          Motor Services
         </span>
         <span className="sr-only"> — home</span>
       </span>

@@ -13,7 +13,7 @@ export function MobileContactBar() {
         Call
       </a>
       <a
-        href={`${BUSINESS.whatsappUrl}?text=${encodeURIComponent('Hi Platinum Point, I found you online.')}`}
+        href={`${BUSINESS.whatsappUrl}?text=${encodeURIComponent('Hi Platinum Motor Services, I found you online.')}`}
         target="_blank"
         rel="noopener noreferrer"
         onClick={() => trackCta('whatsapp_click', { context: 'mobile-bar' })}

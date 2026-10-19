@@ -11,7 +11,7 @@ describe('seo helpers', () => {
   it('emits an AutoRepair LocalBusiness block with fallbacks when settings are null', () => {
     const ld = localBusinessJsonLd(null);
     expect(ld['@type']).toBe('AutoRepair');
-    expect(ld.name).toBe('Platinum Point Automotive Engineering');
+    expect(ld.name).toBe('Platinum Motor Services');
     expect(ld.telephone).toBe('+254722322870');
     expect(Array.isArray(ld.openingHoursSpecification)).toBe(true);
   });

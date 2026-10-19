@@ -1,4 +1,4 @@
-# CI for Platinum Point Automotive Engineering.
+# CI for Platinum Motor Services.
 # Committed in Phase 1 but only runs once a GitHub remote exists (deferred by the
 # owner — local-first). No deployment here; deploy is a separate, explicit step.
 name: CI

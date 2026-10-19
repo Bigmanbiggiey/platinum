@@ -32,7 +32,7 @@ export function ServiceDetailPage() {
   return (
     <>
       <SeoHead
-        title={service.seo_title ?? `${service.title} — Platinum Point Automotive Engineering`}
+        title={service.seo_title ?? `${service.title} — Platinum Motor Services`}
         description={service.seo_description ?? service.summary}
         path={`/services/${service.slug}`}
         jsonLd={[

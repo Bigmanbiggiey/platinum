@@ -1,4 +1,4 @@
-// Platinum Point — customer booking email (Phase 3 WP11).
+// Platinum Motor Services — customer booking email (Phase 3 WP11).
 //
 // Called by the admin Schedule view after Confirm / Decline. Sends the customer an
 // email via Resend if configured; otherwise returns { ok:true, sent:false } so the
@@ -50,14 +50,14 @@ Deno.serve(async (req) => {
   const when = [r.requested_date, r.requested_time_window].filter(Boolean).join(' · ');
   const subject =
     kind === 'confirmed'
-      ? 'Your booking with Platinum Point is confirmed'
-      : 'About your Platinum Point booking request';
+      ? 'Your booking with Platinum Motor Services is confirmed'
+      : 'About your Platinum Motor Services booking request';
   const text =
     kind === 'confirmed'
-      ? `Hi ${r.contact_name},\n\nYour booking with Platinum Point Automotive Engineering is confirmed${
+      ? `Hi ${r.contact_name},\n\nYour booking with Platinum Motor Services is confirmed${
           when ? ` for ${when}` : ''
-        }. We'll see you then. Reply or call +254 722 322870 if anything changes.\n\n— Platinum Point`
-      : `Hi ${r.contact_name},\n\nThanks for your booking request. We're not able to make that time — please call or WhatsApp +254 722 322870 and we'll find one that works.\n\n— Platinum Point`;
+        }. We'll see you then. Reply or call +254 722 322870 if anything changes.\n\n— Platinum Motor Services`
+      : `Hi ${r.contact_name},\n\nThanks for your booking request. We're not able to make that time — please call or WhatsApp +254 722 322870 and we'll find one that works.\n\n— Platinum Motor Services`;
 
   try {
     const res = await fetch('https://api.resend.com/emails', {

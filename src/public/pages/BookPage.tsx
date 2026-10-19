@@ -20,7 +20,7 @@ export function BookPage() {
   return (
     <>
       <SeoHead
-        title="Book a service — Platinum Point Automotive Engineering"
+        title="Book a service — Platinum Motor Services"
         description="Request a booking with a preferred date and time window. We confirm by call or WhatsApp."
         path="/book"
         noindex={false}

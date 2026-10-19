@@ -1,4 +1,4 @@
-# Platinum Point admin — how to use it
+# Platinum Motor Services admin — how to use it
 
 A short guide for running the website and enquiries from the admin panel.
 
@@ -12,7 +12,7 @@ The admin works on a phone. It's dark on purpose and never appears in Google.
 
 ## Getting around
 
-The top bar has a **☰ menu button** (left), the Platinum Point mark, and on the right
+The top bar has a **☰ menu button** (left), the Platinum Motor Services mark, and on the right
 **View site ↗**, your name, and **Sign out**. Tap **☰** to show or hide the side menu;
 it remembers your choice. On a phone the menu slides in over the page.
 

@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "description": "Platinum Point Automotive Engineering — public website + admin platform (Phase 1 skeleton)",
+  "description": "Platinum Motor Services — public website + admin platform (Phase 1 skeleton)",
   "scripts": {
     "dev": "vite",
     "build": "vite-react-ssg build && node scripts/strip-admin-preload.mjs && node scripts/finalize-seo.mjs && node scripts/check-content.mjs",

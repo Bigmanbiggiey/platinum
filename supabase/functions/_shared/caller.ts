@@ -1,4 +1,4 @@
-// Platinum Point — identify the signed-in caller of an Edge Function.
+// Platinum Motor Services — identify the signed-in caller of an Edge Function.
 //
 // Must filter the profile by the caller's user id: RLS lets an owner read EVERY
 // profile, so an unfiltered `profile … maybeSingle()` errors as soon as a second
