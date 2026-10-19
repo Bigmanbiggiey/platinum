@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Installable as "PMS Admin" (docs/superpowers/plans/2026-10-19-admin-pwa.md). Only the
+         admin links the manifest; the public site is never installable. -->
+    <link rel="manifest" href="/admin.webmanifest" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon-180.png" />
+    <meta name="apple-mobile-web-app-title" content="PMS Admin" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <!-- Theme: follow the system unless the visitor picked one (src/shared/theme.ts).
          This tiny script runs before first paint so there is no flash of the wrong theme. -->
     <meta name="color-scheme" content="light dark" />

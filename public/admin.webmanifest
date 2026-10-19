@@ -1,0 +1,22 @@
+{
+  "id": "/admin",
+  "name": "Platinum Motor Services Admin",
+  "short_name": "PMS Admin",
+  "description": "Jobs, bookings and website content for Platinum Motor Services.",
+  "start_url": "/admin",
+  "scope": "/admin",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#14171a",
+  "background_color": "#14171a",
+  "icons": [
+    { "src": "/icons/admin-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/admin-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    {
+      "src": "/icons/admin-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

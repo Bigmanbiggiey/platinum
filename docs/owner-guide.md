@@ -10,6 +10,28 @@ A short guide for running the website and enquiries from the admin panel.
 
 The admin works on a phone. It's dark on purpose and never appears in Google.
 
+## Install the admin on your phone
+
+You can put the admin on your home screen as an app called **PMS Admin**. It opens
+full-screen, like any other app.
+
+- **Android (Chrome):** open the admin and tap **Install** on the card at the top of the
+  Dashboard. If the card isn't there, use Chrome's **⋮** menu → **Install app**.
+- **iPhone:** open the admin in **Safari** (not Chrome), tap **Share**, then **Add to Home
+  Screen**.
+
+Good to know:
+
+- **On iPhone, sign in once inside the app.** It doesn't share Safari's login.
+- **Links in emails** (staff invites, password resets) open in the browser, not the app.
+  Finish there, then open the app and sign in.
+- **There's nothing to update.** The app is the website, so it's always the latest
+  version.
+- **No signal?** The app shows a "You're offline" screen. Tap **Try again** when you're
+  back online.
+
+Tap **Not now** on the Dashboard card to hide it on that phone.
+
 ## Getting around
 
 The top bar has a **☰ menu button** (left), the Platinum Motor Services mark, and on the right
