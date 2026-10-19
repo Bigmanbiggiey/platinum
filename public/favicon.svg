@@ -1,9 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
-  <!-- Interim favicon derived from the Rev 01 "datum mark" (see docs/product-definition.md 10.2).
-       Placeholder until the production ppae-icon SVG is supplied. -->
-  <rect width="100" height="100" fill="#14171A" />
-  <circle cx="50" cy="50" r="34" fill="none" stroke="#F7F7F5" stroke-width="2.5" />
-  <path d="M50 12v8M50 80v8M12 50h8M80 50h8" stroke="#F7F7F5" stroke-width="2.5" />
-  <path d="M50 34 66 62H34Z" fill="none" stroke="#F7F7F5" stroke-width="2.5" />
-  <circle cx="50" cy="34" r="4.5" fill="#C8752A" />
+  <!-- "PM" monogram for Platinum Motor Services, in the Rev 01 palette (Graphite / Paper /
+       Signal Amber). The amber node on the M's vertex echoes the datum mark. -->
+  <rect width="100" height="100" rx="18" fill="#14171A" />
+  <g fill="none" stroke="#F7F7F5" stroke-width="8" stroke-linejoin="bevel">
+    <path d="M21 76V24h13a12.5 12.5 0 0 1 0 25H21" />
+    <path d="M57 76V24l11 25 11-25v52" />
+  </g>
+  <circle cx="68" cy="49" r="6" fill="#C8752A" />
 </svg>
