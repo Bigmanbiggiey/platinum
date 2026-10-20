@@ -1,6 +1,13 @@
 # Platinum Motor Services admin — how to use it
 
-A short guide for running the website and enquiries from the admin panel.
+A short guide for running the website, enquiries and jobs from the admin, in the
+browser or as the **PMS Admin** app on your phone.
+
+**Quick links:** [Install on your phone](#install-the-admin-on-your-phone) ·
+[Getting around](#getting-around) · [Recording a job](#recording-a-job) ·
+[Client reviews](#client-reviews) · [Editing the website](#editing-the-website) ·
+[Adding a staff member](#adding-a-staff-member-owner-only) ·
+[If something isn't working](#if-something-isnt-working)
 
 ## Signing in
 
@@ -8,17 +15,30 @@ A short guide for running the website and enquiries from the admin panel.
 - Sign in with your email and password. Tap **Show** to check the password as you type.
 - Forgot it? Use **Forgot password?** — you'll get a reset link by email.
 
-The admin works on a phone. It's dark on purpose and never appears in Google.
+The admin works on any phone or computer and never appears in Google.
 
 ## Install the admin on your phone
 
 You can put the admin on your home screen as an app called **PMS Admin**. It opens
 full-screen, like any other app.
 
-- **Android (Chrome):** open the admin and tap **Install** on the card at the top of the
-  Dashboard. If the card isn't there, use Chrome's **⋮** menu → **Install app**.
-- **iPhone:** open the admin in **Safari** (not Chrome), tap **Share**, then **Add to Home
-  Screen**.
+**Android (use Chrome):**
+
+1. Open **Chrome** and go to `platinum-point.vercel.app/admin`. Sign in.
+2. On the **Dashboard**, tap **Install** on the "Install the app" card, then **Install**
+   again in the pop-up.
+3. If the card isn't there, reload the page once, or use Chrome's **⋮** menu →
+   **Install app** (or **Add to Home screen → Install**).
+4. **PMS Admin** appears on your home screen and in the app drawer.
+
+**iPhone (use Safari):**
+
+1. Open **Safari** (not Chrome) and go to `platinum-point.vercel.app/admin`.
+2. Tap **Share** (the square with an arrow pointing up), scroll down, tap **Add to Home
+   Screen**, check the name says **PMS Admin**, then tap **Add**.
+3. Open it from the home screen and **sign in**.
+
+Do this on each phone that needs the admin. Everyone signs in with their own account.
 
 Good to know:
 
@@ -32,10 +52,15 @@ Good to know:
 
 Tap **Not now** on the Dashboard card to hide it on that phone.
 
+**To remove the app:** press and hold the icon → **Uninstall** (Android) or **Remove App
+→ Delete from Home Screen** (iPhone). Your data is safe. It lives on the server, not on
+the phone.
+
 ## Getting around
 
-The top bar has a **☰ menu button** (left), the Platinum Motor Services mark, and on the right
-**View site ↗**, your name, and **Sign out**. Tap **☰** to show or hide the side menu;
+The top bar has a **☰ menu button** (left), the Platinum Motor Services mark, and on the
+right **View site ↗**, the **theme picker** (System / Light / Dark: "System" follows your
+phone's setting), your name, and **Sign out**. Tap **☰** to show or hide the side menu;
 it remembers your choice. On a phone the menu slides in over the page.
 
 The side menu:
@@ -90,7 +115,8 @@ from check-in is added to that client for you.
    **+ Add a vehicle**). Each job gets a number like `PP-2026-0042`.
 2. **Check-in tab.** Odometer, the customer's complaint in your words, and photos of the
    car as it arrived. Tick **Client agrees to this job being shown on our website** only
-   if they said yes.
+   if they said yes. (Job numbers start with `PP-`, from the business's earlier name.
+   They're internal only and never shown to customers.)
 3. **Diagnosis tab.** Add each problem you find, explain it, and add **before** photos.
 4. **Repair tab.** For each problem: what you did, the outcome (**Fixed**, **Deferred** if
    the client chose not to fix it now, or **Not fixed**), **after** photos and the parts
@@ -136,6 +162,22 @@ change, problem, photo, part, labour and consent change with the name of the per
 who made it and when. Several photos uploaded together show as one line ("added 3
 after photos"). Prices are never shown there, so staff can see it too.
 
+## Client reviews
+
+On a **completed** job, the **Client review** card on **Wrap-up** (owner only) collects a
+review from the client:
+
+1. Tap **Get review link**, then send it with **WhatsApp** (opens a ready-made message to
+   the client) or **Copy link**.
+2. The client opens it, gives a star rating and a comment, and ticks consent. No account
+   needed. A link works **once** and expires after **30 days**. **New review link**
+   makes a fresh one (the old one stops working).
+3. You get a notification. Approve it under **Website content → Testimonials**. Once
+   approved it shows on **Testimonials** and, if the job is published, on the job's page.
+
+If the client won't use a link, tap **Add testimonial on the client's behalf**. It's
+approved at once and shown publicly as *"Shared with us by the client"*.
+
 ## Editing the website
 
 Everything under **Website content**:
@@ -163,6 +205,14 @@ switched on yet, ask the developer to add the deploy hook.)
   structured data.
 - **Enquiry notification** — choose **Email** (you get a message per enquiry) or
   **Dashboard only**, and set the address it goes to.
+- **Business name** — used in Google's structured data (how the business appears in
+  search). A change shows after the next rebuild. The logo and footer text are set by the
+  developer.
+
+**Emails:** new-enquiry alerts and customer booking emails are sent through Resend once
+the developer has set it up. Until the business has its own email domain, emails come
+from a Resend test address and **only reach your own inbox**. Customers won't get
+booking confirmations yet, so tell them by call or WhatsApp.
 - **Social links** — a small JSON box; leave it as-is unless you're adding a profile.
 
 ## Adding a staff member (owner only)
@@ -176,3 +226,17 @@ switched on yet, ask the developer to add the deploy hook.)
    again for a fresh link. Inviting an email that already has an account gives them a
    "set a new password" link instead.
 4. Use **Deactivate** on the Team list to switch off a login.
+
+## If something isn't working
+
+- **A change isn't on the website yet:** wait 2 minutes and refresh. Pages are rebuilt
+  after each save.
+- **The app shows "You're offline":** check your data or Wi-Fi, then tap **Try again**.
+- **Can't sign in on iPhone after installing:** that's expected the first time. The app
+  has its own login. Use **Forgot password?** if needed, then sign in inside the app.
+- **No "Install the app" card:** on iPhone, make sure you're in **Safari**. On Android,
+  reload once or use Chrome's **⋮** menu. It's hidden if you tapped **Not now** before.
+- **A staff member can't see something:** staff only see **Jobs** and **Schedule**. That's
+  by design.
+- **Anything else:** note what you tapped and what you saw (a screenshot helps), and send
+  it to the developer.

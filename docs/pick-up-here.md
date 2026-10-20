@@ -1,32 +1,36 @@
 # Pick up here — status & remaining work
 
-> Snapshot for resuming the build. Written 2026-09-07 EOD; status updated 2026-10-12.
+> Snapshot for resuming the build. Written 2026-09-07; **status updated 2026-10-20.**
 > Authoritative detail lives in `project-state.md` (change log), `phase-2-plan.md` §8,
-> `phase-3-plan.md` §6, and `wp14-staging-plan.md`. This file is the one-page summary.
+> `phase-3-plan.md` §6, `wp14-staging-plan.md` and `docs/superpowers/plans/`. This file
+> is the one-page summary. Repo overview: `README.md`.
 
 ---
 
 ## Where things stand
 
-| Phase | State |
+| Area | State |
 | --- | --- |
-| **0 — Discovery** | ✅ Approved. |
-| **1 — Foundation** | ✅ Complete & approved. |
-| **2 — Public website MVP** | 🟢 Built; **live on private staging**; DB schema + RLS + `submit` function applied. Left: formal Lighthouse/axe pass + **Go-Live (WP14 Part C)**. |
-| **3 — Admin MVP** | 🟢 **Functionally complete (WP1–WP13).** Auth+roles+Team, Dashboard+Notifications, Requests+convert, Schedule, full CMS, Media, Business Settings, publish→rebuild + emails (functions deployed; switch on with secrets). Left: WP14 owner acceptance run; `gen types` cleanup. |
-| **Jobs (ADR-0014)** | 🟢 **J1 (admin work orders)** merged (PR #4). **J2 (publish to portfolio)** ✅ live and accepted 2026-10-12 (PRs #16–#20). **J3 (review links)** built on `feature/jobs-j3-reviews` — plan `docs/superpowers/plans/2026-10-12-jobs-j3-reviews.md`, migration `20261012120000`; needs `db push`, `functions deploy submit`, merge, then the live check. Spec: `docs/superpowers/specs/2026-09-30-jobs-work-orders-design.md`. |
-| **RBAC (owner/staff)** | 🟡 **R-A (shareable staff invites)** ✅ live (PRs #9, #11, #12). **R-B (permissions)** ✅ live (PR #13). **R-C (attribution)** ✅ live (PR #14). **R-D (review, assignment, walk-in clients)** ✅ live (PR #15). **J2 (publish jobs to the portfolio)** ✅ live (see Jobs row). Then J3 (review links). Spec: `docs/superpowers/specs/2026-09-30-rbac-and-invites-design.md`. |
+| **0 — Discovery / 1 — Foundation** | ✅ Approved. |
+| **2 — Public website MVP** | 🟢 Built and **live on private staging**. WP11 perf/a11y merged (PR #22; local Lighthouse Perf 94–95, A11y 100). Left: **Go-Live (WP14 Part C)**. |
+| **3 — Admin MVP** | 🟢 **Functionally complete (WP1–WP13).** Left: WP14 owner acceptance run; `gen types` cleanup. |
+| **Jobs (ADR-0014)** | ✅ **J1** work orders (PR #4), **J2** publish to portfolio (PRs #16–#20), **J3** client review links (PR #21): all **live and accepted**. |
+| **RBAC (owner/staff)** | ✅ **R-A** invites, **R-B** permissions, **R-C** attribution, **R-D** review/assignment/walk-ins (PRs #9–#15): all live. |
+| **Themes** | ✅ Light / Dark / System on the site (footer) and admin (header), no flash (PR #23). |
+| **Rename** | ✅ **Platinum Motor Services** across the site, admin, emails and docs (PR #24, 2026-10-19). PM monogram favicon. Kept: `platinum-point` URLs/slugs, `ppae-*` asset names, `PP-` job numbers. |
+| **PMS Admin app (ADR-0015)** | ✅ Admin installable as a PWA on Android and iPhone (PR #25, 2026-10-20), live. Left: owner's real-phone checks (below). |
 
 ## What's live / where
 
 | Thing | Where |
 | --- | --- |
-| Repo | `github.com/Bigmanbiggiey/platinum` (`main`). GitHub Actions CI on push. |
-| Hosting | Vercel project `biggieys-projects/platinum-point` — **auto-deploys on push to `main`**. |
-| Public site (staging) | `https://platinum-point.vercel.app` — `VITE_SITE_NOINDEX=1` (robots `Disallow: /`, every page `noindex`). |
-| Admin | `https://platinum-point.vercel.app/admin` — sign in with the `gatama98p@gmail.com` account (owner). |
-| Supabase | project `aonpdrqtosmqhmomghca` ("platinum"), Postgres 17. Schema + RLS + `submit` + `admin-invite` functions all applied/deployed. |
-| Local env | `.env.local` has `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` (+ Vercel-added OIDC token). |
+| Repo | `github.com/Bigmanbiggiey/platinum` (`main`). GitHub Actions CI on push/PR. |
+| Hosting | Vercel project `biggieys-projects/platinum-point`. **Auto-deploys on push to `main`**. Branch previews are behind Vercel login. |
+| Public site (staging) | `https://platinum-point.vercel.app` with `VITE_SITE_NOINDEX=1` (robots `Disallow: /`, every page `noindex`). |
+| Admin / PMS Admin app | `https://platinum-point.vercel.app/admin`. Owner signs in as `gatama98p@gmail.com`. Install steps: `owner-guide.md`. |
+| Supabase | Project `aonpdrqtosmqhmomghca` ("platinum"), Postgres 17. All migrations applied. Functions `submit`, `notify-customer`, `rebuild`, `admin-invite` deployed. |
+| Secrets set | `VERCEL_DEPLOY_HOOK_URL` (auto-publish works), `ADMIN_SITE_URL`. `RESEND_API_KEY` + `NOTIFY_EMAIL` being set by the owner (2026-10-19). Confirm with `npx supabase secrets list`. |
+| Local env | `.env.local` has `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY`. |
 
 ## Run / verify locally
 
@@ -34,6 +38,7 @@
 npm install
 npm run dev          # http://localhost:5173  (+ /admin)
 npm run typecheck && npm run lint && npm run test && npm run build
+npm run preview      # http://localhost:4173 — the only local way to try the admin PWA
 ```
 
 Supabase CLI is linked (`npx supabase ...`). Apply DB changes with
@@ -41,12 +46,31 @@ Supabase CLI is linked (`npx supabase ...`). Apply DB changes with
 After the 2026-10-07 Windows reset the Supabase, Vercel and GitHub CLIs need logging in
 again (`npx supabase login`, `npx vercel login`, `gh auth login`).
 
-`npm run build` ends with `scripts/check-content.mjs`: when Supabase is configured it
-fails the build if pages prerender with no services / site settings, so an empty build
-never replaces the live site. On Vercel, a "Redeploy" with the build cache can re-serve
-the old output — untick **Use existing Build Cache** to force a real rebuild.
+`npm run build` ends with two guards: `stamp-admin-sw.mjs` fails if a public page
+references the admin PWA, and `check-content.mjs` fails if pages prerender with no
+services / site settings (so an empty build never replaces the live site). On Vercel, a
+"Redeploy" with the build cache can re-serve the old output, so untick **Use existing
+Build Cache** to force a real rebuild.
 
 ---
+
+## Now — owner checks on real phones (PR #25)
+
+1. **Android:** install PMS Admin from the Dashboard card → launch from the icon
+   (standalone, dark splash with the PM icon) → sign in → open a job → close and reopen.
+2. **iPhone:** Safari → Share → Add to Home Screen → check icon/name, that nothing sits
+   under the notch, and sign in and navigate.
+3. **Updates:** after the next deploy, the installed app shows the change with no reinstall.
+
+## Email (Resend)
+
+- With `RESEND_API_KEY` + `NOTIFY_EMAIL` set, owner alerts work. Test with an enquiry on
+  the Contact page.
+- **Customer emails need a verified domain.** The default sender `onboarding@resend.dev`
+  only delivers to the Resend account's own address. Register a domain (with the rename,
+  e.g. `platinummotorservices.co.ke`), verify it in Resend, then
+  `npx supabase secrets set "RESEND_FROM=Platinum Motor Services <bookings@<domain>>"`.
+  This ties in with the Go-Live domain decision.
 
 ## Remaining work
 
@@ -58,11 +82,8 @@ Left:
 - **WP14 — owner acceptance run:** log in on a phone → edit a content block or a
   service → Save (watch for the "live in ~1–2 min" message) → open an enquiry →
   Convert to client → set a status → confirm a booking. Report anything rough.
-- **Switch on the two integrations** by setting Supabase secrets:
-  - `npx supabase secrets set VERCEL_DEPLOY_HOOK_URL=https://api.vercel.com/v1/integrations/deploy/... (no < > around it)` — auto-publish. Create the
-    hook in **Vercel → Project Settings → Git → Deploy Hooks** (branch `main`).
-  - `npx supabase secrets set RESEND_API_KEY=<key> RESEND_FROM=<verified sender> NOTIFY_EMAIL=gatama98p@gmail.com`
-    — customer booking emails + owner enquiry emails.
+- **Integrations:** auto-publish (`VERCEL_DEPLOY_HOOK_URL`) is ✅ set and working. Email:
+  see **Email (Resend)** above.
 - **Add the staff member:** Team → Invite (email + name + role) → share the link by
   WhatsApp/email. One-time setup first (RBAC R-A): Supabase Site URL + Redirect URLs,
   Email OTP expiry 86400 s, and `npx supabase secrets set ADMIN_SITE_URL=https://platinum-point.vercel.app`.
@@ -84,25 +105,28 @@ Left:
 
 ### B. Phase 2 — to close it out
 
-- **WP11 perf/a11y:** fixes on `feature/wp11-perf-a11y` — locally all three pages score Performance ≥ 94 and Accessibility 100 (details in `phase-2-plan.md`). After merge: re-run Lighthouse on staging; real-device check; later, resize images at upload and trim unused JS.
+- **WP11 perf/a11y:** ✅ merged (PR #22). Left: re-run Lighthouse on staging and a real-device check; later, trim unused JS.
 - **WP14 Part C — Go-Live** (`wp14-staging-plan.md` §6), needs owner decisions/inputs:
   - Domain + DNS (host/domain to be revisited — currently Vercel; note Vercel Hobby is non-commercial-use → decide Vercel Pro vs Cloudflare Pages).
   - Remove `VITE_SITE_NOINDEX`; point `VITE_SITE_ORIGIN` at the real domain; redeploy.
   - Cloudflare **Turnstile** keys (`VITE_TURNSTILE_SITE_KEY` + `TURNSTILE_SECRET`).
-  - **Resend** keys (shared with WP11).
+  - **Resend** verified domain + `RESEND_FROM` (same domain as the site).
+  - Point `ADMIN_SITE_URL` and Supabase Auth Site/Redirect URLs at the real domain. The
+    installed PMS Admin app is tied to its address, so **after a domain change everyone
+    reinstalls it from the new address**.
   - Cloudflare **Web Analytics** token (`VITE_CF_ANALYTICS_TOKEN`).
   - **Google Search Console** verify + submit sitemap.
   - **Google Business Profile** alignment (NAP/category/hours) + set `site_settings.gbp_url`.
   - **Privacy Policy** legal review (Kenya DPA 2019) then publish; retention rule; ODPC position.
   - Final security re-check.
 - **Delete the E2E test rows** in the DB (a few `service_request` + a `pending` `testimonial`, labelled "…E2E…delete").
-- Content is **DRAFT** in the DB — owner edits via the Phase 3 CMS (WP7–WP9) once built, or Supabase directly.
+- Content is **DRAFT** in the DB. The owner edits it via the admin CMS.
 
 ### C. Waiting on the owner
 
 | Needed for | Item |
 | --- | --- |
-| WP11 / WP14 C | A **Resend** API key + verified sender email. |
+| Email | Resend key ✅ (2026-10-19); a **domain** to verify for customer emails. |
 | WP3b (staff account) | The **staff person's email** — then use the Team page's "Create invite". |
 | WP14 C | Domain choice + host decision; Turnstile keys; CF Analytics token; Search Console + GBP access; Privacy Policy source. |
 | Content | Final service copy, About detail, real testimonials + consent, booking lead-time/windows, confirm WhatsApp = +254 722 322870. |
@@ -111,9 +135,13 @@ Left:
 
 ## Suggested order to resume
 
-1. Owner: WP14 acceptance run on the admin; set the `RESEND_*` secrets to switch on
-   emails (`VERCEL_DEPLOY_HOOK_URL` is set and working).
+1. Owner: real-phone checks of the PMS Admin app (above) and the WP14 acceptance run.
+   Test an owner email alert.
 2. Owner: replace the DRAFT site content via the CMS (Services, About/Page copy,
    Testimonials), then let it auto-publish.
-3. Phase 2 **Part C — Go-Live** when ready to go public (domain, remove noindex,
+3. Pick and register the **domain** (unblocks customer emails and Go-Live).
+4. Phase 2 **Part C — Go-Live** when ready to go public (domain, remove noindex,
    Turnstile, Search Console, GBP, Privacy Policy) — see `wp14-staging-plan.md` §6.
+5. Next feature candidates: **PWA-2** push notifications for new bookings (plan §Follow-up
+   in `docs/superpowers/plans/2026-10-19-admin-pwa.md`), then Post-MVP increments in
+   `roadmap.md`.
