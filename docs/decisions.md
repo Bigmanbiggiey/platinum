@@ -546,6 +546,46 @@ Delivered as three packages (J1 admin, J2 publish, J3 reviews).
 
 ---
 
+## ADR-0015 — Admin installable as a PWA
+
+**Status:** **Accepted 2026-10-19.** Plan: `docs/superpowers/plans/2026-10-19-admin-pwa.md`.
+
+### Context
+The owner and staff use the admin many times a day on their phones. Finding it means
+opening a browser and typing or bookmarking `/admin`. App-store apps would cost
+$25 + $99/yr, and Apple rejects thin website wrappers (App Store guideline 4.2). The public
+site gets nothing from being an app: customers search Google, then call or WhatsApp.
+
+### Options
+| Option | Summary | Trade-off |
+| --- | --- | --- |
+| **A. Admin-only PWA, hand-written SW** | Manifest + ~60-line service worker scoped to `/admin`. | Tiny, fully understood. No store listing. |
+| B. `vite-plugin-pwa` (Workbox) | Generated SW + manifest. | Assumes one entry; with vite-react-ssg + `admin.html` (ADR-0010) it needs workarounds. Opaque output. |
+| C. Capacitor / TWA store apps | Native wrappers. | Store fees and reviews, a Mac for iOS, and Apple 4.2 risk. A TWA can still wrap option A later. |
+
+### Decision
+**Option A.** `public/admin.webmanifest` ("PMS Admin", `scope`/`start_url` `/admin`) is
+linked only from `admin.html`. `public/admin-sw.js` is served with
+`Service-Worker-Allowed: /admin`, registered with `scope: '/admin'`, and only in
+production builds. Admin page loads are network-first, falling back to the last cached
+copy, then `/admin-offline`. Hashed `/assets/*` files are cache-first. **Other origins
+(Supabase) and non-GET requests are never handled.** `scripts/stamp-admin-sw.mjs`
+versions the caches per deploy and fails the build if a public page references the
+manifest or SW.
+
+### Consequences
+- The public site is unchanged: not installable, not SW-controlled.
+- iOS keeps the installed app's storage separate from Safari's, so users sign in once
+  inside the app. Email links (invite, reset) open in the browser.
+- Each deploy reaches installed apps on next open. No store review.
+- Foundation for Web Push (follow-up PWA-2).
+- **Kill switch:** if the SW ever misbehaves, replace `public/admin-sw.js` with one whose
+  `activate` handler deletes every `pms-admin-*` cache and calls
+  `self.registration.unregister()`, keeping `__BUILD_ID__` in a comment so the build
+  stamp passes. Deploy it, and installed copies clean themselves up on next open.
+
+---
+
 ## Decisions explicitly deferred (not ADRs yet)
 
 | Topic | Why deferred | When to decide |

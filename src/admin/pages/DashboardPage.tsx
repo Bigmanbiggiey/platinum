@@ -8,6 +8,7 @@ import { useUnreadCount } from '../lib/notifications';
 import { useRequests } from '../lib/requests';
 import { useRecentActivity } from '../lib/activityData';
 import { ActivityList } from '../components/ActivityList';
+import { InstallAppCard } from '../components/InstallAppCard';
 import { loadGsapCore, prefersReducedMotion } from '../../shared/lib/scrollFx';
 
 type CountFilter = [column: string, op: 'eq' | 'is' | 'in', value: unknown];
@@ -115,6 +116,7 @@ export function DashboardPage() {
   return (
     <section className="space-y-8">
       <PageTitle>Dashboard</PageTitle>
+      <InstallAppCard />
 
       <div className="grid gap-3 sm:grid-cols-4 lg:grid-cols-7">
         <Stat label="Unread" value={unread.data} to="/admin/notifications" />

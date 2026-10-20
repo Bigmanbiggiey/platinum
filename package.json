@@ -6,7 +6,7 @@
   "description": "Platinum Motor Services — public website + admin platform (Phase 1 skeleton)",
   "scripts": {
     "dev": "vite",
-    "build": "vite-react-ssg build && node scripts/strip-admin-preload.mjs && node scripts/finalize-seo.mjs && node scripts/check-content.mjs",
+    "build": "vite-react-ssg build && node scripts/strip-admin-preload.mjs && node scripts/stamp-admin-sw.mjs && node scripts/finalize-seo.mjs && node scripts/check-content.mjs",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/vite": "^4.0.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
