@@ -10,31 +10,47 @@ const OPTIONS: { value: ThemePref; label: string }[] = [
 /**
  * Light / Dark / System picker, shared by the public footer and the admin header.
  * Native radios (arrow keys, one tab stop, announced as a group) styled as a segmented
- * control. "System" says what it currently resolves to. `compact` shows icons only.
+ * control. "System" says what it currently resolves to. `compact` shows icons only;
+ * `stacked` puts the label above three equal buttons that fill a narrow column (the
+ * admin drawer on phones).
  */
-export function ThemeSwitcher({ compact = false }: { compact?: boolean }) {
+export function ThemeSwitcher({
+  compact = false,
+  stacked = false,
+}: {
+  compact?: boolean;
+  stacked?: boolean;
+}) {
   const { pref, system, setPref } = useTheme();
   const name = useId();
 
   return (
-    <fieldset className="flex items-center gap-2">
+    <fieldset className={stacked ? 'min-w-0' : 'flex items-center gap-2'}>
       <legend
         className={
           compact
             ? 'sr-only'
-            : 'float-left mr-1 font-mono text-xs uppercase tracking-[0.2em] text-[color:var(--color-muted)]'
+            : `font-mono text-xs uppercase tracking-[0.2em] text-[color:var(--color-muted)] ${
+                stacked ? 'mb-2' : 'float-left mr-1'
+              }`
         }
       >
         Theme
       </legend>
-      <div className="inline-flex rounded-button border border-[color:var(--color-line)] p-0.5">
+      <div
+        className={`rounded-button border border-[color:var(--color-line)] p-0.5 ${
+          stacked ? 'grid grid-cols-3' : 'inline-flex'
+        }`}
+      >
         {OPTIONS.map((o) => {
           const text = o.value === 'system' ? `System (currently ${system})` : o.label;
           return (
             <label
               key={o.value}
               title={compact ? text : undefined}
-              className={`flex cursor-pointer items-center gap-1.5 rounded-[4px] px-2 py-1 text-xs font-semibold has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-1 has-[:focus-visible]:outline-[color:var(--color-accent)] ${
+              className={`flex cursor-pointer items-center gap-1.5 rounded-[4px] px-2 text-xs font-semibold ${
+                stacked ? 'min-h-10 justify-center' : 'py-1'
+              } has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-1 has-[:focus-visible]:outline-[color:var(--color-accent)] ${
                 pref === o.value
                   ? 'bg-[color:var(--color-raised)] text-[color:var(--color-ink)]'
                   : 'text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]'
@@ -72,6 +88,7 @@ function ThemeIcon({ kind }: { kind: ThemePref }) {
     strokeLinecap: 'round' as const,
     strokeLinejoin: 'round' as const,
     'aria-hidden': true,
+    className: 'shrink-0',
   };
   if (kind === 'light')
     return (
