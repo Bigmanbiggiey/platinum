@@ -177,3 +177,21 @@ no Claude PR footer). Two PRs: **A = immediate fix** (both navs), **B = follow-u
   covered by a test.
 - **Admin desktop is unchanged** from `md` up (icon rail + full header). The tests and the
   1024 px check guard it.
+
+## 6. Phase A — as built (2026-10-20)
+
+| Plan | Built | Why |
+| --- | --- | --- |
+| A-1 `useMenuDismiss` with `restoreFocus` | `focusOnClose()` returns the element to focus, decided **after** `inert` is lifted | The new page's `<main>` is inert at the moment the route changes, so focusing it then fails; closing first, then focusing, works. |
+| A-1 `el.inert = true` | `setAttribute('inert', '')` | Same effect in browsers; also testable in jsdom (no `inert` property there). |
+| — | New `useFocusOnNavigate` (public `<main id="main">`, admin `<main id="admin-main">`) and `useMediaQuery` | P3 applies to every in-app navigation, not only the menu. |
+| A-2 drawer account section | Adds `ThemeSwitcher stacked` (label above three equal buttons) | The inline picker was wider than the 240 px drawer ("Dark" clipped); caught visually, now also asserted by `check:mobile`. |
+| A-2 | The closed mobile drawer is `inert` | Its off-screen links were still in the Tab order. |
+| A-2 | Header name/role shows from `lg` (was `sm`) | Between 640 and 1023 px it pushed the header past the edge. |
+| A-3 GSAP entry | Opacity only on the way in (was `autoAlpha`) | `visibility: hidden` during the tween dropped the focus just moved into the menu; found by `check:mobile` in a real browser, not by jsdom. |
+| A-3 | Tapping the current page's link closes the menu too | No route change happens, so the route-change close alone would leave it open. |
+| A-3 | The sheet closes if the window widens past 768 px | Otherwise the page would stay locked behind a hidden sheet. |
+| A-4 | `check:mobile` runs 129 checks (public at 7 sizes; admin owner at 7 + staff at 320); a thrown step is a failure, not a crash | Repeatable before each mobile-facing PR. |
+| Docs | README "Scripts" row and owner-guide phone note **deferred** until PR #26 (docs refresh) merges | #26 rewrites both files; editing them here would conflict. |
+
+**Verification:** `tsc`, `eslint`, `vitest` (281 passed, 22 new across `useMenuDismiss`, `AdminShell`, `Nav`), `npm run build`, `npm run check:mobile` against `preview` — 129/129. Dark mode checked visually at 390 px.

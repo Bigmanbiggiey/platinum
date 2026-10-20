@@ -20,14 +20,16 @@ export function ButtonLink({
   variant = 'primary',
   children,
   className = '',
+  onClick,
 }: {
   to: string;
   variant?: Variant;
   children: ReactNode;
   className?: string;
+  onClick?: () => void;
 }) {
   return (
-    <Link to={to} className={`${base} ${variants[variant]} ${className}`}>
+    <Link to={to} onClick={onClick} className={`${base} ${variants[variant]} ${className}`}>
       {children}
     </Link>
   );

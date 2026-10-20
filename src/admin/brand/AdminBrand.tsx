@@ -16,19 +16,24 @@ export function DatumMark({ className = 'h-8 w-8' }: { className?: string }) {
   );
 }
 
-/** Admin wordmark lockup — links to the admin home. */
+/** Admin wordmark lockup — links to the admin home. Never wraps (mobile-nav plan, A-2). */
 export function AdminBrand({ to = '/admin' }: { to?: string }) {
   return (
-    <Link to={to} className="flex items-center gap-3" aria-label="Platinum Motor Services — admin home">
-      <span className="text-[color:var(--color-ink)]">
+    <Link
+      to={to}
+      className="flex min-w-0 items-center gap-3"
+      aria-label="Platinum Motor Services — admin home"
+    >
+      <span className="shrink-0 text-[color:var(--color-ink)]">
         <DatumMark className="h-8 w-8" />
       </span>
-      <span className="leading-none">
+      <span className="min-w-0 whitespace-nowrap leading-none">
         <span className="block text-base font-bold tracking-tight text-[color:var(--color-ink)]">
           Platinum
         </span>
+        {/* One line at every width: the full descriptor only where there's room for it. */}
         <span className="mt-0.5 block font-mono text-[9px] uppercase tracking-[0.3em] text-[color:var(--color-muted)]">
-          Motor Services · Admin
+          <span className="hidden md:inline">Motor Services · </span>Admin
         </span>
       </span>
     </Link>
