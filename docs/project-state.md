@@ -3,7 +3,9 @@
 > **Purpose:** the single source of truth for *where this project actually is* right
 > now — what exists, what has been decided, what phase we are in, and what happens
 > next. Update this file whenever the state changes.
-> **Last updated:** 2026-09-08 — Phase 3 functionally complete (WP1–WP13); Phase 2 still on staging.
+> **Last updated:** 2026-10-20. Phase 3 complete; Jobs J1–J3 and RBAC live; themes,
+> rename to Platinum Motor Services and the installable **PMS Admin** app shipped. Phase 2
+> is still on private staging, awaiting Go-Live.
 > **➡ To resume: read `docs/pick-up-here.md`** (one-page status + remaining work).
 
 ---
@@ -12,7 +14,8 @@
 
 | | |
 | --- | --- |
-| **Phase** | **Phase 2 — Public Website MVP: APPROVED & IN PROGRESS (2026-09-07).** |
+| **Phase** | **Phase 2 (public site) on private staging, awaiting Go-Live (WP14 Part C). Phase 3 (admin) functionally complete.** Post-MVP jobs (P-1/P-2 via ADR-0014) and owner/staff roles are live. |
+| **Since 2026-10-12** | J3 client review links (PR #21) · WP11 perf/a11y (PR #22) · Light/Dark/System themes (PR #23) · rename to **Platinum Motor Services** + PM favicon (PR #24) · **PMS Admin** installable app, ADR-0015 (PR #25). |
 | **Phase 0 / Phase 1** | Both approved 2026-09-07. Phase 1 skeleton complete; Supabase connectivity verified. |
 | **Repo** | **`github.com/Bigmanbiggiey/platinum`** (`main`). CI runs on push. **Connected to Vercel project `biggieys-projects/platinum-point` — pushes auto-deploy.** |
 | **Staging** | Live (private) at **`https://platinum-point.vercel.app`** — `VITE_SITE_NOINDEX` (robots `Disallow: /`, every page `noindex,nofollow`). Security headers + CSP, real content, forms working E2E. Host = Vercel for now (revisit host/domain at Go-Live). |
@@ -29,7 +32,10 @@ Phase-gate workflow in use:
 
 ---
 
-## 2. Repository state (as of 2026-09-07, after Phase 1 build)
+## 2. Repository state (historical snapshot, 2026-09-07, after Phase 1 build)
+
+> Superseded. For the current repo, hosting and Supabase state see §1,
+> `pick-up-here.md` ("What's live / where") and `README.md`.
 
 | Aspect | State |
 | --- | --- |
@@ -89,8 +95,8 @@ deploy config.
 - **OS:** Windows 11 Pro. **Shell:** PowerShell primary (Bash available).
 - **Node:** v24.18.0 · **npm:** 11.18.0 · **git:** 2.54.0.windows.1 (verified 2026-09-07).
 - **Package manager:** **npm** (lockfile committed).
-- **Deployment:** none in Phase 1 by owner's instruction — local dev + local build/test
-  only. Vercel deploy + GitHub remote are a later, explicit staging step.
+- **Deployment:** Vercel project `biggieys-projects/platinum-point`, auto-deploying `main`
+  to `platinum-point.vercel.app` (private staging, `noindex`) since 2026-09-07.
 - **Supabase:** project on the owner's personal dev account; credentials supplied by
   the owner into `.env.local` (never committed).
 - **Owner works mobile-first** — admin UI and any owner-facing tooling must assume a
@@ -115,6 +121,8 @@ deploy config.
 | 0011 | Analytics (privacy-friendly, cookieless) + Google Search Console. | **Proposed** — needs approval. |
 | 0012 | English-primary content; incidental Swahili OK; no i18n framework in MVP. | **Proposed** — reflects owner answer; needs approval. |
 | 0013 | Booking & scheduling: booking *requests* + owner confirmation in MVP; self-service availability calendar in Phase 5. | **Proposed** — owner-requested feature; needs sign-off on the staging (§14.2 Q11). |
+| 0014 | Jobs (work orders) published as portfolio timelines; client review links. | **Accepted 2026-09-30.** Live (J1–J3). |
+| 0015 | Admin installable as a PWA ("PMS Admin"): hand-written service worker scoped to `/admin`; public site unaffected. | **Accepted 2026-10-19.** Live (PR #25). |
 
 ---
 
@@ -187,3 +195,7 @@ brand sign-off + production files + tagline.
 | 2026-09-07 | **Brand pack received.** Owner supplied `Platinum Point Brand Assets.dc.html` ("Rev 01"): datum-mark logo + variants, 8-colour palette with HEX/CMYK/Pantone + 60/30/10 ratio, type stack (Archivo / IBM Plex Mono / Newsreader, all SIL OFL 1.1), substitutes. Recorded in `product-definition.md` §10.2; `decisions.md` deferred-list "Brand system" row; §14.2 Q22–24 (sign-off, production SVG masters + favicon + social, tagline) added. No files copied into the repo; still Phase 0, no code. | Lead architect (TECHBIGGIEY) |
 | 2026-09-07 | **Docs rev. 2** after the owner answered most of §14. Adopted the confirmed trading name **Platinum Point Automotive Engineering** across all docs (retired "Platinum Motor Services"). Added: confirmed-facts block, Book-a-Service journey/page/form, engineering (press & lathe) as first-class services, `partner` entity + Partners CMS, public testimonial submission (first name + vehicle display), quote-based pricing explainer, branding asset request (§10.4), risks R-18/R-19. Added **ADR-0013 — Booking & scheduling approach** (phased: requests now, availability engine in Phase 5); updated ADR-0006/0008/0012. Roadmap: Phase 2/3 updated, new **Phase 5 — self-service scheduling**. §14 split into 14.1 answered / 14.2 still-open (22 items). **Still no code/deps/schema/infra. Still awaiting explicit Phase 0 approval.** | Lead architect (TECHBIGGIEY) |
 | 2026-09-30 | ADR-0014 accepted (jobs / work orders, pulls P-1/P-2 forward). **J1 built:** `job`/`job_finding`/`job_photo`/`job_part` + numbering/consent/completion triggers + RLS (anon sealed); admin Jobs list, New job (walk-in / from request), job page tabs (check-in, diagnosis, repair, wrap-up); per-vehicle history on Clients; Open-jobs stat; all uploads now strip EXIF/GPS. Nothing public yet. Next: owner checks J1 on staging → plan J2 (publish). | Lead architect (TECHBIGGIEY) |
+| 2026-10-12 | **J3 client review links** live and accepted (PR #21): owner-only one-time review links (30 days), `/review/<code>`, owner-entered testimonials labelled publicly. **WP11 perf/a11y** merged (PR #22). | Lead architect + owner |
+| 2026-10-12 | **Themes** (PR #23): Light / Dark / System with no flash on the public site (footer picker) and admin (header); admin follows the chosen theme. | Lead architect |
+| 2026-10-19 | **Renamed to Platinum Motor Services** (PR #24) across the site, admin, emails, SEO/JSON-LD, seed and current docs. Lockup "Platinum" / "Motor Services"; new PM monogram favicon. Unchanged: domain/URLs, Vercel/Supabase slugs, npm name, `ppae-*` assets, applied migrations, `PP-` job numbers. Owner updated `business_name` + service SEO titles in the admin, redeployed `submit` + `notify-customer`, and began Resend setup. | Owner + lead architect |
+| 2026-10-20 | **PMS Admin app** live (PR #25, ADR-0015): manifest + icons, `/admin`-scoped service worker (network-first pages, cache-first hashed assets, Supabase never touched), offline page, Dashboard install card, build guard against PWA leakage into public pages. Docs refresh: README rewritten, owner guide (install, review links, themes, troubleshooting), pick-up-here, roadmap. | Lead architect |

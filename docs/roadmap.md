@@ -4,12 +4,28 @@
 > and **exit criteria**. **A phase does not start until it is explicitly approved.**
 > Silence is not approval. This roadmap is a plan, not a commitment to build ahead of
 > approval.
-> **Last updated:** 2026-09-07 (rev. 2 — owner §14 answers folded in; Phase 5 added)
+> **Last updated:** 2026-10-20 (status snapshot added; P-1/P-2 and P-11 delivered early;
+> admin PWA shipped). Previous: 2026-09-07 rev. 2.
 
 Workflow per phase:
 `Discovery → Documentation → Review → Approval → Implementation → Testing → Verification → Next phase`
 
 MVP = **Phase 1 + Phase 2 + Phase 3 + Phase 4**. Everything after is Post-MVP.
+
+**Status snapshot (2026-10-20):**
+
+| Phase / increment | State |
+| --- | --- |
+| Phase 0, 1 | ✅ Approved |
+| Phase 2 — Public website | 🟢 Built, live on private staging. **Next: Go-Live (WP14 Part C).** |
+| Phase 3 — Admin | 🟢 Functionally complete; owner acceptance run pending |
+| Phase 4 | Not started |
+| Phase 5 — Self-service scheduling | Not started |
+| P-1 / P-2 — Service history + jobs | ✅ Delivered early as Jobs J1–J3 (ADR-0014) |
+| P-11 — Multi-staff roles + audit | ✅ Delivered early as RBAC R-A–R-D (owner/staff, activity log) |
+| Admin PWA ("PMS Admin") | ✅ Installable on Android/iPhone (ADR-0015). Next: PWA-2 push notifications |
+
+Live detail: `pick-up-here.md`.
 
 **Booking note:** the owner asked for online booking/scheduling. Per **ADR-0013** the
 MVP ships **booking *requests*** (customer proposes a date + time window; owner
@@ -326,8 +342,8 @@ Indicative order (Phase 5 above is the first of these):
 
 | # | Increment | Value | Notes |
 | --- | --- | --- | --- |
-| P-1 | **Vehicle service history** | Per-vehicle timeline of work done; foundation for reminders and repeat business. | New `service_record` entity linked to `vehicle`; admin entry; maybe visible to the customer later. |
-| P-2 | **Job / work-order management** | Track a job from booked → in progress → done; notes, parts, labour, photos. | Extends `service_request`; adds `job`. |
+| P-1 | **Vehicle service history** | Per-vehicle timeline of work done; foundation for reminders and repeat business. | ✅ **Covered** by jobs per vehicle (ADR-0014, J1). |
+| P-2 | **Job / work-order management** | Track a job from booked → in progress → done; notes, parts, labour, photos. | ✅ **Delivered** (J1–J3, ADR-0014), with P-1. |
 | P-3 | **Structured inspection reports** | Consistent pre-purchase / mechanical inspection output the owner can send as a link or PDF. | `inspection_report` with a checklist template; shareable read-only link; PDF export. Directly boosts the inspection SEO funnel. |
 | P-4 | **Quotes** | Send a quote from a job/request; customer can accept. | `quote`; PDF/link. |
 | P-5 | **Invoices (+ optional M-Pesa)** | Bill for completed work; record payment. | `invoice`, `payment`; M-Pesa only if the owner wants it. |
@@ -336,7 +352,7 @@ Indicative order (Phase 5 above is the first of these):
 | P-8 | **Customer accounts / portal** | Customers see their vehicles, history, quotes, invoices. | New auth audience; significant RLS work. |
 | P-9 | **Self-service scheduling** | Pick a real slot instead of "we'll confirm". | **Promoted to Phase 5** above. |
 | P-10 | **Blog / resource content** | Long-tail SEO ("how to know if your clutch is going"). | `article` entity in the CMS; editorial effort is the constraint. |
-| P-11 | **Multi-staff roles & audit log** | If the business grows past the owner. | Role matrix; `audit_log`. |
+| P-11 | **Multi-staff roles & audit log** | If the business grows past the owner. | ✅ **Delivered** as owner/staff RBAC + `job_activity` (R-A–R-D). |
 | P-12 | **In-admin analytics** | Enquiry trends, channel mix, conversion, top services/areas. | Reporting views over existing data. |
 | P-13 | **Swahili content (i18n)** | Wider reach. | Add i18n layer; double content authoring. |
 
@@ -347,7 +363,8 @@ Indicative order (Phase 5 above is the first of these):
   onboarding, billing, theming, data isolation. This is where "separate the admin app"
   (ADR-0010 consequence) would be revisited.
 - Parts inventory & supplier management.
-- Technician PWA with offline on-site capture.
+- Technician PWA with offline on-site capture. *(Partly done: the admin installs as the
+  **PMS Admin** PWA, ADR-0015. Offline capture and push notifications (PWA-2) remain.)*
 - Fleet customer dashboards / servicing contracts.
 - OBD / diagnostic tooling integration.
 - Vetted affiliate marketplace.
