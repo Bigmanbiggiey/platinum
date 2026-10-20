@@ -192,6 +192,6 @@ no Claude PR footer). Two PRs: **A = immediate fix** (both navs), **B = follow-u
 | A-3 | Tapping the current page's link closes the menu too | No route change happens, so the route-change close alone would leave it open. |
 | A-3 | The sheet closes if the window widens past 768 px | Otherwise the page would stay locked behind a hidden sheet. |
 | A-4 | `check:mobile` runs 129 checks (public at 7 sizes; admin owner at 7 + staff at 320); a thrown step is a failure, not a crash | Repeatable before each mobile-facing PR. |
-| Docs | README "Scripts" row and owner-guide phone note **deferred** until PR #26 (docs refresh) merges | #26 rewrites both files; editing them here would conflict. |
+| Docs | README (Scripts, "Mobile check", structure, workflow) and owner guide (phone menu, troubleshooting) updated after PR #26 merged | #26 rewrote both files first. |
 
 **Verification:** `tsc`, `eslint`, `vitest` (281 passed, 22 new across `useMenuDismiss`, `AdminShell`, `Nav`), `npm run build`, `npm run check:mobile` against `preview` — 129/129. Dark mode checked visually at 390 px.

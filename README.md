@@ -106,6 +106,7 @@ installable app locally, run `npm run build && npm run preview` and open
 | `npm run lint`                    | ESLint                                                                     |
 | `npm run format` / `format:check` | Prettier write / check                                                     |
 | `npm run test` / `test:watch`     | Vitest                                                                     |
+| `npm run check:mobile`            | Phone/tablet navigation check in a real browser (see below)                |
 
 Post-build steps (run by `npm run build`, in `scripts/`):
 
@@ -115,6 +116,23 @@ Post-build steps (run by `npm run build`, in `scripts/`):
 | `stamp-admin-sw.mjs`      | Stamps `dist/admin-sw.js` with the build id (fresh caches per deploy). **Fails** if a public page references the PWA files.  |
 | `finalize-seo.mjs`        | Writes `sitemap.xml` + `robots.txt` (honours `VITE_SITE_NOINDEX`).                                                           |
 | `check-content.mjs`       | When Supabase is configured, **fails** the build if pages prerendered empty, so an empty build never replaces the live site. |
+
+### Mobile check
+
+`npm run check:mobile [base-url]` drives your installed **Edge** (or Chrome:
+`BROWSER_CHANNEL=chrome`) through `playwright-core`, with touch emulation at 320, 360,
+390, 430, 667×375, 768 and 1024 px. It checks the public menu and the admin header +
+drawer: no sideways overflow, nothing cut off or wrapping, tap targets ≥ 44 px, Escape /
+backdrop / link closing, scroll lock, `inert`, and focus moving in and back. The admin
+runs with a fake session and **every Supabase request is answered inside the test
+browser**, so the real project is never touched. Screenshots go to `tmp/mobile-nav/`
+(git-ignored). It exits 1 on any failure. Run it before any PR that changes layout or
+navigation:
+
+```bash
+npm run build && npm run preview     # terminal 1
+npm run check:mobile                 # terminal 2 (default http://localhost:4173)
+```
 
 `scripts/gen-admin-icons.mjs` is run **by hand** (`node scripts/gen-admin-icons.mjs`) to
 re-render `public/icons/*.png` from `public/favicon.svg` when the mark changes.
@@ -128,6 +146,7 @@ src/
   routes.tsx          public route table
   index.css           Tailwind + Rev 01 brand tokens, light/dark themes
   shared/             business constants, env, Supabase client, content queries,
+                      menu behaviour (lib/useMenuDismiss) shared by both navs,
                       SEO/analytics helpers, theme switcher
   public/             public site: layout, pages, components, forms
   admin/              admin SPA: shell, auth, pages, jobs, content CMS, lib
@@ -201,7 +220,7 @@ a signed-in admin).
 
 Phase-gated (`Discovery → Docs → Review → Approval → Build → Test → Verify`). Each
 feature gets a plan in `docs/superpowers/plans/`, a branch and a PR. CI must pass before
-merge. Production-affecting steps (`db push`, `functions deploy`, secrets) are run by
+merge, and layout/navigation changes also pass `npm run check:mobile`. Production-affecting steps (`db push`, `functions deploy`, secrets) are run by
 the owner.
 
 ## Documentation

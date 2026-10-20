@@ -61,7 +61,12 @@ the phone.
 The top bar has a **☰ menu button** (left), the Platinum Motor Services mark, and on the
 right **View site ↗**, the **theme picker** (System / Light / Dark: "System" follows your
 phone's setting), your name, and **Sign out**. Tap **☰** to show or hide the side menu;
-it remembers your choice. On a phone the menu slides in over the page.
+it remembers your choice.
+
+**On a phone** the top bar shows only **☰** and the logo. Tap **☰**: the menu slides in
+over the page, and **View site**, the **theme picker**, your name and **Sign out** are at
+the bottom of it (scroll down on a small phone). Close it by tapping **☰** again, tapping
+the dimmed page, or choosing a page.
 
 The side menu:
 
@@ -231,6 +236,8 @@ booking confirmations yet, so tell them by call or WhatsApp.
 
 - **A change isn't on the website yet:** wait 2 minutes and refresh. Pages are rebuilt
   after each save.
+- **Can't find Sign out or the theme picker on your phone:** tap **☰**. They're at the
+  bottom of the menu.
 - **The app shows "You're offline":** check your data or Wi-Fi, then tap **Try again**.
 - **Can't sign in on iPhone after installing:** that's expected the first time. The app
   has its own login. Use **Forgot password?** if needed, then sign in inside the app.
