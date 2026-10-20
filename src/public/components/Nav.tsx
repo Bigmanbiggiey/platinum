@@ -3,6 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { Wordmark } from './Wordmark';
 import { CallWhatsApp } from './ui/CallWhatsApp';
 import { ButtonLink } from './ui/Button';
+import { ThemeToggle } from './ThemeToggle';
 import { loadGsapCore, prefersReducedMotion } from '../../shared/lib/scrollFx';
 import { useMenuDismiss } from '../../shared/lib/useMenuDismiss';
 import { useMediaQuery } from '../../shared/lib/useMediaQuery';
@@ -161,10 +162,10 @@ export function Nav() {
         ref={headerRef}
         className="sticky top-0 z-40 border-b border-[color:var(--color-line)] bg-[color:var(--color-ground)]/95 backdrop-blur"
       >
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-5 py-3">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-5 py-3">
           <Wordmark />
 
-          <nav className="hidden items-center gap-6 md:flex" aria-label="Primary">
+          <nav className="hidden items-center gap-5 md:flex lg:gap-6" aria-label="Primary">
             {links.map((l) => (
               <NavLink key={l.to} to={l.to} className={linkClass}>
                 {l.label}
@@ -172,58 +173,63 @@ export function Nav() {
             ))}
           </nav>
 
-          <div className="hidden md:block">
-            <CallWhatsApp context="header" size="sm" compact />
-          </div>
+          {/* Actions: Call/WhatsApp (desktop), the light/dark toggle, then Menu (phones). */}
+          <div className="flex shrink-0 items-center gap-2">
+            <div className="hidden md:block">
+              <CallWhatsApp context="header" size="sm" compact />
+            </div>
 
-          <button
-            ref={toggleRef}
-            type="button"
-            className="grid min-h-11 min-w-11 place-items-center rounded-md border border-[color:var(--color-line)] md:hidden"
-            aria-expanded={open}
-            aria-controls="site-menu"
-            aria-label="Menu"
-            onClick={toggle}
-          >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <line
-                x1="3"
-                y1="6"
-                x2="17"
-                y2="6"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                className={`origin-center transition-transform duration-300 ease-out motion-reduce:transition-none ${
-                  open ? 'translate-y-[4px] rotate-45' : ''
-                }`}
-              />
-              <line
-                x1="3"
-                y1="10"
-                x2="17"
-                y2="10"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                className={`origin-center transition-opacity duration-200 ease-out motion-reduce:transition-none ${
-                  open ? 'opacity-0' : 'opacity-100'
-                }`}
-              />
-              <line
-                x1="3"
-                y1="14"
-                x2="17"
-                y2="14"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                className={`origin-center transition-transform duration-300 ease-out motion-reduce:transition-none ${
-                  open ? '-translate-y-[4px] -rotate-45' : ''
-                }`}
-              />
-            </svg>
-          </button>
+            <ThemeToggle />
+
+            <button
+              ref={toggleRef}
+              type="button"
+              className="grid min-h-11 min-w-11 place-items-center rounded-md border border-[color:var(--color-line)] md:hidden"
+              aria-expanded={open}
+              aria-controls="site-menu"
+              aria-label="Menu"
+              onClick={toggle}
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <line
+                  x1="3"
+                  y1="6"
+                  x2="17"
+                  y2="6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  className={`origin-center transition-transform duration-300 ease-out motion-reduce:transition-none ${
+                    open ? 'translate-y-[4px] rotate-45' : ''
+                  }`}
+                />
+                <line
+                  x1="3"
+                  y1="10"
+                  x2="17"
+                  y2="10"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  className={`origin-center transition-opacity duration-200 ease-out motion-reduce:transition-none ${
+                    open ? 'opacity-0' : 'opacity-100'
+                  }`}
+                />
+                <line
+                  x1="3"
+                  y1="14"
+                  x2="17"
+                  y2="14"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  className={`origin-center transition-transform duration-300 ease-out motion-reduce:transition-none ${
+                    open ? '-translate-y-[4px] -rotate-45' : ''
+                  }`}
+                />
+              </svg>
+            </button>
+          </div>
         </div>
       </header>
 

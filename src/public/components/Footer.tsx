@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { BUSINESS } from '../../shared/business';
-import { ThemeSwitcher } from '../../shared/ThemeSwitcher';
 
 /**
  * Footer NAP + links. Uses the `BUSINESS` constants, which mirror the `site_settings`
@@ -64,7 +63,6 @@ export function Footer() {
           <p>
             Serving {BUSINESS.serviceAreaSummary}. © {year} {BUSINESS.name}.
           </p>
-          <ThemeSwitcher />
         </div>
       </div>
     </footer>

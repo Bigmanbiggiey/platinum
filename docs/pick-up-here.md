@@ -16,7 +16,7 @@
 | **3 — Admin MVP** | 🟢 **Functionally complete (WP1–WP13).** Left: WP14 owner acceptance run; `gen types` cleanup. |
 | **Jobs (ADR-0014)** | ✅ **J1** work orders (PR #4), **J2** publish to portfolio (PRs #16–#20), **J3** client review links (PR #21): all **live and accepted**. |
 | **RBAC (owner/staff)** | ✅ **R-A** invites, **R-B** permissions, **R-C** attribution, **R-D** review/assignment/walk-ins (PRs #9–#15): all live. |
-| **Themes** | ✅ Light / Dark / System on the site (footer) and admin (header), no flash (PR #23). |
+| **Themes** | ✅ No flash (PR #23). Public site: a sun/moon **toggle in the header** (next to ☰ on phones; replaces the footer picker). Admin: System / Light / Dark picker in the header (drawer on phones). |
 | **Rename** | ✅ **Platinum Motor Services** across the site, admin, emails and docs (PR #24, 2026-10-19). PM monogram favicon. Kept: `platinum-point` URLs/slugs, `ppae-*` asset names, `PP-` job numbers. |
 | **PMS Admin app (ADR-0015)** | ✅ Admin installable as a PWA on Android and iPhone (PR #25, 2026-10-20), live. Left: owner's real-phone checks (below). |
 

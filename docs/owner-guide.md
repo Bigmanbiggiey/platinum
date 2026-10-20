@@ -185,6 +185,10 @@ approved at once and shown publicly as *"Shared with us by the client"*.
 
 ## Editing the website
 
+Visitors switch the public site between light and dark with the **sun/moon button** in
+its top bar (next to the menu button on phones). It follows their phone's setting until
+they tap it.
+
 Everything under **Website content**:
 
 - **Services** — your list of services. Each has a **Published** switch (draft services

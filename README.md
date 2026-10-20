@@ -20,7 +20,10 @@ TECHBIGGIEY case-study project.
   Privacy, and the client review page (`/review/<code>`).
 - Forms go to one `submit` Edge Function (honeypot + timing checks; Turnstile when keys
   are set) and arrive in the admin as requests.
-- Call / WhatsApp buttons everywhere. JSON-LD (`AutoRepair`), sitemap, light/dark theme.
+- Call / WhatsApp buttons everywhere. JSON-LD (`AutoRepair`), sitemap.
+- **Light/dark toggle** (sun/moon) in the header, next to the menu button on phones. It
+  follows the device until tapped; tapping back to the device's own scheme follows it
+  again. The admin keeps its System / Light / Dark picker.
 
 **Admin** (`/admin`, client-only, never indexed):
 
