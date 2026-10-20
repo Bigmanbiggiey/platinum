@@ -20,7 +20,7 @@ export function ThemeToggle() {
       aria-pressed={resolved === 'dark'}
       title={`Switch to ${next} theme`}
       onClick={() => setPref(next === system ? 'system' : next)}
-      className="grid min-h-11 min-w-11 shrink-0 place-items-center rounded-md border border-[color:var(--color-line)] text-[color:var(--color-ink)] hover:border-signal"
+      className="grid min-h-11 min-w-11 shrink-0 place-items-center rounded-md text-[color:var(--color-ink)]"
     >
       <svg
         className="when-light"
