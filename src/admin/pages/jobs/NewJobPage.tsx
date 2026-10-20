@@ -18,6 +18,7 @@ import { getDb } from '../../lib/db';
 import { jobPrefillFromRequest, vehicleLabel } from '../../lib/jobs';
 import { useRole } from '../../auth/authContext';
 import { WalkInForm } from './WalkInForm';
+import { BackLink } from '../../../shared/lib/BackLink';
 
 const NEW_VEHICLE = 'new';
 
@@ -126,12 +127,12 @@ function OwnerNewJobPage() {
     <section className="space-y-4">
       <PageTitle
         actions={
-          <Link
+          <BackLink
             to={requestId ? `/admin/requests/${requestId}` : '/admin/jobs'}
             className="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]"
           >
             ← Back
-          </Link>
+          </BackLink>
         }
       >
         {req ? `New job for ${req.contact_name}` : 'New job'}

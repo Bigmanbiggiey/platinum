@@ -4,7 +4,7 @@ import { BUSINESS } from '../../shared/business';
 /** Persistent Call / WhatsApp bar, mobile only. */
 export function MobileContactBar() {
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-2 border-t border-[color:var(--color-line)] bg-[color:var(--color-ground)] md:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-2 border-t border-[color:var(--color-line)] bg-[color:var(--color-ground)] pb-[env(safe-area-inset-bottom)] md:hidden">
       <a
         href={`tel:${BUSINESS.phoneE164}`}
         onClick={() => trackCta('call_click', { context: 'mobile-bar' })}

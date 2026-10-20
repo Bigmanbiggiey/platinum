@@ -18,6 +18,7 @@
 | **RBAC (owner/staff)** | ✅ **R-A** invites, **R-B** permissions, **R-C** attribution, **R-D** review/assignment/walk-ins (PRs #9–#15): all live. |
 | **Themes** | ✅ No flash (PR #23). Public site: a sun/moon **toggle in the header** (next to ☰ on phones; replaces the footer picker). Admin: System / Light / Dark picker in the header (drawer on phones). |
 | **Rename** | ✅ **Platinum Motor Services** across the site, admin, emails and docs (PR #24, 2026-10-19). PM monogram favicon. Kept: `platinum-point` URLs/slugs, `ppae-*` asset names, `PP-` job numbers. |
+| **Mobile Phase B + navigation fixes** | ✅ Built (`docs/superpowers/plans/2026-10-20-mobile-phase-b.md`): pages open at the top; in-site back links match the phone's Back; Requests cards (phones) + fixed table header; Services/Portfolio rows fit phones; swipe-to-close admin drawer; staff bottom tab bar; footer tap targets; Home readout chip. `check:mobile`: 205 checks. |
 | **PMS Admin app (ADR-0015)** | ✅ Admin installable as a PWA on Android and iPhone (PR #25, 2026-10-20), live. Left: owner's real-phone checks (below). |
 
 ## What's live / where

@@ -212,8 +212,67 @@ async function checkPublic(browser, w, h) {
   await ctx.close();
 }
 
-async function checkAdmin(browser, ref, w, h, role) {
-  const tag = `admin ${role} ${w}x${h}`;
+/** Clearly fake sample rows for the admin pages under test (never real customers). */
+const SAMPLE = {
+  service_request: [
+    'Sample Wanjiru',
+    'Sample Otieno',
+    'Sample Achieng',
+    'Sample Mwangi',
+    'Sample Kiprotich',
+    'Sample Fatuma',
+  ].map((n, i) => ({
+    id: `00000000-0000-4000-8000-0000000001${i}0`,
+    created_at: new Date(Date.now() - i * 86400000).toISOString(),
+    contact_name: n,
+    contact_phone: `+2547000000${i}0`,
+    request_type: ['booking', 'service', 'inspection', 'contact'][i % 4],
+    area: ['Kitengela', 'Syokimau', null, 'Nairobi CBD — Upper Hill'][i % 4],
+    status: ['new', 'contacted', 'scheduled', 'completed'][i % 4],
+  })),
+  service: [
+    'Mobile Mechanic & General Repairs',
+    'Pre-Purchase Vehicle Inspection',
+    'Engineering — Press & Lathe',
+    'Bodywork (via trusted partners)',
+    'Preventive Maintenance',
+    'Road Tests',
+    'Vehicle Diagnostics',
+    'Mechanical Inspection',
+    'Vehicle Assessment',
+  ].map((t, i) => ({
+    id: `00000000-0000-4000-8000-0000000002${i}0`,
+    title: t,
+    slug: t
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, ''),
+    category: ['Repairs', 'Inspections', 'Engineering', 'Bodywork'][i % 4],
+    display_order: (i + 1) * 10,
+    is_published: i % 3 !== 2,
+    summary: '',
+    description_md: '',
+  })),
+  portfolio_project: [
+    'Toyota Fielder — overheating traced to a failed thermostat housing',
+    'Nissan X-Trail CVT judder diagnosis',
+  ].map((t, i) => ({
+    id: `00000000-0000-4000-8000-0000000003${i}0`,
+    title: t,
+    slug: t
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, ''),
+    display_order: (i + 1) * 10,
+    is_published: i === 0,
+    job_id: i === 0 ? '00000000-0000-4000-8000-000000000999' : null,
+    summary: '',
+    body_md: '',
+  })),
+};
+
+/** A browser context signed in as `role`, with every Supabase request answered here. */
+async function adminContext(browser, ref, w, h, role) {
   const b64 = (o) => Buffer.from(JSON.stringify(o)).toString('base64url');
   const exp = Math.floor(Date.now() / 1000) + 3600;
   const id = '00000000-0000-4000-8000-000000000001';
@@ -258,8 +317,24 @@ async function checkAdmin(browser, ref, w, h, role) {
           is_active: true,
         },
       });
-    return route.fulfill({ headers: { 'content-range': '0-0/0' }, json: [] });
+    const table = new URL(url).pathname.split('/rest/v1/')[1]?.split('?')[0];
+    const single = (route.request().headers()['accept'] ?? '').includes('vnd.pgrst.object');
+    const rows = SAMPLE[table];
+    if (rows) {
+      const idEq = new URL(url).searchParams.get('id')?.replace(/^eq\./, '');
+      return route.fulfill({
+        headers: { 'content-range': `0-${rows.length - 1}/${rows.length}` },
+        json: single ? (rows.find((r) => r.id === idEq) ?? rows[0]) : rows,
+      });
+    }
+    return route.fulfill({ headers: { 'content-range': '0-0/0' }, json: single ? null : [] });
   });
+  return ctx;
+}
+
+async function checkAdmin(browser, ref, w, h, role) {
+  const tag = `admin ${role} ${w}x${h}`;
+  const ctx = await adminContext(browser, ref, w, h, role);
   const page = await ctx.newPage();
   await page.goto(`${BASE}/admin`, { waitUntil: 'networkidle' });
   await page.waitForTimeout(600);
@@ -303,7 +378,12 @@ async function checkAdmin(browser, ref, w, h, role) {
   await page.screenshot({ path: `${OUT}/admin-${role}-${w}x${h}.png` });
 
   if (w < 768) {
-    const toggle = page.locator('header button[aria-controls="admin-drawer"]');
+    // Staff open the drawer from the Account tab; everyone else from ☰.
+    const opener =
+      role === 'staff'
+        ? 'nav[aria-label="Staff"] button[aria-controls="admin-drawer"]'
+        : 'header button[aria-controls="admin-drawer"]';
+    const toggle = page.locator(opener);
     const box = await toggle.boundingBox();
     check(
       box.width >= MIN_TARGET && box.height >= MIN_TARGET,
@@ -355,19 +435,184 @@ async function checkAdmin(browser, ref, w, h, role) {
     await page.screenshot({ path: `${OUT}/admin-${role}-${w}x${h}-drawer.png` });
     await page.keyboard.press('Escape');
     await page.waitForTimeout(400);
-    const esc = await page.evaluate(() => ({
-      closed:
-        document
-          .querySelector('header button[aria-controls="admin-drawer"]')
-          .getAttribute('aria-expanded') === 'false',
-      focus: document.activeElement?.getAttribute('aria-controls') === 'admin-drawer',
-    }));
+    const esc = await page.evaluate(
+      (sel) => ({
+        closed: document.querySelector(sel).getAttribute('aria-expanded') === 'false',
+        focus: document.activeElement === document.querySelector(sel),
+      }),
+      opener,
+    );
     check(esc.closed && esc.focus, `${tag}: Escape closes the drawer and returns focus`);
   }
   await ctx.close();
 }
 
 const browser = await chromium.launch({ channel: CHANNEL });
+
+/** F1 + F2 on the public site: new pages open at the top; in-site back never "undoes". */
+async function checkPublicNavigation(browser) {
+  const tag = 'public nav 390x844';
+  const ctx = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+  });
+  const page = await ctx.newPage();
+  await page.goto(`${BASE}/`, { waitUntil: 'networkidle' });
+  await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
+  await page.waitForTimeout(300);
+  const homeY = await page.evaluate(() => scrollY);
+  await page.locator('footer a[href="/services"]').first().click();
+  await page.waitForURL('**/services');
+  await page.waitForTimeout(500);
+  check((await page.evaluate(() => scrollY)) === 0, `${tag}: a new page opens at the top`);
+  await page.goBack();
+  await page.waitForTimeout(700);
+  check(
+    Math.abs((await page.evaluate(() => scrollY)) - homeY) < 120,
+    `${tag}: Back returns to where you were`,
+  );
+
+  await page.goto(`${BASE}/services`, { waitUntil: 'networkidle' });
+  await page.locator('main a[href^="/services/"]').first().click();
+  await page.waitForTimeout(700);
+  const detail = new URL(page.url()).pathname;
+  await page.locator('main a[href="/services"]').first().click();
+  await page.waitForTimeout(700);
+  check(new URL(page.url()).pathname === '/services', `${tag}: breadcrumb goes to Services`);
+  await page.goBack();
+  await page.waitForTimeout(700);
+  check(
+    new URL(page.url()).pathname !== detail,
+    `${tag}: phone Back after the breadcrumb does not undo it`,
+  );
+  await ctx.close();
+}
+
+/** F1–F4 + B-2 in the admin. */
+async function checkAdminPages(browser, ref, w, h) {
+  const tag = `admin pages ${w}x${h}`;
+  const ctx = await adminContext(browser, ref, w, h, 'owner');
+  const page = await ctx.newPage();
+
+  // F3 Requests: cards on phones, a table with its header above the rows from 768 px.
+  await page.goto(`${BASE}/admin/requests`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(500);
+  const req = await page.evaluate(() => {
+    const main = document.getElementById('admin-main');
+    const table = main.querySelector('table');
+    const tableShown = !!table && getComputedStyle(table).display !== 'none';
+    const cards = [...main.querySelectorAll('ul li a')].filter(
+      (a) => a.getBoundingClientRect().height > 0,
+    );
+    const thead = table?.querySelector('thead')?.getBoundingClientRect();
+    const row1 = table?.querySelector('tbody tr')?.getBoundingClientRect();
+    return {
+      innerWidth,
+      tableShown,
+      cards: cards.length,
+      headerAboveRows: !!thead && !!row1 && thead.bottom <= row1.top + 1,
+    };
+  });
+  check(req.innerWidth === w, `${tag}: Requests fits the screen`);
+  if (w < 768)
+    check(
+      req.cards === 6 && !req.tableShown,
+      `${tag}: Requests shows cards on phones (${req.cards})`,
+    );
+  else
+    check(
+      req.tableShown && req.headerAboveRows,
+      `${tag}: Requests table header sits above the rows`,
+    );
+  await page.screenshot({ path: `${OUT}/admin-requests-${w}x${h}.png`, fullPage: true });
+
+  // F4 Services / Portfolio rows fit.
+  for (const [name, path] of [
+    ['services', '/admin/content/services'],
+    ['portfolio', '/admin/content/portfolio'],
+  ]) {
+    await page.goto(`${BASE}${path}`, { waitUntil: 'networkidle' });
+    await page.waitForTimeout(500);
+    const fit = await page.evaluate(() => {
+      const main = document.getElementById('admin-main');
+      const rows = [...main.querySelectorAll('a[href*="/admin/content/"]')].filter(
+        (a) => !a.textContent.includes('Content'),
+      );
+      return {
+        innerWidth,
+        rows: rows.length,
+        overflowing: rows.filter((a) => a.scrollWidth > a.clientWidth + 1).length,
+      };
+    });
+    check(
+      fit.innerWidth === w && fit.overflowing === 0 && fit.rows > 0,
+      `${tag}: ${name} rows fit (${fit.rows} rows)`,
+    );
+    await page.screenshot({ path: `${OUT}/admin-${name}-${w}x${h}.png`, fullPage: true });
+  }
+
+  // F1 admin: a new page opens at the top.
+  await page.goto(`${BASE}/admin/content/services`, { waitUntil: 'networkidle' });
+  await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
+  await page.waitForTimeout(300);
+  await page.locator('#admin-main a[href^="/admin/content/services/"]').last().click();
+  await page.waitForTimeout(700);
+  check((await page.evaluate(() => scrollY)) === 0, `${tag}: a new page opens at the top`);
+
+  // F2 admin: Content → Services → "← Content" → phone Back leaves, never returns to Services.
+  await page.goto(`${BASE}/admin/content`, { waitUntil: 'networkidle' });
+  await page.locator('#admin-main a[href="/admin/content/services"]').click();
+  await page.waitForTimeout(500);
+  await page.locator('#admin-main a', { hasText: 'Content' }).first().click();
+  await page.waitForTimeout(500);
+  check(
+    new URL(page.url()).pathname === '/admin/content',
+    `${tag}: ← Content goes back to Content`,
+  );
+  await page.goBack().catch(() => null);
+  await page.waitForTimeout(500);
+  check(
+    !page.url().endsWith('/admin/content/services'),
+    `${tag}: phone Back after ← Content does not undo it`,
+  );
+  await ctx.close();
+}
+
+/** B-2: staff get a bottom tab bar on phones instead of ☰. */
+async function checkStaffTabs(browser, ref) {
+  const tag = 'admin staff tabs 360x780';
+  const ctx = await adminContext(browser, ref, 360, 780, 'staff');
+  const page = await ctx.newPage();
+  await page.goto(`${BASE}/admin/jobs`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(500);
+  const t = await page.evaluate(() => {
+    const bar = document.querySelector('nav[aria-label="Staff"]');
+    const menu = document.querySelector('header button[aria-controls="admin-drawer"]');
+    const items = bar ? [...bar.querySelectorAll('a, button')] : [];
+    return {
+      shown: !!bar && getComputedStyle(bar).display !== 'none',
+      labels: items.map((i) => i.textContent.trim()),
+      smallest: Math.min(...items.map((i) => i.getBoundingClientRect().height)),
+      menuHidden: !!menu && getComputedStyle(menu).display === 'none',
+    };
+  });
+  check(
+    t.shown && t.labels.join(',') === 'Jobs,Schedule,Account',
+    `${tag}: Jobs · Schedule · Account (${t.labels.join(',')})`,
+  );
+  check(t.smallest >= MIN_TARGET, `${tag}: tabs ≥ ${MIN_TARGET}px`);
+  check(t.menuHidden, `${tag}: no ☰ for staff on phones`);
+  await page.locator('nav[aria-label="Staff"] button').tap();
+  await page.waitForTimeout(500);
+  check(
+    await page.evaluate(() => !document.getElementById('admin-drawer').hasAttribute('inert')),
+    `${tag}: Account opens the drawer`,
+  );
+  await page.screenshot({ path: `${OUT}/admin-staff-tabs-360x780.png` });
+  await ctx.close();
+}
+
 /** A step that throws (element never appeared, timeout) is a failed check, not a crash. */
 async function run(label, fn) {
   try {
@@ -379,6 +624,7 @@ async function run(label, fn) {
 
 try {
   for (const [w, h] of VIEWPORTS) await run(`public ${w}x${h}`, () => checkPublic(browser, w, h));
+  await run('public nav', () => checkPublicNavigation(browser));
   const ref = supabaseRef();
   if (!ref) {
     console.warn('[check-mobile] VITE_SUPABASE_URL not set — admin checks skipped.');
@@ -386,6 +632,15 @@ try {
     for (const [w, h] of VIEWPORTS)
       await run(`admin owner ${w}x${h}`, () => checkAdmin(browser, ref, w, h, 'owner'));
     await run('admin staff 320x568', () => checkAdmin(browser, ref, 320, 568, 'staff'));
+    for (const [w, h] of [
+      [360, 780],
+      [390, 844],
+      [768, 1024],
+      [1280, 900],
+    ]) {
+      await run(`admin pages ${w}x${h}`, () => checkAdminPages(browser, ref, w, h));
+    }
+    await run('admin staff tabs', () => checkStaffTabs(browser, ref));
   }
 } finally {
   await browser.close();

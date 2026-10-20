@@ -31,9 +31,11 @@ export function PortfolioListPage() {
     <section className="space-y-4">
       <PageTitle actions={<ContentBackLink />}>Portfolio</PageTitle>
       <Card className="flex flex-wrap items-end gap-2">
-        <Labeled label="New project title">
-          <Input value={title} onChange={(e) => setTitle(e.target.value)} />
-        </Labeled>
+        <div className="min-w-[12rem] flex-1">
+          <Labeled label="New project title">
+            <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+          </Labeled>
+        </div>
         <Button
           variant="accent"
           disabled={!title.trim() || create.isPending}
@@ -61,19 +63,20 @@ export function PortfolioListPage() {
             <Link
               key={p.id}
               to={`/admin/content/portfolio/${p.id}`}
-              className="flex items-center gap-3 px-4 py-2.5 hover:bg-[color:var(--color-ground)]"
+              className="flex items-start gap-3 px-4 py-3 hover:bg-[color:var(--color-ground)]"
             >
+              {/* Title first (wraps freely), details on a second line that can wrap too. */}
+              <span className="min-w-0 flex-1">
+                <span className="block font-semibold text-[color:var(--color-ink)]">{p.title}</span>
+                <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] text-[color:var(--color-muted)]">
+                  <span className="break-all">/{p.slug}</span>
+                  <span>#{p.display_order}</span>
+                  {p.job_id && <Badge tone="neutral">Documented job</Badge>}
+                </span>
+              </span>
               <Badge tone={p.is_published ? 'pass' : 'muted'}>
                 {p.is_published ? 'live' : 'draft'}
               </Badge>
-              <span className="font-semibold text-[color:var(--color-ink)]">{p.title}</span>
-              {p.job_id && <Badge tone="neutral">Documented job</Badge>}
-              <span className="font-mono text-[11px] text-[color:var(--color-muted)]">
-                /{p.slug}
-              </span>
-              <span className="ml-auto font-mono text-[10px] text-[color:var(--color-muted)]">
-                #{p.display_order}
-              </span>
             </Link>
           ))}
         </Card>

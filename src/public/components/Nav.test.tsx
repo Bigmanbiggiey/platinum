@@ -5,6 +5,12 @@ import { PublicLayout } from '../PublicLayout';
 
 vi.mock('vite-react-ssg', () => ({ Head: () => null }));
 vi.mock('./CfAnalytics', () => ({ CfAnalytics: () => null }));
+// ScrollRestoration needs a data router; jsdom can't drive one (its AbortSignal isn't
+// the one Node's fetch expects). Scrolling is covered in a real browser by check:mobile.
+vi.mock('react-router-dom', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('react-router-dom')>()),
+  ScrollRestoration: () => null,
+}));
 
 /** Phone width, reduced motion (no GSAP in jsdom): the menu opens and closes instantly. */
 function setPhone() {

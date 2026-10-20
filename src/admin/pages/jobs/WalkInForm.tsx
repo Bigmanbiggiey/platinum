@@ -1,9 +1,10 @@
 import { useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button, Card, Input, Labeled, PageTitle, Textarea } from '../../components/ui';
 import { vehicles, type AdminVehicle } from '../../lib/resources';
 import { useCreateJob } from '../../lib/jobData';
 import { vehicleLabel } from '../../lib/jobs';
+import { BackLink } from '../../../shared/lib/BackLink';
 
 /**
  * Staff check-in (D5): vehicle details only — no client, no request. The database
@@ -57,12 +58,12 @@ export function WalkInForm() {
     <section className="space-y-4">
       <PageTitle
         actions={
-          <Link
+          <BackLink
             to="/admin/jobs"
             className="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]"
           >
             ← Back
-          </Link>
+          </BackLink>
         }
       >
         Check in a walk-in

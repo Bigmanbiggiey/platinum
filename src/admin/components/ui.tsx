@@ -115,7 +115,7 @@ export function Badge({
   } as const;
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest ${tones[tone]}`}
+      className={`inline-flex shrink-0 items-center whitespace-nowrap rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest ${tones[tone]}`}
     >
       {children}
     </span>

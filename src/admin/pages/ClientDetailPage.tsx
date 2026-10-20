@@ -18,6 +18,7 @@ import { getDb, statusTone } from '../lib/db';
 import { useClientJobs } from '../lib/jobData';
 import { groupJobsByVehicle, jobStatusLabel, jobStatusTone } from '../lib/jobs';
 import { InlineCrud, type FieldDef } from '../components/InlineCrud';
+import { BackLink } from '../../shared/lib/BackLink';
 
 const vehicleFields: FieldDef[] = [
   { key: 'make', label: 'Make' },
@@ -69,12 +70,12 @@ export function ClientDetailPage() {
       <PageTitle
         actions={
           <div className="flex gap-2">
-            <Link
+            <BackLink
               to="/admin/clients"
               className="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]"
             >
               ← Clients
-            </Link>
+            </BackLink>
             <Button
               variant="accent"
               disabled={update.isPending}

@@ -32,9 +32,11 @@ export function ServicesListPage() {
       <PageTitle actions={<ContentBackLink />}>Services</PageTitle>
 
       <Card className="flex flex-wrap items-end gap-2">
-        <Labeled label="New service title">
-          <Input value={title} onChange={(e) => setTitle(e.target.value)} />
-        </Labeled>
+        <div className="min-w-[12rem] flex-1">
+          <Labeled label="New service title">
+            <Input value={title} onChange={(e) => setTitle(e.target.value)} />
+          </Labeled>
+        </div>
         <Button
           variant="accent"
           disabled={!title.trim() || create.isPending}
@@ -62,21 +64,20 @@ export function ServicesListPage() {
             <Link
               key={s.id}
               to={`/admin/content/services/${s.id}`}
-              className="flex items-center gap-3 px-4 py-2.5 hover:bg-[color:var(--color-ground)]"
+              className="flex items-start gap-3 px-4 py-3 hover:bg-[color:var(--color-ground)]"
             >
+              {/* Title first (wraps freely), details on a second line that can wrap too. */}
+              <span className="min-w-0 flex-1">
+                <span className="block font-semibold text-[color:var(--color-ink)]">{s.title}</span>
+                <span className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 font-mono text-[11px] text-[color:var(--color-muted)]">
+                  <span className="break-all">/{s.slug}</span>
+                  {s.category && <span>{s.category}</span>}
+                  <span>#{s.display_order}</span>
+                </span>
+              </span>
               <Badge tone={s.is_published ? 'pass' : 'muted'}>
                 {s.is_published ? 'live' : 'draft'}
               </Badge>
-              <span className="font-semibold text-[color:var(--color-ink)]">{s.title}</span>
-              <span className="font-mono text-[11px] text-[color:var(--color-muted)]">
-                /{s.slug}
-              </span>
-              {s.category && (
-                <span className="text-sm text-[color:var(--color-muted)]">{s.category}</span>
-              )}
-              <span className="ml-auto font-mono text-[10px] text-[color:var(--color-muted)]">
-                #{s.display_order}
-              </span>
             </Link>
           ))}
         </Card>
