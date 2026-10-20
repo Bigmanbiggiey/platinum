@@ -61,7 +61,64 @@ async function checkPublic(browser, w, h) {
       .every((e) => e.getBoundingClientRect().right <= innerWidth + 0.5),
   );
   check(headerOk, `${tag}: nothing in the header is cut off`);
+  const publicWrapped = await page.evaluate(() => {
+    const out = [];
+    const header = document.querySelector('header');
+    const walker = document.createTreeWalker(header, NodeFilter.SHOW_TEXT);
+    for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+      if (!n.textContent.trim()) continue;
+      const range = document.createRange();
+      range.selectNodeContents(n);
+      const tops = new Set(
+        [...range.getClientRects()].filter((r) => r.width > 0).map((r) => Math.round(r.top)),
+      );
+      if (tops.size > 1) out.push(n.textContent.trim());
+    }
+    return out;
+  });
+  check(
+    publicWrapped.length === 0,
+    `${tag}: nothing wraps in the header ${JSON.stringify(publicWrapped)}`,
+  );
   await page.screenshot({ path: `${OUT}/public-${w}x${h}.png` });
+
+  // Light/dark toggle: in the header at every size, next to Menu on phones, not in the footer.
+  const theme = page.locator('header button[aria-label="Dark theme"]');
+  const tb = await theme.boundingBox();
+  check(
+    !!tb && tb.width >= MIN_TARGET && tb.height >= MIN_TARGET,
+    `${tag}: theme toggle in the header, ≥ ${MIN_TARGET}px`,
+  );
+  check(
+    (await page
+      .locator('footer input[type="radio"], footer button[aria-label="Dark theme"]')
+      .count()) === 0,
+    `${tag}: no theme control in the footer`,
+  );
+  if (w < 768) {
+    const mb = await page.locator('header button[aria-controls="site-menu"]').boundingBox();
+    check(
+      !!tb && !!mb && mb.x - (tb.x + tb.width) <= 16 && Math.abs(mb.y - tb.y) <= 2,
+      `${tag}: theme toggle sits next to Menu`,
+    );
+  }
+  const before = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  await theme.tap();
+  await page.waitForTimeout(200);
+  const after = await page.evaluate(() => ({
+    bg: getComputedStyle(document.body).backgroundColor,
+    pressed: document
+      .querySelector('header button[aria-label="Dark theme"]')
+      .getAttribute('aria-pressed'),
+  }));
+  check(after.bg !== before && after.pressed === 'true', `${tag}: toggle switches to dark`);
+  await page.screenshot({ path: `${OUT}/public-${w}x${h}-dark.png` });
+  await theme.tap();
+  await page.waitForTimeout(200);
+  check(
+    (await page.evaluate(() => document.documentElement.dataset.theme)) === undefined,
+    `${tag}: second tap follows the device again`,
+  );
 
   const toggle = page.locator('header button[aria-controls="site-menu"]');
   if (w >= 768) {

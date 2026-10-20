@@ -12,7 +12,7 @@ export function Wordmark() {
     // users can say what they see (WCAG 2.5.3, Label in Name).
     <Link to="/" className="group flex items-center gap-3">
       <DatumMark size="sm" />
-      <span className="leading-none">
+      <span className="whitespace-nowrap leading-none">
         <span className="block text-lg font-bold tracking-tight text-[color:var(--color-ink)]">
           Platinum
         </span>{' '}

@@ -8,7 +8,8 @@ const OPTIONS: { value: ThemePref; label: string }[] = [
 ];
 
 /**
- * Light / Dark / System picker, shared by the public footer and the admin header.
+ * Light / Dark / System picker for the admin (header, and the drawer on phones). The
+ * public site uses the one-tap ThemeToggle in its header instead.
  * Native radios (arrow keys, one tab stop, announced as a group) styled as a segmented
  * control. "System" says what it currently resolves to. `compact` shows icons only;
  * `stacked` puts the label above three equal buttons that fill a narrow column (the

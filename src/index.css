@@ -100,6 +100,26 @@
   color-scheme: dark;
 }
 
+/* Show an element only in the light or only in the dark scheme, decided by CSS so it is
+   right from first paint on prerendered pages (the header theme toggle's sun/moon). */
+.when-dark {
+  display: none;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .when-light {
+    display: none;
+  }
+  :root:not([data-theme='light']) .when-dark {
+    display: revert;
+  }
+}
+:root[data-theme='dark'] .when-light {
+  display: none;
+}
+:root[data-theme='dark'] .when-dark {
+  display: revert;
+}
+
 /* Base element styles go in @layer base so Tailwind utilities (e.g. text-paper on a
    link/button) still win — a bare `a {}` outside a layer would override them. */
 @layer base {
