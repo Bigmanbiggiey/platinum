@@ -66,7 +66,14 @@ it remembers your choice.
 **On a phone** the top bar shows only **☰** and the logo. Tap **☰**: the menu slides in
 over the page, and **View site**, the **theme picker**, your name and **Sign out** are at
 the bottom of it (scroll down on a small phone). Close it by tapping **☰** again, tapping
-the dimmed page, or choosing a page.
+the dimmed page, **swiping it to the left**, or choosing a page.
+
+**Staff on a phone** get a bar along the bottom instead of **☰**: **Jobs**, **Schedule**
+and **Account** (Account opens the menu with Sign out and the theme picker).
+
+**Moving around:** every page opens at the top. Links like **← All requests** work like
+your phone's Back button, so pressing Back afterwards never takes you to the page you
+just left. On **Requests**, a phone shows one card per request: tap anywhere on it.
 
 The side menu:
 

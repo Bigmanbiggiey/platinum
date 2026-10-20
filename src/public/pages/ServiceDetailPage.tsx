@@ -1,4 +1,4 @@
-import { useLoaderData, Link, type LoaderFunctionArgs } from 'react-router-dom';
+import { useLoaderData, type LoaderFunctionArgs } from 'react-router-dom';
 import { SeoHead } from '../components/ui/SeoHead';
 import { Section } from '../components/ui/Section';
 import { Container } from '../components/ui/Container';
@@ -9,6 +9,7 @@ import { ButtonLink } from '../components/ui/Button';
 import { NotFoundPage } from './NotFoundPage';
 import { getServiceBySlug, getServices, getSiteSettings } from '../../shared/content/queries';
 import { breadcrumbJsonLd, serviceJsonLd } from '../../shared/seo';
+import { BackLink } from '../../shared/lib/BackLink';
 
 export async function serviceDetailLoader({ params }: LoaderFunctionArgs) {
   const [service, settings] = await Promise.all([
@@ -48,9 +49,9 @@ export function ServiceDetailPage() {
       <section className="border-b border-[color:var(--color-line)] py-14">
         <Container narrow>
           <p className={DATUM_TEXT_CLASS}>
-            <Link to="/services" className="underline underline-offset-2">
+            <BackLink to="/services" className="underline underline-offset-2">
               Services
-            </Link>{' '}
+            </BackLink>{' '}
             / {service.category ?? 'Service'}
           </p>
           <h1 className="mt-3 text-3xl font-bold tracking-tight text-[color:var(--color-ink)] sm:text-4xl">

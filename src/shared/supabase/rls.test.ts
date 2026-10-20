@@ -8,7 +8,7 @@
  *   the environment (a throwaway admin account); skipped otherwise. It signs in and
  *   asserts full CRUD works AND that no anon restriction regressed.
  */
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 const url = import.meta.env.VITE_SUPABASE_URL;
@@ -22,6 +22,10 @@ const adminPassword = process.env.TEST_ADMIN_PASSWORD;
 // An active STAFF account (RBAC R-B). TEST_ADMIN_* must be an OWNER account.
 const staffEmail = process.env.TEST_STAFF_EMAIL;
 const staffPassword = process.env.TEST_STAFF_PASSWORD;
+
+// These call the live Supabase project. Under a full parallel test run a round trip
+// can pass the 5 s default and fail a correct policy, so give each test more room.
+vi.setConfig({ testTimeout: 20_000, hookTimeout: 20_000 });
 
 describe.skipIf(!anon)('RLS — anon role', () => {
   const db = anon!;

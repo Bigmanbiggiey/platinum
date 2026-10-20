@@ -120,6 +120,36 @@ describe('<AdminShell /> on a phone', () => {
     expect(links.map((l) => l.textContent)).toEqual(['Jobs', 'Schedule']);
     expect(within(drawer()).getByRole('region', { name: 'Account' })).toBeInTheDocument();
   });
+
+  it('gives staff a bottom tab bar: Jobs, Schedule, and Account opening the drawer', async () => {
+    renderShell('staff', '/admin/jobs');
+    const tabs = screen.getByRole('navigation', { name: 'Staff' });
+    expect(tabs.className).toMatch(/\bmd:hidden\b/);
+    expect(within(tabs).getByRole('link', { name: 'Jobs' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+    expect(within(tabs).getByRole('link', { name: 'Schedule' })).toHaveAttribute(
+      'href',
+      '/admin/schedule',
+    );
+    const account = within(tabs).getByRole('button', { name: 'Account' });
+    expect(account).toHaveAttribute('aria-controls', 'admin-drawer');
+    // The ☰ button is hidden for staff on phones; the tab bar replaces it.
+    expect(menuButton().className).toMatch(/\bhidden md:grid\b/);
+
+    await userEvent.click(account);
+    expect(account).toHaveAttribute('aria-expanded', 'true');
+    expect(drawer()).not.toHaveAttribute('inert');
+    await userEvent.keyboard('{Escape}');
+    expect(account).toHaveAttribute('aria-expanded', 'false');
+    expect(account).toHaveFocus();
+  });
+
+  it('gives the owner no tab bar', () => {
+    renderShell('owner');
+    expect(screen.queryByRole('navigation', { name: 'Staff' })).not.toBeInTheDocument();
+  });
 });
 
 describe('<AdminShell /> on desktop', () => {

@@ -13,7 +13,7 @@ export function Footer() {
         <div>
           <p className="font-semibold text-[color:var(--color-ink)]">{BUSINESS.name}</p>
           <p className="mt-1 text-sm text-[color:var(--color-muted)]">{BUSINESS.baseAreaDetail}</p>
-          <p className="mt-3 text-sm">
+          <p className="mt-3 text-sm [&_a]:inline-flex [&_a]:min-h-11 [&_a]:items-center md:[&_a]:min-h-0">
             <a href={`tel:${BUSINESS.phoneE164}`} className="font-semibold">
               {BUSINESS.phoneDisplay}
             </a>
@@ -39,7 +39,7 @@ export function Footer() {
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-[color:var(--color-muted)]">
             Site
           </p>
-          <ul className="mt-2 space-y-1 text-sm">
+          <ul className="mt-2 space-y-1 text-sm [&_a]:inline-flex [&_a]:min-h-11 [&_a]:items-center md:[&_a]:min-h-0">
             <li>
               <Link to="/services">Services</Link>
             </li>

@@ -1,4 +1,4 @@
-import { Link, useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { EmptyState, PageTitle, Spinner } from '../../components/ui';
 import { useJob } from '../../lib/jobData';
 import { ActivityTab } from './ActivityTab';
@@ -7,6 +7,7 @@ import { DiagnosisTab } from './DiagnosisTab';
 import { JobHeader } from './JobHeader';
 import { RepairTab } from './RepairTab';
 import { WrapUpTab } from './WrapUpTab';
+import { BackLink } from '../../../shared/lib/BackLink';
 
 const TABS = [
   { key: 'check-in', label: 'Check-in' },
@@ -31,12 +32,12 @@ export function JobDetailPage() {
     <section className="space-y-6">
       <PageTitle
         actions={
-          <Link
+          <BackLink
             to="/admin/jobs"
             className="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]"
           >
             ← All jobs
-          </Link>
+          </BackLink>
         }
       >
         <span className="block font-mono text-xs font-normal text-[color:var(--color-muted)]">

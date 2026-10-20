@@ -126,7 +126,10 @@ Post-build steps (run by `npm run build`, in `scripts/`):
 `BROWSER_CHANNEL=chrome`) through `playwright-core`, with touch emulation at 320, 360,
 390, 430, 667×375, 768 and 1024 px. It checks the public menu and the admin header +
 drawer: no sideways overflow, nothing cut off or wrapping, tap targets ≥ 44 px, Escape /
-backdrop / link closing, scroll lock, `inert`, and focus moving in and back. The admin
+backdrop / link closing, scroll lock, `inert`, and focus moving in and back. It also
+checks that new pages open at the top (and Back returns to where you were), that in-site
+back links never get "undone" by the phone's Back, the admin Requests / Services /
+Portfolio layouts at 360–1280 px, and the staff tab bar. The admin
 runs with a fake session and **every Supabase request is answered inside the test
 browser**, so the real project is never touched. Screenshots go to `tmp/mobile-nav/`
 (git-ignored). It exits 1 on any failure. Run it before any PR that changes layout or

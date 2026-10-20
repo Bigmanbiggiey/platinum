@@ -10,6 +10,8 @@ import { ThemeSwitcher } from '../shared/ThemeSwitcher';
 import { useMenuDismiss } from '../shared/lib/useMenuDismiss';
 import { useMediaQuery } from '../shared/lib/useMediaQuery';
 import { useFocusOnNavigate } from '../shared/lib/useFocusOnNavigate';
+import { useNavTrail, useScrollOnNavigate } from '../shared/lib/navTrail';
+import { useSwipeToClose } from '../shared/lib/useSwipeToClose';
 
 const NAV_KEY = 'pp_admin_nav_expanded';
 
@@ -34,7 +36,10 @@ export function AdminShell() {
   const toggleRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLElement>(null);
   const mainRef = useRef<HTMLElement>(null);
+  const accountTabRef = useRef<HTMLButtonElement>(null);
   const closingForRoute = useRef(false);
+  // Staff on phones navigate with a bottom tab bar instead of ☰ (B-2).
+  const staffTabs = role === 'staff' && isMobile;
 
   const [expanded, setExpanded] = useState<boolean>(() => {
     try {
@@ -67,6 +72,9 @@ export function AdminShell() {
   }, [location.pathname]);
 
   useFocusOnNavigate(mainRef);
+  // New pages open at the top; back links behave like the phone's Back button.
+  useNavTrail();
+  useScrollOnNavigate();
 
   // The drawer is a modal-like overlay on phones only; the desktop rail never locks the page.
   const drawerOpen = expanded && isMobile;
@@ -79,9 +87,11 @@ export function AdminShell() {
     focusOnClose: () => {
       const toPage = closingForRoute.current;
       closingForRoute.current = false;
-      return toPage ? mainRef.current : toggleRef.current;
+      if (toPage) return mainRef.current;
+      return staffTabs ? accountTabRef.current : toggleRef.current;
     },
   });
+  useSwipeToClose(drawerRef, drawerOpen, () => setExpanded(false));
 
   const nav = navFor(role);
 
@@ -110,7 +120,7 @@ export function AdminShell() {
             aria-expanded={expanded}
             aria-controls="admin-drawer"
             onClick={() => setExpanded((v) => !v)}
-            className="grid min-h-11 min-w-11 shrink-0 place-items-center rounded-md border border-[color:var(--color-line)] text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]"
+            className={`${role === 'staff' ? 'hidden md:grid' : 'grid'} min-h-11 min-w-11 shrink-0 place-items-center rounded-md border border-[color:var(--color-line)] text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]`}
           >
             <NavIcon name="menu" />
           </button>
@@ -158,7 +168,7 @@ export function AdminShell() {
         id="admin-drawer"
         ref={drawerRef}
         inert={isMobile && !expanded}
-        className={`fixed bottom-0 left-0 top-16 z-40 flex flex-col overflow-y-auto overflow-x-hidden border-r border-[color:var(--color-line)] bg-[color:var(--color-ground)] py-3 transition-[width,transform] ${
+        className={`fixed bottom-0 left-0 top-16 z-40 flex touch-pan-y flex-col overflow-y-auto overflow-x-hidden border-r border-[color:var(--color-line)] bg-[color:var(--color-ground)] py-3 transition-[width,transform] ${
           expanded
             ? 'w-60 translate-x-0 shadow-[10px_0_30px_rgba(0,0,0,0.45)] md:shadow-[10px_0_30px_rgba(0,0,0,0.45)]'
             : '-translate-x-full shadow-none md:w-16 md:translate-x-0'
@@ -220,11 +230,48 @@ export function AdminShell() {
         </section>
       </aside>
 
+      {/* Staff on phones: Jobs · Schedule · Account (the drawer's account section). */}
+      {role === 'staff' && (
+        <nav
+          aria-label="Staff"
+          className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-3 border-t border-[color:var(--color-line)] bg-[color:var(--color-ground)] pb-[env(safe-area-inset-bottom)] md:hidden"
+        >
+          {nav.map((n) => (
+            <NavLink
+              key={n.to}
+              to={n.to}
+              end={n.end ?? false}
+              className={({ isActive }) =>
+                `flex min-h-14 flex-col items-center justify-center gap-0.5 text-xs font-semibold ${
+                  isActive
+                    ? 'text-[color:var(--color-confirm-text)]'
+                    : 'text-[color:var(--color-muted)]'
+                }`
+              }
+            >
+              <NavIcon name={n.icon} />
+              {n.label}
+            </NavLink>
+          ))}
+          <button
+            ref={accountTabRef}
+            type="button"
+            aria-controls="admin-drawer"
+            aria-expanded={expanded}
+            onClick={() => setExpanded((v) => !v)}
+            className="flex min-h-14 flex-col items-center justify-center gap-0.5 text-xs font-semibold text-[color:var(--color-muted)]"
+          >
+            <NavIcon name="team" />
+            Account
+          </button>
+        </nav>
+      )}
+
       <main
         id="admin-main"
         ref={mainRef}
         tabIndex={-1}
-        className="px-4 py-8 outline-none md:pl-[calc(4rem+1.5rem)] md:pr-6"
+        className={`px-4 py-8 outline-none md:pl-[calc(4rem+1.5rem)] md:pr-6 ${role === 'staff' ? 'pb-24 md:pb-8' : ''}`}
       >
         <div className="mx-auto max-w-5xl">
           <Outlet />

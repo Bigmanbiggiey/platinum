@@ -15,6 +15,7 @@ import {
 import { useConvertToClient, useRequest, useUpdateRequest } from '../lib/requests';
 import { STATUSES, prettyType, statusTone } from '../lib/db';
 import { useJobByRequest } from '../lib/jobData';
+import { BackLink } from '../../shared/lib/BackLink';
 
 function Row({ label, value }: { label: string; value: ReactNode }) {
   if (value === null || value === undefined || value === '') return null;
@@ -51,12 +52,12 @@ export function RequestDetailPage() {
     <section className="space-y-6">
       <PageTitle
         actions={
-          <Link
+          <BackLink
             to="/admin/requests"
             className="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]"
           >
             ← All requests
-          </Link>
+          </BackLink>
         }
       >
         {r.contact_name}

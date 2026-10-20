@@ -20,3 +20,6 @@ if (!window.matchMedia) {
       dispatchEvent: () => false,
     }) as unknown as MediaQueryList;
 }
+
+// jsdom has no layout, so window.scrollTo only logs "Not implemented"; make it a no-op.
+window.scrollTo = (() => {}) as typeof window.scrollTo;

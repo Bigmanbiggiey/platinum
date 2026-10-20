@@ -1,4 +1,4 @@
-import { useLoaderData, Link, type LoaderFunctionArgs } from 'react-router-dom';
+import { useLoaderData, type LoaderFunctionArgs } from 'react-router-dom';
 import { SeoHead } from '../components/ui/SeoHead';
 import { Section } from '../components/ui/Section';
 import { Container } from '../components/ui/Container';
@@ -11,6 +11,7 @@ import { NotFoundPage } from './NotFoundPage';
 import { JobTimeline } from '../components/JobTimeline';
 import { getJobPublic, getProjectBySlug, getProjects } from '../../shared/content/queries';
 import { breadcrumbJsonLd, documentedJobJsonLd } from '../../shared/seo';
+import { BackLink } from '../../shared/lib/BackLink';
 
 export async function portfolioDetailLoader({ params }: LoaderFunctionArgs) {
   const project = await getProjectBySlug(params.slug ?? '');
@@ -61,9 +62,9 @@ export function PortfolioDetailPage() {
       <section className="border-b border-[color:var(--color-line)] py-14">
         <Container narrow>
           <p className={DATUM_TEXT_CLASS}>
-            <Link to="/portfolio" className="underline underline-offset-2">
+            <BackLink to="/portfolio" className="underline underline-offset-2">
               Work
-            </Link>
+            </BackLink>
             {vehicle && ` / ${vehicle}`}
           </p>
           <h1 className="mt-3 text-3xl font-bold tracking-tight text-[color:var(--color-ink)] sm:text-4xl">

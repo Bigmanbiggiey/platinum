@@ -1,17 +1,20 @@
 import { useRef } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, ScrollRestoration } from 'react-router-dom';
 import { Head } from 'vite-react-ssg';
 import { Nav } from './components/Nav';
 import { Footer } from './components/Footer';
 import { MobileContactBar } from './components/MobileContactBar';
 import { CfAnalytics } from './components/CfAnalytics';
 import { useFocusOnNavigate } from '../shared/lib/useFocusOnNavigate';
+import { useNavTrail } from '../shared/lib/navTrail';
 
 /** Public site shell: nav + <Outlet /> + footer + persistent mobile contact bar. */
 export function PublicLayout() {
   // After moving to another page, start keyboard and screen-reader users on its content.
   const mainRef = useRef<HTMLElement>(null);
   useFocusOnNavigate(mainRef);
+  // Lets the breadcrumb "back" links behave like the phone's Back button.
+  useNavTrail();
 
   return (
     <>
@@ -37,6 +40,8 @@ export function PublicLayout() {
       </div>
 
       <MobileContactBar />
+      {/* New pages open at the top; Back/Forward return to where you were. */}
+      <ScrollRestoration />
     </>
   );
 }
