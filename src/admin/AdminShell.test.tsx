@@ -111,13 +111,14 @@ describe('<AdminShell /> on a phone', () => {
     expect(document.getElementById('admin-main')).toHaveFocus();
   });
 
-  it('gives staff Jobs and Schedule plus the account section', async () => {
+  it('gives staff Jobs, Schedule and Install app plus the account section', async () => {
     renderShell('staff', '/admin/jobs');
     await userEvent.click(menuButton());
     const links = within(within(drawer()).getByRole('navigation', { name: 'Admin' })).getAllByRole(
       'link',
     );
-    expect(links.map((l) => l.textContent)).toEqual(['Jobs', 'Schedule']);
+    expect(links.map((l) => l.textContent)).toEqual(['Jobs', 'Schedule', 'Install app']);
+    expect(links[2]).toHaveAttribute('href', '/admin/install');
     expect(within(drawer()).getByRole('region', { name: 'Account' })).toBeInTheDocument();
   });
 
@@ -144,6 +145,12 @@ describe('<AdminShell /> on a phone', () => {
     await userEvent.keyboard('{Escape}');
     expect(account).toHaveAttribute('aria-expanded', 'false');
     expect(account).toHaveFocus();
+  });
+
+  it('keeps Install app out of the staff tab bar', () => {
+    renderShell('staff', '/admin/jobs');
+    const tabs = screen.getByRole('navigation', { name: 'Staff' });
+    expect(within(tabs).queryByRole('link', { name: 'Install app' })).not.toBeInTheDocument();
   });
 
   it('gives the owner no tab bar', () => {

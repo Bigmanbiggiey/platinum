@@ -2,6 +2,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AdminApp } from './AdminApp';
 import { registerAdminServiceWorker } from './pwa/register';
+import { listenForInstallPrompt } from './pwa/useInstallPrompt';
 import '../index.css';
 
 /**
@@ -12,6 +13,9 @@ import '../index.css';
  * there made a hard load of /admin hydrate over the Home page's markup (React #418).
  * Here the root is empty and rendered from scratch, so there is nothing to mismatch.
  */
+// Before React mounts: Chrome's one-time install event can fire while sign-in loads.
+listenForInstallPrompt();
+
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter future={{ v7_startTransition: true }}>
     <Routes>

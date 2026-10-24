@@ -10,6 +10,7 @@ type IconName =
   | 'content'
   | 'settings'
   | 'team'
+  | 'install'
   | 'menu';
 
 const paths: Record<IconName, ReactNode> = {
@@ -67,6 +68,12 @@ const paths: Record<IconName, ReactNode> = {
       <circle cx="9" cy="8" r="3" />
       <path d="M3 20c0-3 3-5 6-5s6 2 6 5" />
       <path d="M18 8v6M15 11h6" />
+    </>
+  ),
+  install: (
+    <>
+      <path d="M12 4v11M7 10l5 5 5-5" />
+      <path d="M5 20h14" />
     </>
   ),
   menu: (

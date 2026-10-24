@@ -1,6 +1,7 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { InstallAppCard } from './InstallAppCard';
+import { resetInstallPromptForTests } from '../pwa/useInstallPrompt';
 
 const ANDROID_UA =
   'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Mobile Safari/537.36';
@@ -26,6 +27,7 @@ describe('InstallAppCard', () => {
   beforeEach(() => {
     localStorage.clear();
     setStandalone(false);
+    resetInstallPromptForTests();
   });
   afterEach(() => vi.restoreAllMocks());
 
