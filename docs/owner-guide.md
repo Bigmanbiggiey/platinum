@@ -25,10 +25,12 @@ full-screen, like any other app.
 **Android (use Chrome):**
 
 1. Open **Chrome** and go to `platinum-point.vercel.app/admin`. Sign in.
-2. On the **Dashboard**, tap **Install** on the "Install the app" card, then **Install**
-   again in the pop-up.
-3. If the card isn't there, reload the page once, or use Chrome's **⋮** menu →
-   **Install app** (or **Add to Home screen → Install**).
+2. Tap **☰ → Install app** (staff: **Account → Install app**), then **Install**, then
+   **Install** again in the pop-up. The owner also gets an "Install the app" card on the
+   **Dashboard**.
+3. No **Install** button? Reload the page once, or use Chrome's **⋮** menu →
+   **Install app** (or **Add to Home screen → Install**). The Install app page shows these
+   steps too.
 4. **PMS Admin** appears on your home screen and in the app drawer.
 
 **iPhone (use Safari):**
@@ -252,8 +254,9 @@ booking confirmations yet, so tell them by call or WhatsApp.
 - **The app shows "You're offline":** check your data or Wi-Fi, then tap **Try again**.
 - **Can't sign in on iPhone after installing:** that's expected the first time. The app
   has its own login. Use **Forgot password?** if needed, then sign in inside the app.
-- **No "Install the app" card:** on iPhone, make sure you're in **Safari**. On Android,
-  reload once or use Chrome's **⋮** menu. It's hidden if you tapped **Not now** before.
+- **No "Install the app" card:** use **☰ → Install app** instead (it's always there
+  until the app is installed, even after **Not now**). On iPhone, make sure you're in
+  **Safari**. On Android, reload once or use Chrome's **⋮** menu.
 - **A staff member can't see something:** staff only see **Jobs** and **Schedule**. That's
   by design.
 - **Anything else:** note what you tapped and what you saw (a screenshot helps), and send

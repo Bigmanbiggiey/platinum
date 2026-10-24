@@ -9,6 +9,7 @@ import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { ResetPasswordPage } from './pages/ResetPasswordPage';
 import { AcceptInvitePage } from './pages/AcceptInvitePage';
 import { DashboardPage } from './pages/DashboardPage';
+import { InstallPage } from './pages/InstallPage';
 import { NotificationsPage } from './pages/NotificationsPage';
 import { RequestsPage } from './pages/RequestsPage';
 import { RequestDetailPage } from './pages/RequestDetailPage';
@@ -54,6 +55,7 @@ export function AdminApp() {
               <Route path="jobs/new" element={<NewJobPage />} />
               <Route path="jobs/:id" element={<JobDetailPage />} />
               <Route path="schedule" element={<SchedulePage />} />
+              <Route path="install" element={<InstallPage />} />
               {/* Owner only */}
               <Route element={<RequireOwner />}>
                 <Route path="notifications" element={<NotificationsPage />} />

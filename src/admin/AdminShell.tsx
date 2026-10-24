@@ -12,6 +12,7 @@ import { useMediaQuery } from '../shared/lib/useMediaQuery';
 import { useFocusOnNavigate } from '../shared/lib/useFocusOnNavigate';
 import { useNavTrail, useScrollOnNavigate } from '../shared/lib/navTrail';
 import { useSwipeToClose } from '../shared/lib/useSwipeToClose';
+import { useInstallPrompt } from './pwa/useInstallPrompt';
 
 const NAV_KEY = 'pp_admin_nav_expanded';
 
@@ -32,6 +33,7 @@ export function AdminShell() {
   const role = useRole();
   const unread = useUnreadCount(role === 'owner');
   const isMobile = useMediaQuery('(max-width: 767px)');
+  const { installed } = useInstallPrompt();
 
   const toggleRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLElement>(null);
@@ -198,6 +200,15 @@ export function AdminShell() {
               )}
             </NavLink>
           ))}
+          {/* Owner and staff; drawer only (not a staff bottom tab). Gone once installed. */}
+          {!installed && (
+            <NavLink to="/admin/install" title="Install app" className={linkClass}>
+              <span className="shrink-0">
+                <NavIcon name="install" />
+              </span>
+              <span className={expanded ? 'flex-1 truncate' : 'sr-only'}>Install app</span>
+            </NavLink>
+          )}
         </nav>
 
         {/* Account — phones only; the header carries these from 640 px up. */}
