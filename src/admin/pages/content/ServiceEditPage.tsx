@@ -4,6 +4,7 @@ import { Button, Card, EmptyState, Input, Labeled, PageTitle, Spinner } from '..
 import { MarkdownField } from '../../components/MarkdownField';
 import { services } from '../../lib/resources';
 import { usePublish } from '../../lib/rebuild';
+import { ContentBackLink } from './ContentBackLink';
 import type { ServiceRow } from '../../../shared/supabase/types';
 
 export function ServiceEditPage() {
@@ -50,6 +51,7 @@ export function ServiceEditPage() {
       <PageTitle
         actions={
           <div className="flex items-center gap-2">
+            <ContentBackLink to="/admin/content/services" label="Services" />
             <label className="flex items-center gap-1.5 text-sm">
               <input
                 type="checkbox"
@@ -129,7 +131,7 @@ export function ServiceEditPage() {
           if (confirm('Delete this service?')) {
             await remove.mutateAsync(id!);
             publish.trigger();
-            navigate('/admin/content/services');
+            navigate('/admin/content/services', { replace: true });
           }
         }}
       >

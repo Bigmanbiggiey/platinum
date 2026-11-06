@@ -15,6 +15,7 @@ import {
 import { MarkdownField } from '../../components/MarkdownField';
 import { media, projects } from '../../lib/resources';
 import { usePublish } from '../../lib/rebuild';
+import { ContentBackLink } from './ContentBackLink';
 import { getDb } from '../../lib/db';
 import { mediaUrl } from '../../../shared/content/media';
 import type { PortfolioProjectRow } from '../../../shared/supabase/types';
@@ -118,6 +119,7 @@ export function PortfolioEditPage() {
       <PageTitle
         actions={
           <div className="flex items-center gap-2">
+            <ContentBackLink to="/admin/content/portfolio" label="Portfolio" />
             <label className="flex items-center gap-1.5 text-sm">
               <input
                 type="checkbox"
@@ -269,7 +271,7 @@ export function PortfolioEditPage() {
           if (confirm('Delete this project?')) {
             await removeProject.mutateAsync(id!);
             publish.trigger();
-            navigate('/admin/content/portfolio');
+            navigate('/admin/content/portfolio', { replace: true });
           }
         }}
       >
@@ -283,7 +285,9 @@ export function PortfolioEditPage() {
 function JobEntryNotice({ project }: { project: PortfolioProjectRow }) {
   return (
     <section className="space-y-4">
-      <PageTitle>{project.title}</PageTitle>
+      <PageTitle actions={<ContentBackLink to="/admin/content/portfolio" label="Portfolio" />}>
+        {project.title}
+      </PageTitle>
       <Card className="space-y-2">
         <p className="text-sm text-[color:var(--color-ink)]">
           This is a <strong>documented job</strong> — its page is built from the job record, so it

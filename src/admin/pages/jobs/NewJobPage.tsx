@@ -131,7 +131,7 @@ function OwnerNewJobPage() {
             to={requestId ? `/admin/requests/${requestId}` : '/admin/jobs'}
             className="font-mono text-[10px] uppercase tracking-widest text-[color:var(--color-muted)] hover:text-[color:var(--color-ink)]"
           >
-            ← Back
+            {requestId ? '← Request' : '← All jobs'}
           </BackLink>
         }
       >
