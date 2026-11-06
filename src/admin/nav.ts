@@ -12,10 +12,21 @@ export interface NavItem {
     | 'clients'
     | 'content'
     | 'settings'
-    | 'team';
+    | 'team'
+    | 'install';
   end?: boolean;
   badge?: boolean;
+  /** In the ☰ drawer / rail only, never a staff bottom tab. */
+  drawerOnly?: boolean;
 }
+
+/** Owner and staff; gone once the app is installed. */
+const INSTALL: NavItem = {
+  to: '/admin/install',
+  label: 'Install app',
+  icon: 'install',
+  drawerOnly: true,
+};
 
 const OWNER_NAV: NavItem[] = [
   { to: '/admin', label: 'Dashboard', icon: 'dashboard', end: true },
@@ -35,8 +46,10 @@ const STAFF_NAV: NavItem[] = [
   { to: '/admin/schedule', label: 'Schedule', icon: 'schedule' },
 ];
 
-export function navFor(role: AdminRole | null): NavItem[] {
-  if (role === 'owner') return OWNER_NAV;
-  if (role === 'staff') return STAFF_NAV;
-  return [];
+export function navFor(
+  role: AdminRole | null,
+  { installed = false }: { installed?: boolean } = {},
+): NavItem[] {
+  const base = role === 'owner' ? OWNER_NAV : role === 'staff' ? STAFF_NAV : [];
+  return base.length && !installed ? [...base, INSTALL] : base;
 }

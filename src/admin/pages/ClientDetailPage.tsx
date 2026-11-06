@@ -219,7 +219,7 @@ export function ClientDetailPage() {
             )
           ) {
             await remove.mutateAsync(id!);
-            navigate('/admin/clients');
+            navigate('/admin/clients', { replace: true });
           }
         }}
       >

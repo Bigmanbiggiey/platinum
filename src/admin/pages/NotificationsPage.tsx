@@ -7,7 +7,9 @@ const linkFor = (entityType: string, entityId: string) =>
     ? `/admin/requests/${entityId}`
     : entityType === 'job'
       ? `/admin/jobs/${entityId}?tab=wrap-up`
-      : '/admin/content';
+      : entityType === 'testimonial'
+        ? '/admin/content/testimonials'
+        : '/admin/content';
 
 export function NotificationsPage() {
   const list = useNotifications();

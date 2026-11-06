@@ -123,7 +123,7 @@ export function DashboardPage() {
         <Stat label="New requests" value={newReqs.data} to="/admin/requests" />
         <Stat label="Open jobs" value={openJobs.data} to="/admin/jobs" />
         <Stat label="Jobs to review" value={toReview.data} to="/admin/jobs?show=review" />
-        <Stat label="Pending testimonials" value={pendingT.data} to="/admin/content" />
+        <Stat label="Pending testimonials" value={pendingT.data} to="/admin/content/testimonials" />
         <Stat label="Clients" value={clients.data} to="/admin/clients" />
         <Stat label="Vehicles" value={vehicles.data} />
       </div>

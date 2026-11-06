@@ -383,7 +383,7 @@ function DeleteCard({ job }: { job: JobWithRefs }) {
               setError((e as Error).message);
               return;
             }
-            navigate('/admin/jobs');
+            navigate('/admin/jobs', { replace: true });
           }
         }}
       >
