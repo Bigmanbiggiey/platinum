@@ -7,25 +7,11 @@ import { ThemeToggle } from './ThemeToggle';
 import { loadGsapCore, prefersReducedMotion } from '../../shared/lib/scrollFx';
 import { useMenuDismiss } from '../../shared/lib/useMenuDismiss';
 import { useMediaQuery } from '../../shared/lib/useMediaQuery';
+import { BOOK_LINK, navFor } from '../nav';
 
-const links = [
-  { to: '/services', label: 'Services' },
-  { to: '/portfolio', label: 'Work' },
-  { to: '/service-areas', label: 'Areas' },
-  { to: '/about', label: 'About' },
-  { to: '/contact', label: 'Contact' },
-];
-
+const links = navFor('header');
 /** The phone menu adds Home and Testimonials; Book a service follows as a button. */
-const mobileLinks = [
-  { to: '/', label: 'Home', end: true },
-  { to: '/services', label: 'Services' },
-  { to: '/portfolio', label: 'Work' },
-  { to: '/service-areas', label: 'Areas' },
-  { to: '/testimonials', label: 'Testimonials' },
-  { to: '/about', label: 'About' },
-  { to: '/contact', label: 'Contact' },
-];
+const mobileLinks = navFor('menu');
 
 /**
  * Site header. From 768 px: inline links + Call/WhatsApp. Below: a Menu button opening a
@@ -167,7 +153,7 @@ export function Nav() {
 
           <nav className="hidden items-center gap-5 md:flex lg:gap-6" aria-label="Primary">
             {links.map((l) => (
-              <NavLink key={l.to} to={l.to} className={linkClass}>
+              <NavLink key={l.to} to={l.to} end={l.end ?? false} className={linkClass}>
                 {l.label}
               </NavLink>
             ))}
@@ -267,8 +253,8 @@ export function Nav() {
               ))}
             </nav>
             <div className="mx-auto mt-3 max-w-5xl" data-mobile-nav-link>
-              <ButtonLink to="/book" className="min-h-12 w-full text-base" onClick={close}>
-                Book a service
+              <ButtonLink to={BOOK_LINK.to} className="min-h-12 w-full text-base" onClick={close}>
+                {BOOK_LINK.label}
               </ButtonLink>
             </div>
           </div>

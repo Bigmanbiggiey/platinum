@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { BUSINESS } from '../../shared/business';
+import { navFor } from '../nav';
 
 /**
  * Footer NAP + links. Uses the `BUSINESS` constants, which mirror the `site_settings`
@@ -40,21 +41,11 @@ export function Footer() {
             Site
           </p>
           <ul className="mt-2 space-y-1 text-sm [&_a]:inline-flex [&_a]:min-h-11 [&_a]:items-center md:[&_a]:min-h-0">
-            <li>
-              <Link to="/services">Services</Link>
-            </li>
-            <li>
-              <Link to="/portfolio">Work</Link>
-            </li>
-            <li>
-              <Link to="/service-areas">Service areas</Link>
-            </li>
-            <li>
-              <Link to="/book">Book a service</Link>
-            </li>
-            <li>
-              <Link to="/privacy">Privacy policy</Link>
-            </li>
+            {navFor('footer').map((l) => (
+              <li key={l.to}>
+                <Link to={l.to}>{l.longLabel ?? l.label}</Link>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
