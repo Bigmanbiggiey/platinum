@@ -31,7 +31,7 @@ import { MediaPage } from './pages/content/MediaPage';
 import { JobsPage } from './pages/jobs/JobsPage';
 import { NewJobPage } from './pages/jobs/NewJobPage';
 import { JobDetailPage } from './pages/jobs/JobDetailPage';
-import { PlaceholderPage } from './pages/PlaceholderPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 30_000, retry: 1, refetchOnWindowFocus: false } },
@@ -76,9 +76,9 @@ export function AdminApp() {
                 <Route path="content/areas" element={<AreasPage />} />
                 <Route path="content/partners" element={<PartnersPage />} />
               </Route>
+              <Route path="*" element={<NotFoundPage />} />
             </Route>
           </Route>
-          <Route path="*" element={<PlaceholderPage title="Not found" wp="—" />} />
         </Routes>
       </AuthProvider>
     </QueryClientProvider>

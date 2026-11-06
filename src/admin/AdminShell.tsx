@@ -95,7 +95,7 @@ export function AdminShell() {
   });
   useSwipeToClose(drawerRef, drawerOpen, () => setExpanded(false));
 
-  const nav = navFor(role);
+  const nav = navFor(role, { installed });
 
   const onSignOut = async () => {
     await signOut();
@@ -200,15 +200,6 @@ export function AdminShell() {
               )}
             </NavLink>
           ))}
-          {/* Owner and staff; drawer only (not a staff bottom tab). Gone once installed. */}
-          {!installed && (
-            <NavLink to="/admin/install" title="Install app" className={linkClass}>
-              <span className="shrink-0">
-                <NavIcon name="install" />
-              </span>
-              <span className={expanded ? 'flex-1 truncate' : 'sr-only'}>Install app</span>
-            </NavLink>
-          )}
         </nav>
 
         {/* Account — phones only; the header carries these from 640 px up. */}
@@ -247,23 +238,25 @@ export function AdminShell() {
           aria-label="Staff"
           className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-3 border-t border-[color:var(--color-line)] bg-[color:var(--color-ground)] pb-[env(safe-area-inset-bottom)] md:hidden"
         >
-          {nav.map((n) => (
-            <NavLink
-              key={n.to}
-              to={n.to}
-              end={n.end ?? false}
-              className={({ isActive }) =>
-                `flex min-h-14 flex-col items-center justify-center gap-0.5 text-xs font-semibold ${
-                  isActive
-                    ? 'text-[color:var(--color-confirm-text)]'
-                    : 'text-[color:var(--color-muted)]'
-                }`
-              }
-            >
-              <NavIcon name={n.icon} />
-              {n.label}
-            </NavLink>
-          ))}
+          {nav
+            .filter((n) => !n.drawerOnly)
+            .map((n) => (
+              <NavLink
+                key={n.to}
+                to={n.to}
+                end={n.end ?? false}
+                className={({ isActive }) =>
+                  `flex min-h-14 flex-col items-center justify-center gap-0.5 text-xs font-semibold ${
+                    isActive
+                      ? 'text-[color:var(--color-confirm-text)]'
+                      : 'text-[color:var(--color-muted)]'
+                  }`
+                }
+              >
+                <NavIcon name={n.icon} />
+                {n.label}
+              </NavLink>
+            ))}
           <button
             ref={accountTabRef}
             type="button"
