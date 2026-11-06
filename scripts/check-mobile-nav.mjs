@@ -322,9 +322,11 @@ async function adminContext(browser, ref, w, h, role) {
     const rows = SAMPLE[table];
     if (rows) {
       const idEq = new URL(url).searchParams.get('id')?.replace(/^eq\./, '');
+      // maybeSingle() asks for a list filtered by id, so filter lists too.
+      const list = idEq ? rows.filter((r) => r.id === idEq) : rows;
       return route.fulfill({
-        headers: { 'content-range': `0-${rows.length - 1}/${rows.length}` },
-        json: single ? (rows.find((r) => r.id === idEq) ?? rows[0]) : rows,
+        headers: { 'content-range': `0-${Math.max(list.length - 1, 0)}/${list.length}` },
+        json: single ? (rows.find((r) => r.id === idEq) ?? rows[0]) : list,
       });
     }
     return route.fulfill({ headers: { 'content-range': '0-0/0' }, json: single ? null : [] });
@@ -447,7 +449,13 @@ async function checkAdmin(browser, ref, w, h, role) {
   await ctx.close();
 }
 
-const browser = await chromium.launch({ channel: CHANNEL });
+// Current Edge/Chrome dropped the old headless mode playwright-core 1.48 asks for;
+// request the new one directly (still no window).
+const browser = await chromium.launch({
+  channel: CHANNEL,
+  headless: false,
+  args: ['--headless=new'],
+});
 
 /** F1 + F2 on the public site: new pages open at the top; in-site back never "undoes". */
 async function checkPublicNavigation(browser) {
@@ -579,6 +587,81 @@ async function checkAdminPages(browser, ref, w, h) {
   await ctx.close();
 }
 
+/** Content edit pages: the title row (back link, Published, Save) fits; back goes to the list. */
+async function checkEditPages(browser, ref, w, h) {
+  const tag = `admin edit ${w}x${h}`;
+  const ctx = await adminContext(browser, ref, w, h, 'owner');
+  // From 768 px a first visit opens the rail expanded, over the page; check the page
+  // itself with it collapsed (the header + drawer checks above cover the rail).
+  await ctx.addInitScript(() => localStorage.setItem('pp_admin_nav_expanded', '0'));
+  const page = await ctx.newPage();
+  for (const [name, path, back, list, hasSave] of [
+    [
+      'service',
+      `/admin/content/services/${SAMPLE.service[0].id}`,
+      '← Services',
+      '/admin/content/services',
+      true,
+    ],
+    [
+      'portfolio',
+      `/admin/content/portfolio/${SAMPLE.portfolio_project[1].id}`,
+      '← Portfolio',
+      '/admin/content/portfolio',
+      true,
+    ],
+    [
+      'job entry',
+      `/admin/content/portfolio/${SAMPLE.portfolio_project[0].id}`,
+      '← Portfolio',
+      '/admin/content/portfolio',
+      false,
+    ],
+  ]) {
+    await page.goto(`${BASE}${path}`, { waitUntil: 'networkidle' });
+    await page.waitForTimeout(500);
+    const r = await page.evaluate(
+      ([back]) => {
+        const main = document.getElementById('admin-main');
+        const h1 = main.querySelector('h1');
+        const row = h1?.parentElement;
+        const items = row ? [...row.querySelectorAll('a, button, label')] : [];
+        const link = items.find((e) => e.tagName === 'A' && e.textContent.trim() === back);
+        const save = items.find((e) => e.textContent.trim() === 'Save');
+        return {
+          innerWidth,
+          scrollWidth: document.documentElement.scrollWidth,
+          link: !!link && link.getBoundingClientRect().width > 0,
+          save: !!save && save.getBoundingClientRect().width > 0,
+          clipped: items
+            .filter((e) => e.getBoundingClientRect().right > innerWidth + 0.5)
+            .map((e) => e.textContent.trim()),
+          titleWidth: h1 ? Math.round(h1.getBoundingClientRect().width) : 0,
+        };
+      },
+      [back],
+    );
+    check(
+      r.innerWidth === w && r.scrollWidth <= w,
+      `${tag}: ${name} page fits (scroll width ${r.scrollWidth})`,
+    );
+    check(r.link, `${tag}: ${name} has ${back}`);
+    if (hasSave) check(r.save, `${tag}: ${name} Save is shown`);
+    check(
+      r.clipped.length === 0,
+      `${tag}: ${name} title row not cut off ${JSON.stringify(r.clipped)}`,
+    );
+    check(r.titleWidth > 0, `${tag}: ${name} title is visible`);
+    await page.screenshot({
+      path: `${OUT}/admin-edit-${name.replace(' ', '-')}-${w}x${h}.png`,
+    });
+    await page.locator('#admin-main a', { hasText: back }).first().click();
+    await page.waitForTimeout(500);
+    check(new URL(page.url()).pathname === list, `${tag}: ${name} ${back} goes to the list`);
+  }
+  await ctx.close();
+}
+
 /** B-2: staff get a bottom tab bar on phones instead of ☰. */
 async function checkStaffTabs(browser, ref) {
   const tag = 'admin staff tabs 360x780';
@@ -639,6 +722,15 @@ try {
       [1280, 900],
     ]) {
       await run(`admin pages ${w}x${h}`, () => checkAdminPages(browser, ref, w, h));
+    }
+    for (const [w, h] of [
+      [320, 568],
+      [360, 780],
+      [390, 844],
+      [667, 375],
+      [768, 1024],
+    ]) {
+      await run(`admin edit ${w}x${h}`, () => checkEditPages(browser, ref, w, h));
     }
     await run('admin staff tabs', () => checkStaffTabs(browser, ref));
   }
