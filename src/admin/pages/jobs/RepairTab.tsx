@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Card, EmptyState, Label, Labeled, Select, Textarea } from '../../components/ui';
 import { useRole } from '../../auth/authContext';
 import { findings, parts, photos, useAddPart } from '../../lib/jobData';
@@ -14,6 +14,9 @@ import {
 import { JobPhotos } from './JobPhotos';
 import { PartsEditor } from './PartsEditor';
 import { usePhotoActions } from './usePhotoActions';
+import { AUTO_ADVANCE_MS, repairComplete } from '../../lib/jobFlow';
+import { StepDone } from './StepDone';
+import { useStepFlow, useUnsaved } from './stepFlow';
 
 type PhotoActions = ReturnType<typeof usePhotoActions>;
 
@@ -24,6 +27,11 @@ export function RepairTab({ job }: { job: JobWithRefs }) {
   const actions = usePhotoActions(job);
   const isOwner = useRole() === 'owner';
   const rows = list.data ?? [];
+  const flow = useStepFlow();
+  // Set by a "Save repair"; once the saved outcomes leave nothing pending, move on.
+  const [justSaved, setJustSaved] = useState(false);
+  const complete = repairComplete(rows);
+  const countdown = justSaved && complete && flow?.autoAdvance === true;
 
   if (!list.isLoading && rows.length === 0) {
     return <EmptyState>Log the problems you found in the Diagnosis tab first.</EmptyState>;
@@ -42,6 +50,7 @@ export function RepairTab({ job }: { job: JobWithRefs }) {
           parts={(allParts.data ?? []).filter((p) => p.finding_id === fd.id)}
           actions={actions}
           showCost={isOwner}
+          onSaved={() => setJustSaved(true)}
         />
       ))}
       {actions.error && (
@@ -50,6 +59,46 @@ export function RepairTab({ job }: { job: JobWithRefs }) {
       {actions.notice && (
         <p className="text-xs text-[color:var(--color-muted)]">{actions.notice}</p>
       )}
+      {countdown && flow && (
+        <RepairDoneBanner
+          onGo={() => {
+            setJustSaved(false);
+            void flow.finish('repair');
+          }}
+          onStay={() => setJustSaved(false)}
+        />
+      )}
+      <StepDone
+        step="repair"
+        disabled={!complete}
+        hint="Set an outcome other than Pending for every problem first."
+      />
+    </div>
+  );
+}
+
+/** "Repair done — going to Wrap-up", with a way to stay. */
+function RepairDoneBanner({ onGo, onStay }: { onGo: () => void; onStay: () => void }) {
+  useEffect(() => {
+    const t = setTimeout(onGo, AUTO_ADVANCE_MS);
+    return () => clearTimeout(t);
+    // Start once per banner; a re-render must not restart the countdown.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return (
+    <div
+      role="status"
+      className="flex flex-wrap items-center gap-3 rounded-lg border border-teal/40 bg-teal/10 p-4 text-sm"
+    >
+      <span className="text-[color:var(--color-ink)]">
+        Every problem has an outcome — going to Wrap-up…
+      </span>
+      <span className="ml-auto flex gap-2">
+        <Button onClick={onStay}>Stay here</Button>
+        <Button variant="accent" onClick={onGo}>
+          Go now
+        </Button>
+      </span>
     </div>
   );
 }
@@ -61,6 +110,7 @@ function RepairCard({
   parts: findingParts,
   actions,
   showCost,
+  onSaved,
 }: {
   jobId: string;
   finding: JobFinding;
@@ -68,6 +118,7 @@ function RepairCard({
   parts: JobPart[];
   actions: PhotoActions;
   showCost: boolean;
+  onSaved: () => void;
 }) {
   const update = findings.useUpdate(jobId);
   const addPart = useAddPart(jobId);
@@ -75,6 +126,7 @@ function RepairCard({
   const [fix, setFix] = useState(finding.fix ?? '');
   const [outcome, setOutcome] = useState<FindingOutcome>(finding.outcome);
   const dirty = fix !== (finding.fix ?? '') || outcome !== finding.outcome;
+  useUnsaved(`repair:${finding.id}`, dirty);
 
   return (
     <Card className="space-y-3">
@@ -101,7 +153,10 @@ function RepairCard({
       <Button
         disabled={!dirty || update.isPending}
         onClick={() =>
-          update.mutate({ id: finding.id, patch: { fix: fix.trim() || null, outcome } })
+          update.mutate(
+            { id: finding.id, patch: { fix: fix.trim() || null, outcome } },
+            { onSuccess: onSaved },
+          )
         }
       >
         Save repair

@@ -4,6 +4,8 @@ import { findings, photos } from '../../lib/jobData';
 import type { JobFinding, JobPhoto, JobWithRefs } from '../../lib/jobs';
 import { JobPhotos } from './JobPhotos';
 import { usePhotoActions } from './usePhotoActions';
+import { StepDone } from './StepDone';
+import { useUnsaved } from './stepFlow';
 
 type PhotoActions = ReturnType<typeof usePhotoActions>;
 
@@ -15,6 +17,7 @@ export function DiagnosisTab({ job }: { job: JobWithRefs }) {
   const actions = usePhotoActions(job);
   const [title, setTitle] = useState('');
   const rows = list.data ?? [];
+  useUnsaved('new-finding', title.trim() !== '');
 
   const add = () => {
     const last = rows[rows.length - 1];
@@ -88,6 +91,12 @@ export function DiagnosisTab({ job }: { job: JobWithRefs }) {
           </p>
         )}
       </Card>
+
+      <StepDone
+        step="diagnosis"
+        disabled={rows.length === 0}
+        hint="Add at least one problem first."
+      />
     </div>
   );
 }
@@ -114,6 +123,7 @@ function FindingCard({
   const [title, setTitle] = useState(finding.title);
   const [diagnosis, setDiagnosis] = useState(finding.diagnosis ?? '');
   const dirty = title !== finding.title || diagnosis !== (finding.diagnosis ?? '');
+  useUnsaved(`finding:${finding.id}`, dirty);
 
   return (
     <Card className="space-y-3">

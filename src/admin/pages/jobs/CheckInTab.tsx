@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button, Card, Input, Label, Labeled, Textarea } from '../../components/ui';
 import { photos, useUpdateJob } from '../../lib/jobData';
 import { fromDateInput, toDateInput, type JobWithRefs } from '../../lib/jobs';
 import { JobPhotos } from './JobPhotos';
 import { usePhotoActions } from './usePhotoActions';
 import { usePublish } from '../../lib/rebuild';
+import { StepDone } from './StepDone';
+import { useUnsaved } from './stepFlow';
+
+const FORM_KEY = 'check-in-form';
 
 export function CheckInTab({ job }: { job: JobWithRefs }) {
   // Remount the form when the saved values change, so it never shows stale data.
@@ -16,11 +20,14 @@ export function CheckInTab({ job }: { job: JobWithRefs }) {
     job.complaint,
     job.internal_notes,
   ].join('|');
+  // Done saves the form first, so nothing typed is lost on the way to Diagnosis.
+  const saveForm = useRef<() => Promise<void>>(async () => {});
   return (
     <div className="space-y-4">
       <ConsentCard job={job} />
-      <CheckInForm key={formKey} job={job} />
+      <CheckInForm key={formKey} job={job} saveRef={saveForm} />
       <CheckInPhotos job={job} />
+      <StepDone step="check-in" beforeFinish={() => saveForm.current()} saved={[FORM_KEY]} />
     </div>
   );
 }
@@ -62,32 +69,48 @@ function ConsentCard({ job }: { job: JobWithRefs }) {
   );
 }
 
-function CheckInForm({ job }: { job: JobWithRefs }) {
-  const update = useUpdateJob(job.id);
-  const [f, setF] = useState({
+function formFromJob(job: JobWithRefs) {
+  return {
     vehicle_label: job.vehicle_label,
     booked: toDateInput(job.booked_at),
     checkedIn: toDateInput(job.checked_in_at),
     odometer: job.odometer_km?.toString() ?? '',
     complaint: job.complaint ?? '',
     internal: job.internal_notes ?? '',
-  });
+  };
+}
+
+function CheckInForm({
+  job,
+  saveRef,
+}: {
+  job: JobWithRefs;
+  saveRef: { current: () => Promise<void> };
+}) {
+  const update = useUpdateJob(job.id);
+  const [f, setF] = useState(() => formFromJob(job));
   const set = (k: keyof typeof f) => (e: { target: { value: string } }) =>
     setF((p) => ({ ...p, [k]: e.target.value }));
+  const saved = formFromJob(job);
+  const dirty = (Object.keys(f) as (keyof typeof f)[]).some((k) => f[k] !== saved[k]);
+  useUnsaved(FORM_KEY, dirty);
 
-  const save = () =>
-    update.mutate({
-      vehicle_label: f.vehicle_label.trim() || job.vehicle_label,
-      booked_at: fromDateInput(f.booked),
-      // Keep the original time of day unless the date itself was changed.
-      checked_in_at:
-        f.checkedIn === toDateInput(job.checked_in_at)
-          ? job.checked_in_at
-          : (fromDateInput(f.checkedIn) ?? job.checked_in_at),
-      odometer_km: f.odometer.trim() === '' ? null : Math.round(Number(f.odometer)),
-      complaint: f.complaint.trim() || null,
-      internal_notes: f.internal.trim() || null,
-    });
+  const patch = () => ({
+    vehicle_label: f.vehicle_label.trim() || job.vehicle_label,
+    booked_at: fromDateInput(f.booked),
+    // Keep the original time of day unless the date itself was changed.
+    checked_in_at:
+      f.checkedIn === toDateInput(job.checked_in_at)
+        ? job.checked_in_at
+        : (fromDateInput(f.checkedIn) ?? job.checked_in_at),
+    odometer_km: f.odometer.trim() === '' ? null : Math.round(Number(f.odometer)),
+    complaint: f.complaint.trim() || null,
+    internal_notes: f.internal.trim() || null,
+  });
+  const save = () => update.mutate(patch());
+  saveRef.current = async () => {
+    if (dirty) await update.mutateAsync(patch());
+  };
 
   return (
     <Card className="space-y-4">
