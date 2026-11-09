@@ -13,12 +13,19 @@ import {
 } from '../../components/ui';
 import { clients, services, vehicles } from '../../lib/resources';
 import { useRequest } from '../../lib/requests';
-import { useAssignablePeople, useCreateJob, useJobByRequest } from '../../lib/jobData';
+import {
+  useAddCheckInPhotos,
+  useAssignablePeople,
+  useCreateJob,
+  useJobByRequest,
+} from '../../lib/jobData';
 import { getDb } from '../../lib/db';
 import { jobPrefillFromRequest, vehicleLabel } from '../../lib/jobs';
 import { useRole } from '../../auth/authContext';
 import { WalkInForm } from './WalkInForm';
 import { BackLink } from '../../../shared/lib/BackLink';
+import { PendingPhotos } from './PendingPhotos';
+import { reportPhotoFailures } from './checkInPhotos';
 
 const NEW_VEHICLE = 'new';
 
@@ -37,6 +44,7 @@ function OwnerNewJobPage() {
   const serviceList = services.useList();
   const createVehicle = vehicles.useCreate();
   const createJob = useCreateJob();
+  const addPhotos = useAddCheckInPhotos();
   const existingJob = useJobByRequest(requestId);
   const navigate = useNavigate();
   // A vehicle inserted by a submit whose job insert then failed — reused on retry.
@@ -47,6 +55,7 @@ function OwnerNewJobPage() {
   const [newVehicle, setNewVehicle] = useState({ make: '', model: '', year: '', registration: '' });
   const [serviceId, setServiceId] = useState('');
   const [complaint, setComplaint] = useState('');
+  const [checkInPhotos, setCheckInPhotos] = useState<File[]>([]);
   const people = useAssignablePeople();
   const [assignees, setAssignees] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -68,7 +77,7 @@ function OwnerNewJobPage() {
 
   if (requestId && request.isLoading) return <Spinner />;
 
-  const busy = createJob.isPending || createVehicle.isPending;
+  const busy = createJob.isPending || createVehicle.isPending || addPhotos.isPending;
   const vehicleChosen =
     vehicleId === NEW_VEHICLE ? newVehicle.make.trim() !== '' : vehicleId !== '';
   const canCreate = clientId !== '' && vehicleChosen && !busy;
@@ -91,11 +100,12 @@ function OwnerNewJobPage() {
         vehicle = createdVehicle.current;
       }
       if (!vehicle) throw new Error('Pick a vehicle.');
+      const label = vehicleLabel(vehicle);
       const id = await createJob.mutateAsync({
         ...(req ? jobPrefillFromRequest(req) : {}),
         client_id: clientId,
         vehicle_id: vehicle.id,
-        vehicle_label: vehicleLabel(vehicle),
+        vehicle_label: label,
         service_id: serviceId || null,
         complaint: complaint.trim() || null,
       });
@@ -105,6 +115,14 @@ function OwnerNewJobPage() {
         await getDb()
           .from('job_assignee')
           .insert(assignees.map((user_id) => ({ job_id: id, user_id })));
+      }
+      if (checkInPhotos.length > 0) {
+        const { failed } = await addPhotos.mutateAsync({
+          jobId: id,
+          vehicleLabel: label,
+          files: checkInPhotos,
+        });
+        reportPhotoFailures(failed);
       }
       navigate(`/admin/jobs/${id}`, { replace: true });
     } catch (e) {
@@ -212,6 +230,8 @@ function OwnerNewJobPage() {
         </Labeled>
       </Card>
 
+      <PendingPhotos files={checkInPhotos} onChange={setCheckInPhotos} />
+
       {(people.data ?? []).length > 0 && (
         <Card>
           <Label>Assign to (optional) — one person or a team</Label>
@@ -249,7 +269,7 @@ function OwnerNewJobPage() {
         </p>
       )}
       <Button variant="accent" disabled={!canCreate} onClick={submit}>
-        {busy ? 'Creating…' : 'Check in vehicle'}
+        {addPhotos.isPending ? 'Saving photos…' : busy ? 'Creating…' : 'Check in vehicle'}
       </Button>
     </section>
   );

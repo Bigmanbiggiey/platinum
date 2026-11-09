@@ -5,6 +5,7 @@ import { isOnWebsite, projectKey } from './publishJob';
 import { rebuildNow, scheduleRebuild } from './rebuild';
 import {
   OPEN_STATUSES,
+  photoAlt,
   type AgendaJob,
   type Job,
   type JobFinding,
@@ -267,23 +268,55 @@ export const parts = makeJobChild<JobPart>(
 );
 
 /** Upload an image (EXIF stripped) and attach it to the job. */
+async function insertPhoto(
+  jobId: string,
+  p: { file: File; stage: PhotoStage; findingId: string | null; alt: string },
+) {
+  const mediaId = await uploadMedia(p.file, p.alt);
+  const { error } = await getDb()
+    .from('job_photo')
+    .insert({ job_id: jobId, media_id: mediaId, stage: p.stage, finding_id: p.findingId });
+  if (error) throw error;
+}
+
 export function useAddPhoto(jobId: string) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (p: {
-      file: File;
-      stage: PhotoStage;
-      findingId: string | null;
-      alt: string;
-    }) => {
-      const mediaId = await uploadMedia(p.file, p.alt);
-      const { error } = await getDb()
-        .from('job_photo')
-        .insert({ job_id: jobId, media_id: mediaId, stage: p.stage, finding_id: p.findingId });
-      if (error) throw error;
-    },
+    mutationFn: (p: { file: File; stage: PhotoStage; findingId: string | null; alt: string }) =>
+      insertPhoto(jobId, p),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: jobChildKey('job_photo', jobId) });
+      void qc.invalidateQueries({ queryKey: ['media', 'list'] });
+    },
+  });
+}
+
+/**
+ * Check-in photos taken on the new-job form, uploaded once the job exists. A new job is
+ * never on the website yet, so no rebuild. Never throws: the job already exists, so the
+ * caller reports how many failed and carries on.
+ */
+export function useAddCheckInPhotos() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (p: { jobId: string; vehicleLabel: string; files: File[] }) => {
+      let failed = 0;
+      for (const file of p.files) {
+        try {
+          await insertPhoto(p.jobId, {
+            file,
+            stage: 'check_in',
+            findingId: null,
+            alt: photoAlt(p.vehicleLabel, 'check_in'),
+          });
+        } catch {
+          failed++;
+        }
+      }
+      return { failed };
+    },
+    onSettled: (_d, _e, p) => {
+      void qc.invalidateQueries({ queryKey: jobChildKey('job_photo', p.jobId) });
       void qc.invalidateQueries({ queryKey: ['media', 'list'] });
     },
   });

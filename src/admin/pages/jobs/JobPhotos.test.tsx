@@ -67,4 +67,32 @@ describe('<JobPhotos />', () => {
     await user.click(screen.getByRole('button', { name: 'Delete photo' }));
     expect(onDelete).toHaveBeenCalledWith(p);
   });
+
+  it('has no camera button where the browser has no camera API', () => {
+    render(
+      <JobPhotos photos={[]} onUpload={vi.fn()} onTogglePublic={vi.fn()} onDelete={vi.fn()} />,
+    );
+    expect(screen.queryByRole('button', { name: 'Take photo' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Add photos' })).toBeInTheDocument();
+  });
+
+  it('opens the in-app camera beside the upload button', async () => {
+    const getUserMedia = vi.fn(() => new Promise<MediaStream>(() => {}));
+    Object.defineProperty(navigator, 'mediaDevices', {
+      value: { getUserMedia },
+      configurable: true,
+    });
+    try {
+      const user = userEvent.setup();
+      render(
+        <JobPhotos photos={[]} onUpload={vi.fn()} onTogglePublic={vi.fn()} onDelete={vi.fn()} />,
+      );
+      expect(screen.getByRole('button', { name: 'Upload' })).toBeInTheDocument();
+      await user.click(screen.getByRole('button', { name: 'Take photo' }));
+      expect(screen.getByRole('dialog', { name: 'Camera' })).toBeInTheDocument();
+      expect(getUserMedia).toHaveBeenCalled();
+    } finally {
+      delete (navigator as { mediaDevices?: unknown }).mediaDevices;
+    }
+  });
 });
