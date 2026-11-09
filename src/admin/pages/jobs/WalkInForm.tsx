@@ -2,9 +2,11 @@ import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Card, Input, Labeled, PageTitle, Textarea } from '../../components/ui';
 import { vehicles, type AdminVehicle } from '../../lib/resources';
-import { useCreateJob } from '../../lib/jobData';
+import { useAddCheckInPhotos, useCreateJob } from '../../lib/jobData';
 import { vehicleLabel } from '../../lib/jobs';
 import { BackLink } from '../../../shared/lib/BackLink';
+import { PendingPhotos } from './PendingPhotos';
+import { reportPhotoFailures } from './checkInPhotos';
 
 /**
  * Staff check-in (D5): vehicle details only — no client, no request. The database
@@ -14,15 +16,17 @@ import { BackLink } from '../../../shared/lib/BackLink';
 export function WalkInForm() {
   const createVehicle = vehicles.useCreate();
   const createJob = useCreateJob();
+  const addPhotos = useAddCheckInPhotos();
   const navigate = useNavigate();
   // A vehicle inserted by a submit whose job insert then failed — reused on retry.
   const createdVehicle = useRef<AdminVehicle | null>(null);
 
   const [v, setV] = useState({ make: '', model: '', year: '', registration: '' });
   const [complaint, setComplaint] = useState('');
+  const [checkInPhotos, setCheckInPhotos] = useState<File[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  const busy = createJob.isPending || createVehicle.isPending;
+  const busy = createJob.isPending || createVehicle.isPending || addPhotos.isPending;
   const canCreate = v.make.trim() !== '' && !busy;
 
   const setField = (k: keyof typeof v) => (e: { target: { value: string } }) => {
@@ -43,11 +47,20 @@ export function WalkInForm() {
         });
       }
       const vehicle = createdVehicle.current;
+      const label = vehicleLabel(vehicle);
       const id = await createJob.mutateAsync({
         vehicle_id: vehicle.id,
-        vehicle_label: vehicleLabel(vehicle),
+        vehicle_label: label,
         complaint: complaint.trim() || null,
       });
+      if (checkInPhotos.length > 0) {
+        const { failed } = await addPhotos.mutateAsync({
+          jobId: id,
+          vehicleLabel: label,
+          files: checkInPhotos,
+        });
+        reportPhotoFailures(failed);
+      }
       navigate(`/admin/jobs/${id}`, { replace: true });
     } catch (e) {
       setError((e as Error).message);
@@ -98,9 +111,11 @@ export function WalkInForm() {
         </Labeled>
       </Card>
 
+      <PendingPhotos files={checkInPhotos} onChange={setCheckInPhotos} />
+
       {error && <p className="text-sm text-[color:var(--color-accent-text)]">{error}</p>}
       <Button variant="accent" disabled={!canCreate} onClick={submit}>
-        {busy ? 'Creating…' : 'Check in vehicle'}
+        {addPhotos.isPending ? 'Saving photos…' : busy ? 'Creating…' : 'Check in vehicle'}
       </Button>
     </section>
   );

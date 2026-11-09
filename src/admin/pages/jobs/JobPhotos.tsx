@@ -1,5 +1,5 @@
-import { useRef } from 'react';
-import { Badge, Button } from '../../components/ui';
+import { Badge } from '../../components/ui';
+import { PhotoSource } from '../../components/PhotoSource';
 import { mediaUrl } from '../../../shared/content/media';
 import type { JobPhoto } from '../../lib/jobs';
 
@@ -21,8 +21,6 @@ export function JobPhotos({
   label?: string;
   canUpload?: boolean;
 }) {
-  const fileRef = useRef<HTMLInputElement>(null);
-
   return (
     <div>
       {photos.length > 0 && (
@@ -62,25 +60,7 @@ export function JobPhotos({
         </div>
       )}
       {canUpload && (
-        <>
-          {/* No `capture` attribute: phones then offer both "Take photo" and the gallery. */}
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/*,.heic,.heif"
-            multiple
-            aria-label={label}
-            className="sr-only"
-            onChange={(e) => {
-              const files = Array.from(e.target.files ?? []);
-              if (files.length) onUpload(files);
-              e.target.value = '';
-            }}
-          />
-          <Button className="mt-2" disabled={uploading} onClick={() => fileRef.current?.click()}>
-            {uploading ? 'Uploading…' : label}
-          </Button>
-        </>
+        <PhotoSource className="mt-2" label={label} busy={uploading} onFiles={onUpload} />
       )}
     </div>
   );

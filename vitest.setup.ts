@@ -23,3 +23,9 @@ if (!window.matchMedia) {
 
 // jsdom has no layout, so window.scrollTo only logs "Not implemented"; make it a no-op.
 window.scrollTo = (() => {}) as typeof window.scrollTo;
+
+// jsdom has no object URLs (used for photo previews).
+if (!URL.createObjectURL) {
+  URL.createObjectURL = () => 'blob:test';
+  URL.revokeObjectURL = () => {};
+}
