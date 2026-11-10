@@ -52,7 +52,7 @@ export function ProjectCard({ project }: { project: ProjectWithMedia }) {
         <p className="mt-2 text-sm text-[color:var(--color-muted)]">{project.summary}</p>
         <p className="mt-3 flex items-center gap-3 text-xs font-semibold text-[color:var(--color-ink)]">
           <span className="flex items-center gap-1.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-signal" aria-hidden="true" />
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-signal" aria-hidden="true" />
             Completed
           </span>
           {project.job_id && (

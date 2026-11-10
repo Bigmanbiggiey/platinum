@@ -70,17 +70,19 @@ export function StepNav({
           role="switch"
           aria-checked={flow.autoAdvance}
           onClick={() => flow.setAutoAdvance(!flow.autoAdvance)}
-          className={`relative h-5 w-9 rounded-full transition-colors ${
+          // shrink-0: a long label on a phone must wrap, not squeeze the switch.
+          className={`relative h-5 w-9 shrink-0 rounded-full transition-colors ${
             flow.autoAdvance ? 'bg-signal' : 'bg-[color:var(--color-line)]'
           }`}
         >
+          {/* left-0: buttons centre their content, so an unanchored knob starts mid-track. */}
           <span
-            className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-transform ${
-              flow.autoAdvance ? 'translate-x-4' : 'translate-x-0.5'
+            className={`absolute left-0 top-0.5 h-4 w-4 rounded-full bg-white transition-transform ${
+              flow.autoAdvance ? 'translate-x-4.5' : 'translate-x-0.5'
             }`}
           />
         </button>
-        Go to the next step when one is done
+        <span className="min-w-0">Go to the next step when one is done</span>
       </label>
     </div>
   );
