@@ -139,6 +139,16 @@
   a:hover {
     color: var(--color-ink);
   }
+
+  /* Fixed-size controls and icons keep their size in a flex row: on a phone a long label
+     beside them must wrap, not squeeze them (iOS Safari shrinks checkboxes otherwise).
+     A `shrink` utility still overrides this where shrinking is wanted. */
+  svg,
+  input[type='checkbox'],
+  input[type='radio'],
+  [role='switch'] {
+    flex-shrink: 0;
+  }
 }
 
 /* Rendered Markdown (trusted seed content in Phase 2; sanitised when admin-editable in Phase 3) */
